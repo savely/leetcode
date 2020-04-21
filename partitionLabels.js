@@ -20,5 +20,25 @@ S will consist of lowercase letters ('a' to 'z') only.
  * @return {number[]}
  */
 var partitionLabels = function(S) {
-    
+
+    const res = [], last = {}
+
+    for(let i = 0; i < S.length; i++) {
+           last[S[i]] = i
+    }
+
+    let lo = 0
+
+    while(lo < S.length) {
+        let hi  = last[S[lo]]
+        let ptr = lo+1
+        while(ptr < hi) {
+            hi = Math.max(hi, last[S[ptr]])
+            ptr++
+        }
+        res.push(hi-lo+1)
+        lo = hi + 1
+    } 
+
+    return res
 };
