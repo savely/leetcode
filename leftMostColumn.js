@@ -25,7 +25,7 @@ var leftMostColumnWithOne = function(binaryMatrix) {
 
     let i = 0, j = cols-1
 
-    while(i < rows-1 && j >= 0) {
+    while(i < rows && j >= 0) {
         if(binaryMatrix.get(i,j) == 0) {
             i++
         } else {
