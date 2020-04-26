@@ -12,29 +12,12 @@ var largestNumber = function(nums) {
             return str2[i] - str1[i]
         }
 
-        if(str1.length === str2.length) return 0
+        const diff = str1.length - str2.length
 
-        if(str1.length > str2.length) {
-            const char = str2[str2.length-1]
+        if(diff === 0) return 0
+        
+        return diff > 0 ? f(str1.substring(str2.length), str2) : f(str1, str2.substring(str1.length))
 
-            for(let i = str2.length; i < str1.length; i++) {
-                if(str1[i] === char) continue
-
-                return  char - str1[i]
-            }
-
-            return 0
-        }
-
-        const char = str1[str1.length-1]
-
-        for(let i = str1.length; i < str2.length; i++) {
-            if(str2[i] === char) continue
-
-            return  str2[i] - char
-        }
-
-        return 0
     }
 
     const res = nums.map(n => n.toString()).sort(f).join('')
