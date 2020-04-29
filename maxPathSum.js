@@ -6,19 +6,34 @@
 *     this.right = (right===undefined ? null : right)
 * }
 */
+
+
 /**
 * @param {TreeNode} root
 * @return {number}
 */
 var maxPathSum = function(root) {
    
-    if(root === null) return 0
+    let max = -Infinity
 
-    if(root.left === null && root.right === null) return Math.max(root.val, 0)
-
-    const maxSumLeft  = maxPathSum(root.left)
-    const maxSumRight = maxPathSum(root.right)
-    const value       = root.val
-
-    return Math.max(maxSumLeft, maxSumLeft+value, value, maxSumLeft + value + maxSumRight, maxSumRight + value, maxSumRight)
+    const nodeSumReq = function(node, sum) {
+       
+     if(node === null) return -Infinity
+ 
+     sum += node.val
+ 
+     const maxSumLeft = node.left === null ? -Infinity : nodeSumReq(node.left, sum)
+     const maxSumRight = node.right === null ? -Infinity : nodeSumReq(node.right, sum)
+ 
+     const ret = Math.max(sum, maxSumLeft, maxSumRight)
+     const maxLeft = maxSumLeft - sum
+     const maxRight = maxSumRight - sum
+ 
+     const maxNodePath = Math.max(maxLeft + node.val, maxLeft + node.val, maxLeft + node.val + maxRight, node.val + maxRight)
+     max = Math.max(max, ret, maxLeft, maxRight, maxNodePath)
+       return ret
+    }
+    nodeSumReq(root, 0)
+ 
+    return max
 };

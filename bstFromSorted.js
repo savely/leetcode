@@ -127,7 +127,14 @@ var sortedArrayToBST = function(nums) {
     return node
 };
 
+var sumOfLeftLeaves = function(root) {
+    
+  if(root === null || root.left === null) return 0
+  
+  return root.left + sumOfLeftLeaves(root.left) + sumOfLeftLeaves(root.right)
+};
+
 let arr =[-10,-3,0,5,9]
 arr = [8,5,1,7,10,12].sort((a,b) => a-b)
 
-console.log(sortedArrayToBST(arr))
+console.log(sumOfLeftLeaves(sortedArrayToBST(arr)))
