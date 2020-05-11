@@ -26,7 +26,24 @@ Decimal point - "."
 Of course, the context of these characters also matters in the input.
 */
 
-
+const createParser = function(type) {
+    switch(type) {
+        case 'spaces' :
+          return new Parser(c => c === ' ')
+        case 'sign' : 
+          return new Parser(c => c === '-' || c === '+', 0, 1)     
+        case 'digits' : 
+          return new Parser(c => !isNaN(parseInt(c)), 1)  
+       case 'dot' :
+          return new Parser(c => c === '.', 1, 1)    
+       case 'mantiss_sign' :
+          return new Parser(c => c === 'e', 1, 1) 
+       case 'fail':   
+       default :
+          return new Parser(c => false, 1)
+    }
+  }
+  
 class Parser {
 
     nextParsers = []
@@ -77,24 +94,7 @@ class Parser {
        return res
     }
 
-    static createParser = function(type) {
-        switch(type) {
-            case 'spaces' :
-              return new Parser(c => c === ' ')
-            case 'sign' : 
-              return new Parser(c => c === '-' || c === '+', 0, 1)     
-            case 'digits' : 
-              return new Parser(c => !isNaN(parseInt(c)), 1)  
-           case 'dot' :
-              return new Parser(c => c === '.', 1, 1)    
-           case 'mantiss_sign' :
-              return new Parser(c => c === 'e', 1, 1) 
-           case 'fail':   
-           default :
-              return new Parser(c => false, 1)
-        }
-      }
-
+    
       static alternative (parsers = [], string = '') {
           if(parsers === undefined  || parsers.length === undefined || parsers.length === 0) { 
           parsers = [Parser.createParser('fail')]
