@@ -34,6 +34,8 @@ const createParser = function(type) {
           return new Parser(c => c === '-' || c === '+', 0, 1)     
         case 'digits' : 
           return new Parser(c => !isNaN(parseInt(c)), 1)  
+        case 'digits_opt' : 
+          return new Parser(c => !isNaN(parseInt(c)))  
        case 'dot' :
           return new Parser(c => c === '.', 1, 1)    
        case 'mantiss_sign' :
@@ -43,7 +45,28 @@ const createParser = function(type) {
           return new Parser(c => false, 1)
     }
   }
-  
+
+  const alternative = function (parsers = [], string = '') {
+    if(parsers === undefined  || parsers.length === undefined || parsers.length === 0) { 
+    parsers = [createParser('fail')]
+    }
+
+    const res = []
+
+    for(let i = 0; i < parsers.length; i++) {
+        const parser = parsers[i]
+        parser.setString(string)
+        res.push(parser.parse())
+    }
+
+    return res.sort((arr1, arr2) => {
+        if(arr1[0] === arr2[0]) {
+            return arr1[1].length - arr2[1].length
+        }
+        return arr1[0] > arr2[0] ? -1 : 1
+    }) [0]
+}
+
 class Parser {
 
     nextParsers = []
@@ -73,7 +96,7 @@ class Parser {
         if(nextParsers.length === undefined) {
           nextParsers = [nextParsers]
         } 
-        this.nextParsers.push(...nextParsers.map(Parser.createParser))
+        this.nextParsers.push(...nextParsers.map(createParser))
 
         return this
     }
@@ -94,27 +117,6 @@ class Parser {
        return res
     }
 
-    
-      static alternative (parsers = [], string = '') {
-          if(parsers === undefined  || parsers.length === undefined || parsers.length === 0) { 
-          parsers = [Parser.createParser('fail')]
-          }
-
-          const res = []
-
-          for(let i = 0; i < parsers.length; i++) {
-              const parser = parsers[i]
-              parser.setString(string)
-              res.push(parser.parse())
-          }
-
-          return res.sort((arr1, arr2) => {
-              if(arr1[0] === arr2[0]) {
-                  return arr1[1].length - arr2[1].length
-              }
-              return arr1[0] > arr2[0] ? -1 : 1
-          }) [0]
-      }
 }
 
 /**
@@ -123,16 +125,18 @@ class Parser {
  */
 var isNumber = function(s) {
 
-    const float = Parser.createParser('spaces').chain(['digits','dot','digits','sign'])
-    const int   = Parser.createParser('spaces').chain(['digits','sign'])  
+    const float = createParser('spaces').chain(['digits','dot','digits_opt','sign'])
+    const float_dotted = createParser('spaces').chain(['digits_opt','dot','digits','sign'])
+    const int   = createParser('spaces').chain(['digits','sign'])  
     
-    let res = Parser.alternative([float, int], s)
+    let res = alternative([float, float_dotted, int], s)
+
 
     if(!res[0]) return false
 
-    const mantiss = Parser.createParser('mantiss_sign').chain(['spaces','digits','sign'])
+    const mantiss = createParser('mantiss_sign').chain(['spaces','digits','sign'])
 
-    res = Parser.alternative([mantiss, Parser.createParser('spaces')], res[1])
+    res = alternative([mantiss, createParser('spaces')], res[1])
     
     if(!res[0] || res[1].length !== 0) return false
 
@@ -153,4 +157,4 @@ var isNumber = function(s) {
 
 
 //parser.setString('    +78.12 c ')
-console.log(isNumber('-78.12e+1'))
+console.log(isNumber('+1 2'))
