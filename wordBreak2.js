@@ -36,6 +36,25 @@ Output:
 []
 */
 
+var positions = function(s, wordDict) {
+  
+  const dp = new Array(s.length+1).fill(false)
+  dp[0] = true
+  
+  const positions = []
+  
+   for(let i = 1; i < dp.length; i++) {
+     for(let j= 0; j < i; j++) {
+         if(dp[j] && wordDict.includes(s.substring(j,i))) {
+            dp[i] = true
+            positions.push(i-1)
+            break
+         }
+     }    
+   }
+   
+return positions
+};
 
 /**
  * @param {string} s
@@ -44,26 +63,28 @@ Output:
  */
 var wordBreak2 = function(s, wordDict) {
     
-    if(s.length === 1) return wordDict.has(s)
+    const dp = positions(s, wordDict)
+
+    if(dp.length === 2) return [s.substring(dp[0], dp[1])]
 
     res = []
 
     let start = 0, end = 1
-    const len = s.length-1
+    
 
-    while (end <= s.length) {
+    while (end <= dp.length) {
 
-      if(wordDict.includes(s.substring(start, end))) {
-        res.push(s.substring(start, end))
+      if(wordDict.includes(s.substring(dp[start], dp[end]))) {
+        res.push(s.substring(dp[start], dp[end]))
          start = end
          end = start+1
-      } else if(end === s.length) {
+      } else if(end === dp.length) {
       
         if(res.length === 0) break
 
         const backtrack =  res.pop()
-           end = start + 1 
-           start -= backtrack.length
+           start++
+           end = start +1 
        } else {
         end++
        }
@@ -72,4 +93,7 @@ var wordBreak2 = function(s, wordDict) {
     return res.length > 0
 };
 // ["cat", "cats", "and", "sand", "dog"]
-console.log(wordBreak2('catsanddog', ["cat", "cats", /*"and",*/ "sand", "dog"]))
+console.log(wordBreak2('catsanddog', ["cat", "cats", "and", "sand", "dog"]))
+
+//"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab"
+//["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"]
