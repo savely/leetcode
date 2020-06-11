@@ -25,19 +25,26 @@ var firstMissingPositive = function(nums) {
 
     if(nums.length === 0) return 1
 
-    const places = new Array(nums.length).fill(false)
+    for (let i = 0; i < nums.length; i++) {
+        place = nums[i]
+        if(place === i+1) continue
 
-    for(let i = 0; i < nums.length; i++) {
-        const place = nums[i]
-        if(place < 1 || place > nums.length) continue
-
-        places[place-1] = true
+        while(place > 0 && place < nums.length) {
+            const t = nums[place-1]
+            if(t === place) break
+            nums[place-1] = place
+            nums[i] = t
+            place  = t
+        }
     }
 
-    for(let i = 0; i < places.length; i++) {
-        if(!places[i]) return i+1
+    for (let i = 0; i < nums.length; i++) {
+        if(nums[i] !== i+1) return i+1
     }
-   return places.length+1
+   return nums.length+1
 };
 
-console.log(firstMissingPositive([1,2,0]))
+//console.log(firstMissingPositive([1,2,0]))
+//console.log(firstMissingPositive([3,4,-1,1]))
+console.log(firstMissingPositive([7,8,9,11,12]))
+console.log(firstMissingPositive([1,1,1,1,1]))
