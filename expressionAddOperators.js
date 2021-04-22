@@ -18,14 +18,43 @@ Output: ["1*2*3","1+2+3"]
  var addOperators = function(num, target) {
     
     const nums = [...num].map(c => parseInt(c));
-    let dp = {};
+    const res  = [] 
+   
+    let opsIdx = new Array(num.length - 1).fill(0)
+
+    const nextIdx = (idx) => {
+
+        let carry = 1
+
+        for(let i = 0; i < idx.length; i++) {
+            
+            if(idx[i] + carry < 4) {
+                idx[i] += carry
+                return idx
+            }
+            idx[i] = 0
+        }
+
+        if(carry) return []
+    }
+
     const ops = {'+' : (x, y) => x + y,
                  '-' : (x, y) => x - y,
                  '*' : (x,y) => x * y,
                  ''  : (x, y) => x === 0 ? NaN : 10 * x + y
             }
+    
+    const generateExpr = (idx) => {
+        const expr = [nums[0]], sym = Object.keys(ops)
+        
+        for(let i = 0; i < idx.length; i++) {
+            expr.push(sym[ idx[i] ], nums[i + 1])
+        }
 
-     const evaluate = (expr) => {
+        return expr
+    }
+
+     const evalExpr = (expr) => {
 
          const hasOp  = expr.includes('')
          const hasMultiply = expr.includes('*')
@@ -54,53 +83,18 @@ Output: ["1*2*3","1+2+3"]
 
      if(stack.length === 1) return stack[0]
 
-    return evaluate(stack)
+    return evalExpr(stack)
     };
 
-    dp[num[0]] = [ [nums[0]] ]
+    while(opsIdx.length) {
+        const expr = generateExpr(opsIdx)
 
-   for(let i = 1; i < nums.length; i++) {
-       
-       const digit = nums[i], nextDp = {} 
+        if(evalExpr(expr) === target) {
+            res.push(expr.join(''))
+        }
 
-       for(const key in dp) {
-           const expressions = dp[key]
+        opsIdx = nextIdx(opsIdx)
+    }
 
-           for (const expr of expressions) {
-            for(const op in ops) {
-
-                const newExpr = [...expr, op, digit], nextKey = evaluate(newExpr)
-
-                if(!nextDp[nextKey]) {
-                   
-                    nextDp[nextKey] = []
-                }
-
-                nextDp[nextKey].push(newExpr)
-            }
-           }
-       }
-        dp = nextDp
-        delete nextDp
-   }
-
-   const n = parseInt(num)
-
-    return dp[target] ? dp[target].map(arr => arr.join('')) : []
+    return res
 };
-
-let str = "123456789"
-let target = 5
-
-console.time('a')
-console.table(addOperators(str, target))
-console.timeEnd('a')
-
-console.dir(process.memoryUsage())
-
-
-let expr = [3,'<',4,'*',5,'<',6,'-',2,'-',3,'+',7,'<',4,'<',9,'<',0]
-expr = [3,'+',4,'',5,'',6,'*',2,'',3,'+',7,'',4,'-',9,'-',0]
-expr = [3,'+',4,'',5,'',6,'*',2,'',3,'+',7,'',4,'-',9,'-',0]
-
-//console.log(evaluate(expr))
