@@ -50,7 +50,6 @@ Output: false
     if(!p.length) return !s.length
 
     if(!s.length) return false
-
     const dp = new Array(s.length + 1).fill(0).map(_ => new Array(p.length + 1).fill(false))
 
     dp[0][0] = true
