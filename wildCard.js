@@ -41,62 +41,47 @@ Output: false
  * @param {string} p
  * @return {boolean}
  */
+/**
+ * @param {string} s
+ * @param {string} p
+ * @return {boolean}
+ */
  var isMatch = function(s, p) {
     
-    p = p.replaceAll(/\*{2,}/g, '*')
+    p = p.replace(/\*{2,}/g, '*')
 
     if(p === '*') return true
+     
+    if(!p.length) return !s.length
 
-    let i = 0, j = 0
-        
-    while(i < p.length && j < s.length) {
-        
-        if(p[i] === '?') {
-            i++
-            j++
-            continue
-        }
-        
-        if(p[i] === '*') {
+    if(!s.length) return false
+
+    const dp = new Array(s.length + 1).fill(0).map(_ => new Array(p.length + 1).fill(false))
+
+    dp[0][0] = true
+     
+    for (let i=1;i<=p.length;i++) {
+        dp[0][i] = dp[0][i-1] && p[i-1] == "*";
+    }     
+
+    for(let i = 1 ; i <dp.length; i++) {
+
+        const char = s[i - 1] 
+
+        for(let j= 1; j < dp[0].length; j++) {
             
-            if(i === p.length - 1) return true
-            
-           
-            while(j < s.length) {
-                if((nextPattern === '?' || s[j] === nextPattern)
-                   && isMatch(s.slice(j+1,s.length), p.slice(i+1, p.length))) return true; 
-                j++
+            const pattern  = p[j - 1]
+
+            if(char === pattern || pattern === '?') {
+                dp[i][j] = dp[i-1][j-1]
+
             }
-            return false    
+
+            if(pattern === '*') {
+                dp[i][j] = dp[i - 1][j] || dp[i][j-1]
+            }
         }
-        
-        if(p[i] !== s[j]) return false;
-        
-         i++
-         j++        
     }
-    
-    while(i < p.length) {
-       if(p[i++] !== '*') return false;
-    }    
-    
-    return i === p.length && j === s.length
+
+    return dp[dp.length - 1][dp[0].length - 1]
 };
-
-let s = "abcabczzzde"
-let p = "*abc???de*"
-
-s = "acdcb"
-p = "a*c*?b"
-
-s = "sissippi"
-p = "*ss*?i*pi"
-
-s = "ippi"
-p = "*?i*pi"
-
-s = "abbabaaabbabbaababbabbbbbabbbabbbabaaaaababababbbabababaabbababaabbbbbbaaaabababbbaabbbbaabbbbababababbaabbaababaabbbababababbbbaaabbbbbabaaaabbababbbbaababaabbababbbbbababbbabaaaaaaaabbbbbaabaaababaaaabb"
-p = "*aa*ba*a*bb*aa*ab*a*aaaaaa*a*aaaa*bbabb*b*b*aaaaaaaaa*a*ba*bbb*a*ba*bb*bb*a*b*bb"
-
-
-console.log(isMatch(s, p))
