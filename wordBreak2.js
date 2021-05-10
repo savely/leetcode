@@ -90,7 +90,7 @@ var wordBreak2 = function(s, wordDict) {
        }
     }
 
-    return res.length > 0
+    return res
 };
 // ["cat", "cats", "and", "sand", "dog"]
 console.log(wordBreak2('catsanddog', ["cat", "cats", "and", "sand", "dog"]))
