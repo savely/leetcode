@@ -5,58 +5,20 @@
  */
  var findLength = function(nums1, nums2) {
     
-    
-    const map = {}
-    
-    for(let i = 0; i < nums1.length; i++) {
-        
-        const num = nums1[i]
-        
-        if(!map[num]) {
-            map[num] = new Set()
-        }
-        map[num].add(i)
-    }
-    
-    let length = 0, maxLength = 0, candidates = []
-    
-    for(let i = 0; i < nums2.length; i++) {
-        
-        const num = nums2[i]
-        
-        if(!map[num]) {
-           maxLength = Math.max(maxLength, length)
-            length = 0
-            candidates.length = 0
-            continue
-        }
-        
-        if(!candidates.length) {
-            candidates.push(...map[num])
-            length = 1
-            continue
-        }
-        
-        const nextSet = map[num], nextCandidates = []
-        
-        for(const idx of candidates) {
-            if(nextSet.has(idx + 1)){
-                nextCandidates.push(idx + 1) 
+    const dp = new Array(nums1.length + 1).fill(0).map(_ => new Array(nums2.length + 1).fill(0))
+
+    let max = 0
+
+    for(let i = 1; i < dp.length; i++) {
+        for (let j = 0; j < dp[0].length; j++) {
+            if(nums1[i - 1] === nums2[j - 1]) {
+                dp[i][j] = dp[i-1][j-1] + 1
+                max = Math.max(max, dp[i][j])
             }
         }
-        
-        candidates.length = 0
-
-        if(nextCandidates.length) {
-            length++
-            candidates.push(...nextCandidates)
-        } else {
-            candidates.push(...nextSet)
-        }
-        maxLength = Math.max(maxLength, length)
     }
-    
-    return maxLength
+
+    return max
 };
 
 let nums1 = [1,2,3,2,1]
