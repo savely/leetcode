@@ -1,3 +1,8 @@
+/*
+#718. Maximum Length of Repeated Subarray
+
+Given two integer arrays nums1 and nums2, return the maximum length of a subarray that appears in both arrays.
+*/
 /**
  * @param {number[]} nums1
  * @param {number[]} nums2
@@ -20,18 +25,3 @@
 
     return max
 };
-
-let nums1 = [1,2,3,2,1]
-let nums2 = [3,2,1,4,7]
-nums1 = [0,0,0,0,0]
-nums2 = [0,0,0,0,0]
-nums1 = [0,0,0,0,1]
-nums2 = [1,0,0,0,0]
-nums1 = [0,0,0,0,0,0,1,0,0,0]
-nums2 = [0,0,0,0,0,0,0,1,0,0]
-nums1 = [0,1,0,0]
-nums2 = [0,0,1,0]
-
-
-
-console.log(findLength(nums1, nums2))
