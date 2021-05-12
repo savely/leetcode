@@ -39,17 +39,16 @@ Constraints:
     
     if(arr.length === 1) return 1
     
-    const dp = new Array(arr.length).fill(1)
+    const dp = new Map([[arr[0],1]])
     let longest = 1
     
-    for(let i = 1; i < dp.length; i++) {
-        for(let j = i-1; j >=0; j--) {
-           if(arr[i] - arr[j] === difference) {
-               dp[i] += dp[j]
-               longest = Math.max(longest, dp[i])
-               break
-           }
-        }        
+    for(let i = 1; i < arr.length; i++) {
+
+        const el = arr[i], prev = dp.get(el - difference) || 0, curr = dp.get(el) || 0
+        
+        const next = Math.max(prev + 1, curr)
+        longest = Math.max(longest, next)
+        dp.set(el, next)
     }
     
     return longest
