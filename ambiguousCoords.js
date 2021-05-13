@@ -26,15 +26,13 @@ Also note that all coordinates in the final answer have exactly one space betwee
         
         if(str[0] === '0') return ['0.' + str.substring(1)];
         
-        if([str.length -1] === '0') return [str];
+        if(str [str.length -1] === '0') return [str];
         
         const res = [str]
         
         for(let i = 1; i < str.length; i++) {
 
             const base =str.slice(0,i), frac = str.slice(i)
-
-            if(frac[frac.length-1] === '0') continue;
 
             res.push(`${base}.${frac}` )
         }
