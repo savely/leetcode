@@ -25,18 +25,17 @@ It is guaranteed that there will be a winner of the game.
     if (k >= arr.length) return Math.max(...arr)
     
     
-    let max = arr.shift(), count = 0
+    let max = arr[0], count = 0, i = 1
     
-    while(count < k) {
-        
-        if(max > arr[0]) {
+    while(count < k && i < arr.length) {
+
+        if(max > arr[i]) {
             count++
-             arr.push(arr.shift())
         } else {
             count = 1
-            arr.push(max)
-            max = arr.shift()
+            max = arr[i]
         }
+        i++ 
     }
     
     return max
