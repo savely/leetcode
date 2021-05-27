@@ -35,27 +35,57 @@ words[i] consists only of lowercase English letters.
  */
  var maxProduct = function(words) {
     
-    
     const bytes = words.map((word) => {
-          let b = 0
+          let b = 1 << 26
   
         for(let i = 0; i < word.length; i++) {
          b |= (1 << ( word.charCodeAt(i) - 97))
         }
-        return b
+        return [b, word.length]
    })
+
+   const sets = [bytes[0]], inv = ~(1 << 26)   
       
-   let max = 0
-   
-    for(let i = 0; i < words.length; i++) {
-        for(let j = 0; j < words.length; j++) {
-            
-            if((bytes[i] & bytes[j]) === 0) {
-                max = Math.max(max, words[i].length * words[j].length)
+     while(bytes.length) {
+
+        let [currMask, currLen] = bytes.pop(), nextSets = [];
+
+        for(let i = 0; i < sets.length; i++) {
+
+            const [mask, len]  = sets[i], hasCommon = mask & currMask & inv !== 0
+
+            if(!hasCommon) {
+                nextSets.push(sets[i])
+                continue
             }
+
+            currMask |= mask
+            currLen  = Math.max(currLen, len)
         }
-    }
-      return max
+
+        sets.length = 0
+        sets.push([currMask, currLen], ...nextSets)
+
+     }
+
+     if(sets.length < 2) return 0
+
+     let max = -Infinity, sndMax = -Infinity
+
+     for(const [_, len] of sets) {
+         
+        if(len > max) {
+            sndMax = max
+            max = len
+        } else if(len > sndMax) {
+            sndMax = len
+        }
+     }
+
+
+     console.log(sets)
+
+     return max * sndMax
   };
 
   let words = ["abcw","baz","foo","bar","xtfn","abcdef"]
