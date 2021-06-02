@@ -10,50 +10,36 @@
  */
  var longestBeautifulSubstring = function(word) {
     
-    const counter = new Array(5).fill(0),  map = {'e' : [1,'a'],'i' :[2, 'e'],'o': [3,'i'],'u' : [4,'o']};
     
     counter[0] = word[0] == 'a' ? 1 : 0;
     
-    let max = 0;
+    let max = 0,  count = 0;
     
    
     for(let i = 1; i < word.length; i++) {
         
-        const ch = word[i], prev = word[i-1];
+        const ch = word.charCodeAt(i), prev =word.charCodeAt(i-1);
         
-        if(ch !=='u' && prev === 'u') {
-            
-            if(counter[4] > 0) {
-              max = Math.max(max, counter.reduce((acc, n) => acc + n))  
-            }
-            
-            counter.fill(0);
-        }
-        
-        if(ch === 'a') {
-            
-          if(prev !== 'a' && counter[0] > 0) {
-               counter.fill(0); 
-            }
-            counter[0]++
-            continue;
+        if(prev > ch) {
+            len = 1;
+            count = 1;
         }
 
-        const [idx, pr]  = map[ch];
-             
-        if((prev !== ch && counter[idx] > 0)
-            || (counter[idx] === 0 && prev !== pr)
-            || !counter[idx - 1] > 0) {
+        if(ch === prev)  {
+            len++
+        }  else if(ch === prev + 1) {
+            len++
+            count++
+        }
 
-            counter.fill(0);
-            continue;
-            }
-            counter[idx]++
+        if(count === 5) {
+            max = Math.max(max, len)
+            len = 0;
+            count = 0;
+        }
+        
     }
-    
-    if(counter[4] > 0) {
-        max = Math.max(max, counter.reduce((acc, n) => acc + n))  
-    }
+
     return max;
 };
 
