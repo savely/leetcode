@@ -207,68 +207,6 @@ var numIslands = function(grid) {
     }
     return res
 };
-
-var openLock = function(deadends, target) {
-  
-  const tgt    = Array.from(target).map(n => parseInt(n))    
-  const start =  Array(tgt.length).fill(0)
-  const visited = new Map(deadends.map(str => [str, null]))
-  const queue = [start]
-  let  steps = -1
-
-  if(visited.has(start.join('')) || visited.has(target)) {return -1}
-
-  const next = function (n) {
-    return (n+1) % 10
-  }
-  const prev = function (n) {
-    return n === 0 ? 9 : (n-1) % 10
-  }
-  const neightbours = function (arr) {
-
-  return arr.reduce((acc, val, i)  => {
-       const nxt = Array.from(arr)
-       nxt[i] = next(nxt[i])
-       if(!visited.has(nxt.join(''))) {acc.push(nxt)}
-       const prv = Array.from(arr)
-       prv[i] = prev(prv[i])
-       if(!visited.has(prv.join(''))) {acc.push(prv)}
-
-       return acc
-  }, [] )         
-  }
-
-  while(queue.length !== 0) {
-     steps ++
-     let len = queue.length
-     for (let i = 0; i < len; i++) {
-     const comb = queue.shift() 
-     if(comb.join('') === target) {
-         return steps
-     }
-     if(visited.has(comb.join(''))) {continue}
-
-     visited.set(comb.join(''), null)
-     let nbrs = neightbours(comb)
-     nbrs.map (x => queue.push(x))
-    }
-  }
-
-  return -1
-};
-
-
-//["8887","8889","8878","8898","8788","8988","7888","9888"]
-//"8888"
-//printMaze(maze)
-//console.log('----------------')
-//printMaze(wg(maze))
-//printGrid(grid2)
-console.log('----------------')
-console.log(openLock(["8887","8889","8878","8898","8788","8988","7888","9888"], '8888'))
-console.log('----------------')
-//printGrid(grid2)
-
  
 // Your MyCircularQueue object will be instantiated and called as such:
  //["MyCircularQueue","enQueue","Front","isFull","enQueue","enQueue","enQueue","deQueue","enQueue","enQueue","isEmpty","Rear"]
