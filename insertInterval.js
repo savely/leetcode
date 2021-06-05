@@ -109,6 +109,6 @@ newInterval.length == 2
 let intervals = [[1,3],[5,9]], newInterval = [0,12];
 intervals = [[1,2],[3,5],[6,7],[8,10],[12,16]], newInterval = [5,6];
 intervals = [], newInterval = [5,7];
-intervals = [[1,5]], newInterval = [2,7]
+intervals = [[1,5]], newInterval = [2,7];
 
 console.log(insert(intervals, newInterval));
