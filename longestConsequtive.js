@@ -10,28 +10,32 @@ Your algorithm should run in O(n) complexity.
  */
 var longestConsecutive = function(nums) {
   
-    const set = new Set(nums)
-    let maxSeq = 1
+    const set = new Set(nums), map = {};
+    
+    let maxSeq = 0;
+    
+    for(const n of set) {
+       
+        map[n] = 1;
+        set.delete(n);
+        
+        let next = n+1;
+    
+        while(map[next] !== undefined || set.has(next)) {
 
-    for(let i = 0; i < nums.length; i++) {
-        const num = nums[i]        
-        if(!set.has(num)) continue
+            if(map[next] !== undefined) {
+                map[n] += map[next];
+                maxSeq = Math.max(maxSeq, map[n]);
+               break;
+            }
 
-        if(set.size() < maxSeq) break
-
-        let min = num, max = num
-        set.delete(num)
-        while(set.has(min-1)) {
-            set.delete(min)
-            min--
+            map[n]++;
+            set.delete(next);
+            next++;
         }
-        while(set.has(max+1)) {
-            set.delete(max)
-            max++
-        }
-
-        maxSeq = Math.max(maxSeq, max-min+1)
+        
+        maxSeq = Math.max(maxSeq, map[n])
     }
 
-    return maxSeq
+   return maxSeq; 
 };
