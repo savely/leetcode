@@ -54,25 +54,24 @@ Constraints:
  */
  var maximumScore = function(nums, multipliers) {
     
-    const dp = {};
+    const dp = new Array(nums.length).fill(0).map(_ => new Array(nums.length).fill(Infinity));
     
     const dfs = (start, end, i) => {
         
         if(start > end || i > multipliers.length - 1) {
             return -Infinity;
         }
-        
-        const hash = `${start}|${end}`;
+
         const mult = multipliers[i];
         
-        if(dp[hash] !== undefined) return dp[hash];
+        if(isFinite(dp[start][end])) return dp[start][end];
 
         if(i === multipliers.length - 1) {
-            dp[hash] =  Math.max(mult * nums[start] , mult * nums[end]);
+            dp[start][end] =  Math.max(mult * nums[start] , mult * nums[end]);
         } else {
-            dp[hash] = Math.max(mult * nums[start] + dfs(start + 1, end, i + 1), mult * nums[end] + dfs(start, end - 1, i + 1));
+            dp[start][end] = Math.max(mult * nums[start] + dfs(start + 1, end, i + 1), mult * nums[end] + dfs(start, end - 1, i + 1));
         }
-        return dp[hash];
+        return dp[start][end];
     }
     
    let ret = dfs(0, nums.length - 1, 0);
