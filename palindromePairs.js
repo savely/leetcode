@@ -38,20 +38,18 @@ Constraints:
  * @return {number[][]}
  */
  var palindromePairs = function(words) {
-    
-    const toFreq = (word) => {
 
-        const freq = {};
+    const map = {};
 
-        for(let i = 0; i < word.length; i++) {
-            const ch = word[i];
-            freq[ch] = freq[ch] || 0;
-            freq[ch]++;
-        }
-        return freq;
+    for(let i = 0; i < words.length; i++) {
+
+        const rev = [...words[i]].reverse().join('');
+        map[rev] = i;
     }
-
+    
     const isPalindrome = (word) => {
+
+        if(word.length === 1) return true;
 
         let start = 0, end = word.length -1;
 
@@ -61,42 +59,40 @@ Constraints:
         return true;
     }
 
-    const canFormPalindrome = (freq1, freq2, isEven) => {
+    const res = [];
 
-        for(const ch in freq2) {
+    for (let i = 0; i < words.length; i++) {
 
-            if(freq1[ch] === undefined) return false;
+        const word = words[i];
 
-            const count = freq1[ch] + freq2[ch];
+        if(word === '') continue;
 
-            if(count % 2 && isEven) return false;
+        if(map[word] !== undefined && map[word] !== i) {
+           res.push([map[word], i]);
         }
 
-        return true;
-    }
-
-    const res = [], freqs = words.map(toFreq);
-
-    for (let i = 0; i < words.length - 1; i++) {
-
-        const word1 = words[i], freq1 = freqs[i];
-
-        for(let j = i + 1; j < words.length; j++) {
-
-            const word2 = words[j], freq2 = freqs[j], isEven = (word1.length + word2.length) % 2 === 0;
-            const canForm = word1.length > word2.length ? canFormPalindrome(freq1,freq2, isEven)
-                                                        : canFormPalindrome(freq2, freq1, isEven);
-            if(!canForm) continue;
-
-            if(isPalindrome(word1 + word2)) res.push([i,j]);
-            if(isPalindrome(word2 + word1)) res.push([j,i]);
+        if(map[''] !== undefined && isPalindrome(word)) {
+            res.push([map[''], i], [i, map['']]);
         }
+
+          for(let j = 1; j < word.length; j++) {
+
+            const left =word.slice(0, j), right = word.slice(j);
+
+            if(map[left] !== undefined && map[left] !== i && isPalindrome(right)) {
+                res.push([map[left], i]);
+            }
+            if(map[right] !== undefined && map[right] !== i && isPalindrome(left)) {
+                res.push([map[right], i]);
+            }
+          }  
     }
     return res;
 };
 
 let words = ["abcd","dcba","lls","s","sssll"];
-words = ["tacb","tab","cat"];
+words = ["bat","tab","cat"];
 words = ["a",""];
+words = ["tacb","tab","cat"];
 
 console.table(palindromePairs(words));
