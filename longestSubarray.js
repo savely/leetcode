@@ -58,7 +58,7 @@ Constraints:
            continue;
         } else {
            start++;
-           if(min < nums[start] < max) continue;
+           if(min !== nums[start - 1]  && nums[start - 1] !== max) continue;
         }
 
         min = Infinity, max = -Infinity;
@@ -74,6 +74,6 @@ Constraints:
 
 let nums = [10,1,2,4,7,2], limit = 5;
 nums = [4,2,2,2,4,4,2,2], limit = 0;
-nums = [8,2,4,7], limit = 4;
+//nums = [8,2,4,7], limit = 4;
 
 console.log(longestSubarray(nums, limit))
