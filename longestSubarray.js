@@ -53,8 +53,12 @@ Constraints:
        if(end < nums.length && max - min <= limit) {
            maxLen  = Math.max(maxLen, end - start + 1);
            end++;
+            min = Math.min(min, nums[end]);
+            max = Math.max(max, nums[end]);
+           continue;
         } else {
            start++;
+           if(min < nums[start] < max) continue;
         }
 
         min = Infinity, max = -Infinity;
