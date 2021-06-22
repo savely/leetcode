@@ -41,85 +41,52 @@ grid1[i][j] and grid2[i][j] are either 0 or 1.
  var countSubIslands = function(grid1, grid2) {
 
     const l = grid1.length - 1, w = grid1[0].length - 1;           
-    
-    const enumIslands = function (grid) {
         
-        const neighbours = function(i, j) {
+    const neighbours = function(i, j) {
 
-            const res = [];
+        const res = [];
 
-            for(const [x,y] of [[i-1,j], [i+1,j],[i,j-1],[i, j+1]]) {
+        for(const [x,y] of [[i-1,j], [i+1,j],[i,j-1],[i, j+1]]) {
 
-                if(x < 0 || x > l) continue;
-                if(y < 0 || y > w) continue;
-                if(grid[x][y] !== 1) continue;
+            if(x < 0 || x > l) continue;
+            if(y < 0 || y > w) continue;
+            if(grid2[x][y] !== 1) continue;
 
-                res.push([x,y])
-            }
-
-            return res;
-        };        
-        
-        let islandNum = 1;
-        
-        for(let i = 0; i <= l; i++) {
-
-            for(let j = 0; j <= w; j++) {
-                
-                if(grid[i][j] !== 1) continue;
-                
-                islandNum++;
-                
-                const stack = [[i,j]];
-                
-                while(stack.length) {
-                    
-                    const [x,y] = stack.pop();
-                    
-                    if(grid[x][y] !== 1) continue;
-                    
-                    grid[x][y] = islandNum;
-                    
-                    stack.push(...neighbours(x,y));
-                }
-                
-            }
+            res.push([x,y])
         }
 
-    };
+        return res;
+    };        
     
-    enumIslands(grid1);
-    enumIslands(grid2);
-
+    let islandNum = 1, count = 0;
     
-    const map = {};
-    let count = {};    
-
     for(let i = 0; i <= l; i++) {
 
-        for(let j = 0; j <= w; j++) { 
+        for(let j = 0; j <= w; j++) {
             
-            const island2 = grid2[i][j], island1 = grid1[i][j];
-
-            if(island2 < 2 
-              || count[island2] === false
-              || map[island2] === island1) continue;
-
-            if(island1 < 2 
-               || (map[island2] !== undefined &&  map[island2] !== island1)) {
-                   count[island2] = false;
-                   continue;
-               }
+            if(grid2[i][j] !== 1) continue;
             
-            map[island2] = island1;
-            count[island2] = true;
+            islandNum++;
+
+            let isSubisland = true;
+            
+            const stack = [[i,j]];
+            
+            while(stack.length) {
+                
+                const [x,y] = stack.pop();
+                
+                if(grid2[x][y] !== 1) continue;
+
+                if(grid1[x][y] !== 1) isSubisland = false;
+                
+                grid2[x][y] = islandNum;
+                
+                stack.push(...neighbours(x,y));
+            }
+            
+            count += isSubisland ? 1 : 0;
         }
     }
-
-    let res = 0;
-
-    for(const island in count) {
-        res += count[island] ? 1 : 0; 
-    }
-   return res;
+   return count;
 };
