@@ -40,21 +40,33 @@ Constraints:
  */
  var numMatchingSubseq = function(S, words) {
     
-    const search = function (word, pos = 0, fromPos = 0) {
-        
-        const ch = word[pos], idx = S.indexOf(ch, fromPos);
+    const pointers = new Array(S.length + 1).fill(0), pointer = new Array(26).fill(-1);
 
-        if(idx < 0) return false;
+    for(let i = S.length -1; i >= 0; i--) {
 
-        if(pos === word.length - 1) return true;
+        const code = S.charCodeAt(i) - 97;
 
-        return search(word, pos + 1, idx + 1);
+        pointers[i + 1] = Array.from(pointer);
+        pointer[code] = i + 1;
+    }
+
+    pointers[0] = pointer;
+
+    const search = function (word) {
+
+        let pos = 0;
+
+        for(let i = 0; i < word.length; i++) {
+
+            const code = word.charCodeAt(i) - 97, nextPos = pointers[pos][code];
+
+            if(nextPos < 0 || nextPos < i) return false;
+
+            if(i === word.length -1) return true;
+
+            pos = nextPos;
+        }
     }
 
     return words.reduce((acc, word) => acc + (search(word) ? 1 :0), 0);
 };
-
-let s = "abcde", words = ["a","bb","acd","ace"];
-s = "dsahjpjauf", words = ["ahjpjau","ja","ahbwzgqnuk","tnmlanowax"];
-
-console.log(numMatchingSubseq(s, words));
