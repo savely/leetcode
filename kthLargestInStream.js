@@ -46,9 +46,11 @@ Constraints:
  var KthLargest = function(k, nums) {
     
     this.k = k;
-    this.nums = nums;
-    this.nums.sort((a,b) => b -a);
-    this.nums.length = Math.min(nums.length, k);
+    this.nums = [];
+    
+     for(const n of nums) {
+         this.add(n);
+     }
       
   };
   
@@ -57,6 +59,11 @@ Constraints:
    * @return {number}
    */
   KthLargest.prototype.add = function(val) {
+      
+      if(!this.nums.length) {
+          this.nums.push(val);
+         return val;
+      }
       
       const kth = this.nums[this.nums.length -1], top = this.nums[0];
       
@@ -112,10 +119,10 @@ Constraints:
 
 let cmds = ["KthLargest","add","add","add","add","add"];
 let params = [[3,[4,5,8,2]],[3],[5],[10],[9],[4]];
-cmds = ["KthLargest","add","add","add","add","add"];
-params = [[3,[5,-1]],[2],[1],[-1],[3],[4]]; //[null,-1,1,1,2,3]
-cmds = ["KthLargest","add","add","add","add","add"];
-params = [[2,[0]],[-1],[1],[-2],[-4],[3]];// [null,-1,0,0,0,1]
+//cmds = ["KthLargest","add","add","add","add","add"];
+//params = [[3,[5,-1]],[2],[1],[-1],[3],[4]]; //[null,-1,1,1,2,3]
+//cmds = ["KthLargest","add","add","add","add","add"];
+//params = [[2,[0]],[-1],[1],[-2],[-4],[3]];// [null,-1,0,0,0,1]
 
 const run = function(cmds, params) {
 
