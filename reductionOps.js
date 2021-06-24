@@ -48,27 +48,26 @@ Constraints:
 
 var reductionOperations = function(nums) {
     
-    
-    let map = new Map();
-    
-    for(let i = 0; i < nums.length; i++) {
-        
-        const n = nums[i];
-        const count = map.get(n) || 0;
-        map.set(n, count + 1);
+
+    nums.sort((a,b) => a - b);
+
+    let currNumIdx = 0, numOrder = 0, ops = 0;
+
+    for(let i = 1; i < nums.length; i++) {
+
+        const num = nums[i], currNum = nums[currNumIdx];
+
+        if(num === currNum) continue;
+
+        ops += numOrder * (i - currNumIdx);
+        currNumIdx = i;
+        numOrder++;
     }
-    
-    map = Array.from(map);
-    
-    map.sort((a,b) => a[0] - b[0]);
-    
-    let ops = 0;
-    
-    for(let i = 1; i < map.length; i++) {
-        const [n, count] = map[i];
-        
-        ops += count * i;
-    }
-    
+
+    ops += numOrder * (nums.length - currNumIdx);
+
     return ops;
 };
+
+console.log(reductionOperations([5,1,3]));
+
