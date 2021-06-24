@@ -38,6 +38,8 @@ Constraints:
  var findPaths = function(m, n, maxMove, startRow, startColumn) {
 
     if(maxMove === 0) return 0;
+     
+     const modulo = BigInt((10 ** 9) + 7);
 
     const neighbours = function(i, j) {
 
@@ -54,37 +56,43 @@ Constraints:
         return res;
     };      
     
-    const moves = [[startRow, startColumn]];
+    const moves = [[startRow, startColumn, 1n]];
 
-    let out = 0;
+    let out = 0n, nextMoves = {};
 
     while(maxMove > 0) {
 
-        nextMoves = [];
-
         while(moves.length) {
 
-            const [i , j] = moves.pop(); next = neighbours(i, j);
+            const [i, j, waysToCell] = moves.pop(); next = neighbours(i, j);
 
-            out += 4 - next.length;
+            out += (BigInt(4 - next.length) * waysToCell) % modulo;
 
             for(const [x, y] of next) {
                 if(x - maxMove > m && y - maxMove > n) continue;
-                nextMoves.push([x,y]);
+
+                const hash = `${x}|${y}`;
+
+                if(nextMoves[hash] === undefined) {
+                    nextMoves[hash] = [x, y, 0n];
+                }
+
+                nextMoves[hash][2] += waysToCell;
             }
         }
 
-        moves.push(...nextMoves);
+        moves.push(...Object.values(nextMoves));
         maxMove--;
+        nextMoves = {};
     }
 
-    return out % ((10 ** 9) + 7);
+    return out % modulo;
 };
 
 m = 4, n = 4, maxMove = 2, startRow = 1, startColumn = 1;
 m = 2, n = 2, maxMove = 2, startRow = 0, startColumn = 0;
 m = 1, n = 3, maxMove = 3, startRow = 0, startColumn = 1;
-m = 10, n = 10, maxMove = 6, startRow = 5, startColumn = 5;
+m = 50, n = 50, maxMove = 50, startRow = 0, startColumn = 0;
 
 
 console.log(findPaths(m,n,maxMove,startRow,startColumn));
