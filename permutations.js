@@ -42,7 +42,7 @@ var permute2 = function(nums) {
 };
 
 
-//console.log(permute2([1,2,3]))
+console.log(permute([2,2,3,4]))
 
 var search = function(nums, target) {
     
@@ -90,4 +90,4 @@ var singleNumber = function(nums) {
      return nums.reduce((acc,n) => { return n ^ acc}, 0)
   }
 
-console.log(singleNumber([1,2,1,3,2,5]))
+//console.log(singleNumber([1,2,1,3,2,5]))

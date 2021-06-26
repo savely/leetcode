@@ -68,6 +68,3 @@ var reductionOperations = function(nums) {
 
     return ops;
 };
-
-console.log(reductionOperations([5,1,3]));
-
