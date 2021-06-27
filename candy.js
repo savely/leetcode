@@ -41,43 +41,31 @@ Constraints:
  */
  var candy = function(ratings) {
     
-    const positions = new Array(ratings.length).fill(0).map((_,i) => i);
-    const candies  = new Array(ratings.length).fill(0);
-    let total = 0;
-    
-    positions.sort((a,b) => ratings[a] - ratings[b]);
-    
-    for(let i = 0; i < positions.length; i++) {
-        
-        const idx = positions[i];
-        
-        const rating = ratings[idx];
-        const left = (idx > 0) ? ratings[idx -1] : Infinity;
-        const right = (idx < ratings.length - 1) ? ratings[idx + 1] : Infinity;
-        const candiesLeft = candies[idx - 1] || 0, candiesRight = candies[idx+1] || 0;
+    const candies  = new Array(ratings.length).fill(1);
 
-        if(left >= rating && right >= rating) {
-            candies[idx] = 1;
+    for(let i = 0; i < ratings.length - 1; i++) {
+       
+        if(ratings[i] > ratings[i+1]) {
+            candies[i] = candies[i+1] + 1;
         }
-
-        if(left < rating && right < rating) {
-         candies[idx] = Math.max(candiesLeft, candiesRight) + 1;
-        }
-
-        if(left < rating && right >= rating) {
-            candies[idx] = candiesLeft + 1;
-        }
-
-        if(right < rating && left >= rating) {
-            candies[idx] = candiesRight + 1;
-        }
-
-        total += candies[idx];
     }
 
+    let total = candies[0];
+
+    for(let i = ratings.length - 1; i > 0; i--) {
+       
+        if(ratings[i] > ratings[i-1]) {
+            candies[i] = Math.max(candies[i], candies[i-1] + 1);
+        }
+        total += candies[i];
+    }
+
+    //console.table(candies);
     return total;
 };
 
 ratings = [1,2,2];
+ratings = [1,3,2,2,1];
+
 
 console.log(candy(ratings));
