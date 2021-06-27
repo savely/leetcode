@@ -29,40 +29,36 @@ s consists of lowercase English letters only.
  * @return {string}
  */
  var shortestPalindrome = function(s) {
+
+    if(s.length < 2) return s;
     
-    let end = s.length -1;
+   const half = s.length % 2 === 0? s.length / 2 : (s.length + 1)/ 2;
+
+   let rev = '', start = 0;
+
+   for (let i = 0; i < half; i++) {
+       
+        rev  = s[i] + rev;
+
+        if(rev === s.substring(i, i + rev.length)) {
+          start = i + rev.length;
+        }
+
+        if(rev === s.substring(i+1, i + rev.length + 1)) {
+            start = i + rev.length + 1;
+          }
+   }
     
-    while (end >= 0){
-        
-        if(s[end] !== s[0]) {
-            end--;
-            continue;
-        }
-        
-        let hi = end - 1, lo = 1, lastStart = -1, isPalindrome = true;
-        
-        while(hi > lo) {
-            
-            if(lastStart < 0 && s[hi] === s[0]) lastStart = hi;
-            
-            if(s[hi--] !== s[lo++]) {
-                isPalindrome = false;
-                break
-            }
-        }
-        
-        if(!isPalindrome) {
-            end = lastStart > 0 ? lastStart : end - 1;
-            continue;
-        }
-        
-        return [...s.slice(end + 1)].reverse().join('').concat(s);
-    }
-    
-    return [...s.slice(1)].reverse().join('').concat(s);
+   const palindromePart = [...s.substring(start)].reverse().join('');
+
+    return palindromePart + s;
 };
 
 
-let s = 'a'.repeat(2000) + 'cd' + 'a'.repeat(2000);
+let s = 'a'.repeat(20000) + 'cd' + 'a'.repeat(20000);
 
-console.log(shortestPalindrome(s).length);
+s = "aacecaaa";
+//s = "aaaaa";
+//s = "ababbbabbaba"; //"ababbabbbababbbabbaba"
+
+console.log(shortestPalindrome(s));
