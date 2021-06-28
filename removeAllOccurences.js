@@ -53,31 +53,45 @@ var removeOccurrences = function(s, part) {
 
         stack.push(s[i]);
         
-        const p =  matches. length ? matches[matches.length -1] : -1;
+        const top = matches.length - 1; p =  top >= 0 ? matches[top] : -1;
         
         if(s[i] === part[p + 1]) {
 
           if(p + 1 === part.length - 1) {
               stack.length -= part.length;
-              matches.length -= part.length - 1; 
+              matches.pop(); 
+              continue;
+          } 
+
+          if(top >= 0) {
+            matches[top]++;  
           } else {
-            matches.push(p + 1);  
+              matches.push(0);
           }
-        } else if(s[i] === part[0]) {
+
+        continue;
+        } 
+        
+        if(s[i] === part[0]) {
             matches.push(0);
+            continue;
         }
-         else {
-            let back = 0;
-            while(matches.length > 0 && s[i - back] != part[0]) {
-                matches.pop();
-                back++;
-            }
-            
-            if(matches.length > 0 && matches[matches.length - 1] > 0) {
-                matches.push(0);
-                stack.length -= back;
-                i -= back;
-            }
+
+        if(top < 0) continue;
+
+        let back = 0;
+
+        while(matches[top] > 0 && s[i - back] != part[0]) {
+            matches[top]--;
+            back++;
+        }
+        
+        if(matches[top] > 0) {
+            matches.push(0);
+            stack.length -= back;
+            i -= back;
+        } else {
+            matches.pop();
         }
     }
     
@@ -85,12 +99,12 @@ var removeOccurrences = function(s, part) {
 };
 
 s = "daabcbaabcbc", part = "abc";
-s = "axxxxyyyyb", part = "xy";
-s =  "kpygkivtlqoocskpygkpygkivtlqoocssnextkqzjpycbylkaondskivtlqoocssnextkqzjpycbylkaondssnextkqzjpycbylkaonds";
-part = "kpygkivtlqoocssnextkqzjpycbylkaonds";
+//s = "axxxxyyyyb", part = "xy";
+//s =  "kpygkivtlqoocskpygkpygkivtlqoocssnextkqzjpycbylkaondskivtlqoocssnextkqzjpycbylkaondssnextkqzjpycbylkaonds";
+//part = "kpygkivtlqoocssnextkqzjpycbylkaonds";
 
-//s = "qtbxqtbxelkekgcdnelkeqtbxelkekgcdnqtbxelkekgcdnkgcdnwqchzunbvyjoq";
-//part = "qtbxelkekgcdn";
+s = "qtbxqtbxelkekgcdnelkeqtbxelkekgcdnqtbxelkekgcdnkgcdnwqchzunbvyjoq";
+part = "qtbxelkekgcdn";
 
 //s = "ckck"
 //part = "kk"
