@@ -63,10 +63,21 @@ var removeOccurrences = function(s, part) {
           } else {
             matches.push(p + 1);  
           }
-        } else if (s[i] === part[0]) {
+        } else if(s[i] === part[0]) {
             matches.push(0);
-        } else {
-            matches.length = 0;
+        }
+         else {
+            let back = 0;
+            while(matches.length > 0 && s[i - back] != part[0]) {
+                matches.pop();
+                back++;
+            }
+            
+            if(matches.length > 0 && matches[matches.length - 1] > 0) {
+                matches.push(0);
+                stack.length -= back;
+                i -= back;
+            }
         }
     }
     
@@ -77,6 +88,10 @@ s = "daabcbaabcbc", part = "abc";
 s = "axxxxyyyyb", part = "xy";
 s =  "kpygkivtlqoocskpygkpygkivtlqoocssnextkqzjpycbylkaondskivtlqoocssnextkqzjpycbylkaondssnextkqzjpycbylkaonds";
 part = "kpygkivtlqoocssnextkqzjpycbylkaonds";
-//"hijzgaovndkjiiuwjtcpdpbkrfsi"
 
+//s = "qtbxqtbxelkekgcdnelkeqtbxelkekgcdnqtbxelkekgcdnkgcdnwqchzunbvyjoq";
+//part = "qtbxelkekgcdn";
+
+//s = "ckck"
+//part = "kk"
 console.log(removeOccurrences(s,part));
