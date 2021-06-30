@@ -43,83 +43,44 @@ Constraints:
  */
  var waysToSplit = function(nums) {
 
-    const modulo = 10 ** 9 + 7;
+    const modulo = 10 ** 9 + 7, n = nums.length - 1;
 
-    //calculate running sum in place 
-    for(let i = 1; i < nums.length; i++) {
-        nums[i] += nums[i-1];
-    }     
+    const sums = new Array(nums.length+1).fill(0)
 
-    const search = function (leftSum, leftEnd, searchFrom,  leftBorder = true) {
+   for(let i = 1; i < sums.length; i++) {
+       sums[i] = nums[i-1] + sums[i - 1];
+   }  
 
-        let lo = searchFrom, hi = nums.length - 2, rightBorder = !leftBorder;
+   const rg = (start, end) => {
+       return sums[end + 1] - sums[start];
+   };
 
-        while(hi >= lo) {
+   const total = rg(0, n);   
 
-            const mid = Math.trunc((lo + hi) /2);
+    let goodSplits = 0 ,start = 1, end = start;
 
-            const midSum = nums[mid] - nums[leftEnd], rightSum = nums[nums.length - 1] - nums[mid];
+    for(let left = 0; left < nums.length - 2; left++) {
 
-            if(midSum < leftSum) {
+        const leftSum = rg(0, left);
 
-                if(midSum >= rightSum) return -1;
+        if(leftSum * 3 > total) break;
 
-                lo = mid + 1;
-                continue;
-            }
+        start = Math.max(start, left + 1);
 
-            if(rightSum < midSum) {
-                hi = mid - 1;
-                continue;
-            }
-
-            if(leftBorder) {
-
-                const prevMidSum = nums[mid - 1] - nums[leftEnd];
-                
-                if(mid === searchFrom || prevMidSum < leftSum) return mid;
-
-                hi = mid - 1;
-                continue;
-            }
-
-            if(rightBorder) {
-
-                if(mid >= nums.length - 2) return nums.length - 2;
-
-                const nextMidSum = nums[mid + 1] - nums[leftEnd], nextRightSum = nums[nums.length - 1]  - nums[mid + 1];
-
-                if(nextRightSum < nextMidSum) return mid;
-
-                lo = mid + 1;
-            }
-
+        while(start < n - 1 && rg(left+1, start) < leftSum) {
+            start++;
         }
-        return -1;
+
+        while(end < n && rg(left + 1, end) <=  rg(end+1, n)) {
+            end++;
+        }
+       goodSplits += end - start;
     }
-
-    let goodSplits = 0;
-    
-    for(let leftEnd = 0; leftEnd < nums.length - 2; leftEnd++) {
-
-        const leftSum = nums[leftEnd], rest = nums[nums.length - 1] - leftSum;
-
-        if(leftSum * 2 > rest) break;
-
-        const minValidMid = search(leftSum, leftEnd, leftEnd + 1);
-
-        if(minValidMid < 0) continue;
-
-        const maxValidMid = search(leftSum, leftEnd, minValidMid, false);
-
-        goodSplits = (goodSplits + maxValidMid - minValidMid + 1) % modulo;
-    }
-
-    return goodSplits;
+    return goodSplits % modulo;
 };
 
 let nums = [1,2,2,2,5,0];
-nums = [3,2,1];
+//nums = [3,2,1];
 
 nums = [8892,2631,7212,1188,6580,1690,5950,
         7425,8787,4361,9849,4063,9496,9140,
@@ -130,5 +91,7 @@ nums = [8892,2631,7212,1188,6580,1690,5950,
         7276,470,8736,3153,3924,3129,7136,
         1739,1354,661,1309,6231,9890,58,
         4623,3555,3100,3437];
+      
+//nums = [1,1,1];
 
 console.log(waysToSplit(nums));
