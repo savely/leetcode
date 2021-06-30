@@ -34,39 +34,43 @@ s consists of only uppercase English letters.
  */
  var characterReplacement = function(s, k) {
     
-    if(k === s.length) return s.length;
-    
-    const letters = new Set(s);
-    
-    if(letters.size === 1) return s.length;
-    
-    const f = function (letter) {
-        
-        let start = 0, end = 0, curr = 0, max = 0, replacements = k;
-        
-        while (end < s.length) {
-            
-            if(s[end] === letter || replacements > 0) {
-                replacements -= s[end] === letter ? 0 : 1;
-                curr++;
-                max = Math.max(max, curr);
-                end++;
-            } else {
-                replacements += s[start] === letter ? 0 : 1;
-                curr--;
-                start++;
-            }
-        }
-        return max;
-    };
-    
-    let max = 0;
-    
-    for(const letter of letters) {    
-        max = Math.max(max, f(letter));
+    if(s.length < 2 || k === s.length) return s.length;
 
-        if(max === s.length) return s.length;
-       
+    const freq = new Array(26).fill(0), shift = 'A'.charCodeAt(0);
+
+    const mostFreqChar = () => {
+
+        let max = 0, idx = -1;
+
+        for(let i = 0; i < 26; i++) {
+           if(freq[i] >= max) {
+               max = freq[i];
+               idx = i ;
+           }
+        }
+        return idx;
+    }
+
+    let start = 0,  max = 0;
+
+    freq[s.charCodeAt(0) - shift]++;
+
+    for(let i = 1; i < s.length; i++) {
+
+        const idx = s.charCodeAt(i) - shift;
+
+        freq[idx]++;
+
+        let  maxCode = mostFreqChar(),  countOthers = i - start + 1 - freq[maxCode];
+        
+        while(countOthers > k) {
+
+            freq[s.charCodeAt(start++) - shift]--;
+            maxCode = mostFreqChar();
+            countOthers = i - start + 1 - freq[maxCode];
+        }
+
+        max = Math.max(max, i - start + 1);
     }
     
     return max;
@@ -74,7 +78,7 @@ s consists of only uppercase English letters.
 
 
 let s = "ABAB", k = 2;
-s = "AABABBA", k = 1;
+//s = "AABABBA", k = 1;
 //s = "ABAA", k = 0;
 
 console.log(characterReplacement(s, k));
