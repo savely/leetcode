@@ -36,29 +36,26 @@ Constraints:
 
 var maxSumAfterPartitioning = function(arr, k) {
 
-    const partition  = (from) => {
-        
-    let res = 0, max = -Infinity;
-        
-    if(arr.length - from <= k) {
-      
-        for(let i = from; i < arr.length; i++) {
-            max = Math.max(max, arr[i]); 
-        } 
-        return max * (arr.length - from);
-    }
+    const dp = new Array(arr.length).fill(-1);
 
-    for(let i = from; i < from + k; i++) {
+    dp[arr.length - 1] = arr[arr.length - 1];
+
+    const partition  = function(from) {
+
+    if(dp[from] > 0) return dp[from];
+
+    const to = Math.min(from + k, arr.length);
+
+    let sum = 0, max = 0;
+
+    for(let i = from; i < to; i++) {
         max = Math.max(max, arr[i]);
-        res = Math.max(res, max * (i - from + 1) + partition(from + 1));
+        sum = Math.max(sum, max * (i - from + 1) + partition(i + 1));
             
     }
-        return res;
+        dp[from] = sum;
+        return dp[from];
   };
     
     return partition(0);
 };
-
-let arr = [1,15,7,9,2,5,10], k = 3;
-
-console.log(maxSumAfterPartitioning(arr, k));
