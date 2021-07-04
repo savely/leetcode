@@ -42,6 +42,8 @@ matrix[i][j] is '0' or '1'.
     
     const dp = new Array(matrix.length).fill(0).map(_ => new Array(matrix[0].length).fill(0));
 
+    let maxArea = 0;    
+
     for(let i = 0; i < matrix.length; i++) {
         
         for(let j = 0; j < matrix[0].length; j++) {
@@ -50,38 +52,18 @@ matrix[i][j] is '0' or '1'.
                 dp[i][j] = 0; 
             } else  {
                 dp[i][j] =  i > 0 ? dp[i - 1][j] + 1 : 1;
+
+                let minHeight = dp[i][j];
+
+                for(let k = j; k >= 0 && dp[i][k] > 0; k--) {
+    
+                    minHeight = Math.min(minHeight, dp[i][k]);
+                    const currArrea =  minHeight *(j - k + 1);
+                    maxArea   = Math.max(maxArea, currArrea);
+                }                
             }
         }
     }
 
-    let maxArea = 0;
-
-    for(let i = 0; i < dp.length; i++) {
-        
-        for(let j = 0; j < dp[0].length; j++) {
-
-            if(dp[i][j] === 0) continue;
-
-            let minHeight = dp[i][j];
-
-            for(let k = j; k >= 0 && dp[i][k] > 0; k--) {
-
-                minHeight = Math.min(minHeight, dp[i][k]);
-                const currArrea =  minHeight *(j - k + 1);
-                maxArea   = Math.max(maxArea, currArrea);
-            }
-        }
-    }    
     return maxArea;
 };
-
-
-let matrix = [["1","0","1","0","0"],
-              ["1","0","1","1","1"],
-              ["1","1","1","1","1"],
-              ["1","0","0","1","0"]];
-              
-matrix = [["1", "1"]];              
-
-
-console.log(maximalRectangle(matrix));
