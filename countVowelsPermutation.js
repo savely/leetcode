@@ -60,6 +60,3 @@ Constraints:
     }
     return count % mod;
 };
-
-
-console.log(countVowelPermutation(2));
