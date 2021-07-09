@@ -4,24 +4,28 @@
  */
 var lengthOfLIS = function(nums) {
 
-    if(nums.length)
-   
-    const dp = Array(nums.length).fill(1)
+ const seq = [nums[0]];
 
-    let max = 1
+ const search  = (n) => {
 
-    for(let i = nums.length-2; i >= 0; i--) {
+        let i = 0;
 
-        for(let j = i+1; j < nums.length; j++) {
-            if(nums[j] <= nums[i]) continue
+        while(i < seq.length && seq[i] < n) i++;
 
-            dp[i] = Math.max(dp[i], dp[j] + 1)
-
-            max = Math.max(max, dp[i])
-        }
+        return i;
     }
 
-    return max
+    for(let i = 1; i < nums.length; i++) {
+        
+        if(nums[i] > seq[seq.length - 1]) {
+            seq.push(nums[i]);
+            continue;
+        }
+        const idx = search(nums[i]);
+        seq[idx] = nums[i];
+    }
+
+    return seq.length;
 };
 
 let arr = [10,9,2,5,3,7,101,18]
