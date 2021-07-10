@@ -54,10 +54,10 @@ Constraints:
         
         lastPos = Math.max(lastPos, arr[i]);
         
-        if(lastPos === i && arr[i] <= lastPos) chunks++;
-            
+        if(lastPos === i && arr[i] <= lastPos) chunks++;   
 
-        //if(lastPos === len) return chunks;
+
+        if(lastPos === len) return (i === lastPos) ? chunks : chunks + 1;
 
     }
     
@@ -65,6 +65,6 @@ Constraints:
 };
 
 //let arr = [4,3,2,1,0];
-arr =     [1,0,4,2,3,5];
+arr =     [1,0,4,2,5,3];
 
 console.log(maxChunksToSorted(arr));
