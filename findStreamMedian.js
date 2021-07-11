@@ -36,6 +36,8 @@ There will be at least one element in the data structure before calling findMedi
 At most 5 * 104 calls will be made to addNum and findMedian.
 */
 
+//TODO : implenment two heaps approach
+
 /**
  * initialize your data structure here.
  */
