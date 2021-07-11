@@ -60,12 +60,19 @@ entrance will always be an empty cell.
  * @param {number[]} entrance
  * @return {number}
  */
+/**
+ * @param {character[][]} maze
+ * @param {number[]} entrance
+ * @return {number}
+ */
  var nearestExit = function(maze, entrance) {
     
 
-    const l = maze.length - 1, w = maze[0].length - 1;
+    const l = maze.length - 1, w = maze[0].length - 1, [i,j] = entrance;
 
-    let queue = [entrance], dist = 0;
+    let queue = [[i,j]], dist = 0;
+     
+     maze[i][j] = '+';
 
     while(queue.length) {
 
@@ -73,10 +80,9 @@ entrance will always be an empty cell.
 
          while(queue.length) {
 
-            const [x, y] = queue.shift();
+            const [x, y] = queue.pop();
 
-            maze[x][y] = '+';
-
+  
             for([m, n] of [[x-1, y],[x+1,y], [x, y-1], [x,y+1]]) {
 
                 if(m < 0 || m > l) continue;
@@ -85,6 +91,7 @@ entrance will always be an empty cell.
 
                 if(m === 0 || m === l || n === 0 || n === w) return dist + 1;
 
+                maze[m][n]  = '+'
                 next.push([m, n]);
             }
          }
