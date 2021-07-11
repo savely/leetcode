@@ -50,7 +50,18 @@ At most 5 * 104 calls will be made to addNum and findMedian.
  */
 MedianFinder.prototype.addNum = function(num) {
 
-  this.arr.push(num);
+  if(this.arr.length === 0 || num >= this.arr[this.arr.length -1]) {
+    this.arr.push(num);
+    return;
+  }
+  if(this.arr[0] >=  num) {
+    this.arr.splice(0, 0, num);
+    return;
+  }
+
+  const pos = this.findPos(num);
+
+  this.arr.splice(pos, 0 , num);
 };
 
 /**
@@ -64,36 +75,37 @@ MedianFinder.prototype.findMedian = function() {
 
     if(this.arr.length === 2) return (this.arr[0] + this.arr[1]) / 2;
 
-    if(this.arr.length % 2) return this.quickSelect(0, len, (this.arr.length - 1) / 2);
+    if(this.arr.length % 2) return this.arr[(this.arr.length - 1) / 2];
 
-    const mid = this.arr.length / 2 >> 0, el1 = this.quickSelect(0, len, mid), el2 = this.quickSelect(0, len, mid - 1);
+    const mid = this.arr.length / 2 >> 0, el1 = this.arr[mid], el2 = this.arr[mid - 1];
     
     return (el1 + el2) / 2;
 };
 
-MedianFinder.prototype.quickSelect = function(from, to, k) {
+MedianFinder.prototype.findPos = function(n) {
 
-    let idx  = Math.floor(Math.random() * (to - from)) + from;
-    this.swap(idx, to);
-    let pivot = this.arr[to], left = from;
+   let lo = 0, hi = this.arr.length;
+   
+   while(hi > lo) {
 
-    for(let i = from; i < to; i++) {
-        if(this.arr[i] < pivot) {
-            this.swap(i, left++);
+        const mid = (hi + lo) / 2 >> 0, el = this.arr[mid];
+
+        if(el === n) return mid;
+
+        if (n < el) {
+
+            if(this.arr[mid - 1] < n) return mid;
+
+            hi = mid - 1;
+            continue;
         }
-    }
 
-    this.swap(left, to);
+        if(this.arr[mid + 1] > n) return mid + 1;
 
-    if(left === k) return this.arr[left];
+        lo = mid + 1;
+   }
 
-    if(left < k) return this.quickSelect( left + 1, to, k);
-
-    return this.quickSelect(from, left - 1, k);    
-}
-
-MedianFinder.prototype.swap = function(i,j) {
-    [this.arr[i], this.arr[j]] = [this.arr[j], this.arr[i]];
+   return lo;
 }
 
 /** 
@@ -105,12 +117,13 @@ MedianFinder.prototype.swap = function(i,j) {
 
 const finder = new MedianFinder();
 
-finder.addNum(5);
-finder.addNum(1);
+finder.addNum(6);
+finder.addNum(10);
 finder.addNum(2);
 finder.addNum(6);
-finder.addNum(3);
-finder.addNum(4);
-finder.addNum(0);
+finder.addNum(5);
+
+//["MedianFinder","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian"]
+//[[],[6],[],[10],[],[2],[],[6],[],[5],[],[0],[],[6],[],[3],[],[1],[],[0],[],[0],[]]
 
 console.log(finder.findMedian());
