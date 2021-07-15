@@ -83,10 +83,3 @@ Constraints:
 }
   return max;
 };
-
-//text = "ababa";
-text = "abv";
-text = "acbaaa";
-text = "aaabaaabbaaaaaaa";
-
-console.log(maxRepOpt1(text));
