@@ -73,11 +73,11 @@ Constraints:
 
       if(n > capacity) return false;
      
-      for(let j = 0; j < destinations.length; j++) {
+      for(let j = destinations.length - 1; j >= 0; j--) {
           
         const [dest, numDest] = destinations[j];
 
-        if(start >= dest) continue;
+        if(start >= dest) break;
 
         if(numDest + n > capacity) return false;
 
