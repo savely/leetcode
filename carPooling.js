@@ -56,45 +56,23 @@ Constraints:
  */
  var carPooling = function(trips, capacity) {
 
-    trips.sort(([n1, start1, end1], [n2, start2, end2]) => {
+  const pass = new Array(1001).fill(0);
 
-      if(end1 === end2) return start1 - start2;
+  for(let i = 0; i < trips.length; i++) {
 
-      return end1 - end2;
-    })
+    const [n, start, end] = trips[i];
+    pass[start] += n;
+    pass[end] -= n;
+  }
 
-    if(trips[0][0] > capacity) return false;
+  let onBoard = 0;
 
-    const destinations = [[trips[0][2], trips[0][0]]];
+  for(let i = 0; i < 1001; i++) {
+    
+    onBoard += pass[i];
 
-    for(let i = 1; i < trips.length; i++) {
+    if(onBoard > capacity) return false;
+  }
 
-      const [n, start, end] = trips[i];
-
-      if(n > capacity) return false;
-     
-      for(let j = destinations.length - 1; j >= 0; j--) {
-          
-        const [dest, numDest] = destinations[j];
-
-        if(start >= dest) break;
-
-        if(numDest + n > capacity) return false;
-
-        destinations[j][1] = numDest + n;
-      }
-
-      if(destinations[destinations.length - 1][0] < end) {
-        destinations.push([end,n]);
-      }
-
-    }
-    return true;
+  return true;
 };
-
-let trips = [[2,1,5],[3,5,7]], capacity = 3;
-trips = [[4,2,7],[3,7,9],[8,3,9]], capacity = 11;
-trips = [[8,2,3],[4,1,3],[1,3,6],[8,4,6],[4,4,8]], capacity = 12;
-
-
-console.log(carPooling(trips, capacity) ? 'yes' : 'no');
