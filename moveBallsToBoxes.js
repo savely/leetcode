@@ -48,33 +48,26 @@ Constraints:
  var minOperations = function(boxes) {
     
     const ans = new Array(boxes.length).fill(0);
-    const balls = new Array(boxes.length).fill(0);
 
-    balls[0] = +boxes[0];
+    let balls = +boxes[0];
     let moves = 0;
     
     for(let i = 1; i < boxes.length; i++) {
        
-       moves += balls[i-1];
+       moves += balls;
        ans[i] = moves;
-       balls[i] = balls[i-1] + (+boxes[i]);
+       balls += +boxes[i];
     }
 
     moves = 0;
-    balls.fill(0);
-    balls[balls.length - 1] = +boxes[boxes.length - 1];
+    balls = +boxes[boxes.length - 1];
 
     for(let i = boxes.length - 2; i >= 0; i--) {
         
-        moves += balls[i + 1];
-        balls[i] = balls[i+1] + (+boxes[i]);
-
+        moves += balls;
+        balls += +boxes[i];
         ans[i] += moves;
     } 
 
     return ans;
 };
-boxes = "111";
-boxes = "001011";
-
-console.table(minOperations(boxes));
