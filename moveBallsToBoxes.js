@@ -49,25 +49,24 @@ Constraints:
     
     const ans = new Array(boxes.length).fill(0);
 
-    let balls = +boxes[0];
-    let moves = 0;
+    let ballsLeft = 0, ballsRight = 0;
+    let movesLeft = 0, movesRight = 0;
+
+    const len = boxes.length - 1;
     
-    for(let i = 1; i < boxes.length; i++) {
+    for(let i = 0; i <= len; i++) {
        
-       moves += balls;
-       ans[i] = moves;
-       balls += +boxes[i];
+       movesLeft += ballsLeft;
+       movesRight += ballsRight;
+       ans[i] += movesLeft;
+       ans[len - i] += movesRight;
+       ballsLeft += +boxes[i];
+       ballsRight += +boxes[len - i];
     }
-
-    moves = 0;
-    balls = +boxes[boxes.length - 1];
-
-    for(let i = boxes.length - 2; i >= 0; i--) {
-        
-        moves += balls;
-        balls += +boxes[i];
-        ans[i] += moves;
-    } 
 
     return ans;
 };
+
+boxes = "001011";
+
+console.table(minOperations(boxes));
