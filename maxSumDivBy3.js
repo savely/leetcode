@@ -37,6 +37,10 @@ Constraints:
  * @param {number[]} nums
  * @return {number}
  */
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
  var maxSumDivThree = function(nums) {
     
     const sum = nums.reduce((acc, n) => acc + n);
@@ -44,6 +48,8 @@ Constraints:
     if(sum % 3 === 0) return sum;
     
     let maxSum = 0;
+    
+    const sub = new Set();
     
     const dp = [[sum, new Set()]];
     
@@ -58,6 +64,10 @@ Constraints:
             if(used.has(i)) continue;
             
             const newSum = sum - nums[i];
+            
+            if(sub.has(newSum)) continue;
+            
+            sub.add(newSum);
             
             if(newSum % 3 === 0) maxSum = Math.max(maxSum, newSum)
             
