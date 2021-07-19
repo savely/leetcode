@@ -47,8 +47,6 @@ Constraints:
     houses.sort(f);
     heaters.sort(f);
 
-    const dist = new Array(houses.length).fill(Infinity);
-
     while(i < houses.length) {
 
         if(houses[i] > heaters[j]) {
@@ -57,13 +55,10 @@ Constraints:
         }
         const minDist = Math.min((heaters[j] || Infinity) - houses[i], houses[i] - (heaters[j-1] || -Infinity));
 
-        dist[i] = minDist;
-
         maxRadius = Math.max(maxRadius, minDist);
 
         i++;
     }
-
-    console.table(dist);
+    
     return maxRadius;
 };
