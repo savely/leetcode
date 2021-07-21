@@ -47,53 +47,27 @@ target and deadends[i] consist of digits only
 */
 
 var openLock = function(deadends, target) {
-  
-    const tgt    = Array.from(target).map(n => parseInt(n))    
-    const start =  Array(tgt.length).fill(0)
-    const visited = new Map(deadends.map(str => [str, null]))
-    const queue = [start]
-    let  steps = -1
-  
-    if(visited.has(start.join('')) || visited.has(target)) {return -1}
-  
-    const next = function (n) {
-      return (n+1) % 10
+
+  const u = (n) => n === 9 ? 0 : n + 1;
+
+  const d = (n) => n === 0 ? 9 : n - 1;
+
+  deadends = new Set(deadends);
+
+  if(deadends.has('0000')) return -1;
+
+  const neigbours = (code) => {
+
+    const fst = code[0], res = [[up(fst)],[fst],[down(fst)]];
+
+    for(let i = 1; i < 4; i++) {
+      
     }
-    const prev = function (n) {
-      return n === 0 ? 9 : (n-1) % 10
-    }
-    const neightbours = function (arr) {
-  
-    return arr.reduce((acc, val, i)  => {
-         const nxt = Array.from(arr)
-         nxt[i] = next(nxt[i])
-         if(!visited.has(nxt.join(''))) {acc.push(nxt)}
-         const prv = Array.from(arr)
-         prv[i] = prev(prv[i])
-         if(!visited.has(prv.join(''))) {acc.push(prv)}
-  
-         return acc
-    }, [] )         
-    }
-  
-    while(queue.length !== 0) {
-       steps ++
-       let len = queue.length
-       for (let i = 0; i < len; i++) {
-       const comb = queue.shift() 
-       if(comb.join('') === target) {
-           return steps
-       }
-       if(visited.has(comb.join(''))) {continue}
-  
-       visited.set(comb.join(''), null)
-       let nbrs = neightbours(comb)
-       nbrs.map (x => queue.push(x))
-      }
-    }
-  
-    return -1
+  }
+     
   };
  
+  //let deadends = ["8887","8889","8878","8898","8788","8988","7888","9888"], target = '8888';
+  deadends = ["0201","0101","0102","1212","2002"], target = "0202";
   
-  console.log(openLock(["8887","8889","8878","8898","8788","8988","7888","9888"], '8888'))
+  console.log(openLock(deadends, target));

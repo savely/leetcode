@@ -1,4 +1,25 @@
 var advantageCount = function(A, B) {
+    
+    const bSearch = (arr, start, end, target) => {
+        let lo = start, hi = end
+        
+        while(hi > lo) {
+            const mid = Math.ceil((lo + hi) / 2)
+            
+            if(arr[mid] > target && (mid === lo || arr[mid -1] <= target)) return mid
+            
+            if(arr[mid] > target) {
+               hi-- 
+            } else {
+                lo++
+            }
+        }
+        
+        if(hi === lo) return arr[hi] > target ? hi : -1
+
+        return -1
+    }
+    
     A.sort((a,b) => a - b)
     const res = []
     
@@ -12,19 +33,14 @@ var advantageCount = function(A, B) {
             continue
         }
         
-        let k = j+1, found = false
-        while(k < A.length) {
-            if(A[k++] > B[i]) {
-                found = true
-                break
-            }
-        }
+        const found = bSearch(A, j, A.length-1, B[i])
         
-        if(found) {
-            res.push(A.splice(k-1,1)[0])
+        if(found > 0) {
+            res.push(A.splice(found,1)[0])
         } else{
             res.push(A[j++])
         }
+        
         i++
     }
     
@@ -32,9 +48,11 @@ var advantageCount = function(A, B) {
         res.push(...A.slice(j))
     }
     return res
-};
+}; 
 
 let A = [12,24,8,32]
 let B = [13,25,32,11]
+
+console.log(B)
 
 console.log(advantageCount(A,B))

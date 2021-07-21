@@ -70,8 +70,6 @@ var totalNQueens = function(n) {
         v = 1
         h++
     }
-
-
     return solutions.length
 };
 

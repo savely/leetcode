@@ -36,7 +36,7 @@ Constraints:
     
     for(let i = 3; i < dp.length; i++) {
         
-        for(let j = 1; j <= i; j++) {
+        for(let j = 1; j <= i / 2; j++) {
             
             dp[i] = Math.max(dp[i], j * (i - j) , j * dp[i - j])
         }

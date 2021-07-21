@@ -57,6 +57,8 @@ All points are distinct.
     return minArea > 40000 ** 2 ? 0 : minArea
 };
 
-let points = [[1,1],[1,3],[3,1],[3,3],[2,2]]
+let points = [[1,1],[1,3],[3,1],[3,3],[2,2]];
+
+points = [[1,2],[2,1],[1,0],[0,1]];
 
 console.log(minAreaRect(points))

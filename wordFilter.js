@@ -16,13 +16,68 @@ At most 15000 calls will be made to the function f.
 
 */
 
+const Trie = function() {
+    this._hash = new Map()
+    this._symbol = ''
+    this._maxId  =  -1 
+    this._isEnd  = false 
+};
+
+/**
+ * Inserts a word into the trie. 
+ * @param {string} word
+ * @return {void}
+ */
+Trie.prototype.insert = function(word, id) {
+    
+    if(word === '') return
+
+    
+    if(!this._hash.has(word[0])) {
+       const  newLeaf = new Trie()
+       newLeaf._symbol = word[0]  
+       newLeaf._maxId = id
+       this._hash.set(word[0], newLeaf)
+    }
+    const leaf = this._hash.get(word[0])
+
+    if(leaf._maxId < id) {
+        leaf._maxId = id
+    }
+
+    if(leaf._symbol === word) {
+        leaf._isEnd = true
+    }
+
+    return leaf.insert(word.slice(1), id)
+};
+
+/**
+ * Returns if the word is in the trie. 
+ * @param {string} word
+ * @return {boolean}
+ */
+Trie.prototype.search = function(word) {
+    
+    if(word === '') return this._maxId
+    
+    if(!this._hash.has(word[0])) return -1
+
+    const leaf = this._hash.get(word[0])
+
+    if(leaf._symbol === word) return leaf._isEnd ? leaf._maxId : -1;
+
+    return leaf.search(word.slice(1))
+};
+
+
 
 /**
  * @param {string[]} words
  */
  var WordFilter = function(words) {
     
-    this.map = new Map()
+    this.trie = new Trie()
 
     for(let i = 0; i < words.length; i++) {
           const word = words[i]
@@ -34,16 +89,8 @@ At most 15000 calls will be made to the function f.
             for(let k = 0; k <= word.length; k++) {
 
                 const suffix = word.slice(k, word.length), hash = `${prefix}#${suffix}`
+                this.trie.insert(hash, i)
 
-                if(!this.map.has(hash)) {
-                    this.map.set(hash, i)
-                }
-                
-                const id = this.map.get(hash)
-
-                if(i > id) {
-                    this.map.set(hash, i)  
-                }
             }
           }
     }
@@ -55,9 +102,8 @@ At most 15000 calls will be made to the function f.
  * @return {number}
  */
 WordFilter.prototype.f = function(prefix, suffix) {
-    const  idx = this.map.get(`${prefix}#${suffix}`) 
 
-    return idx === undefined ? -1 : idx
+     return this.trie.search(`${prefix}#${suffix}`) 
 };
 
 /** 
@@ -67,10 +113,11 @@ WordFilter.prototype.f = function(prefix, suffix) {
  */
 
 
-let words = ['apple', 'appple']
+let words = ['apple', 'appple'];
 words = ["cabaabaaaa","ccbcababac","bacaabccba","bcbbcbacaa","abcaccbcaa","accabaccaa","cabcbbbcca","ababccabcb","caccbbcbab","bccbacbcba"];
 
-[["bccbacbcba","a"],["ab","abcaccbcaa"],["a","aa"],["cabaaba","abaaaa"],["cacc","accbbcbab"],["ccbcab","bac"],["bac","cba"],["ac","accabaccaa"],["bcbb","aa"],["ccbca","cbcababac"]]
+//[["bccbacbcba","a"],["ab","abcaccbcaa"],["a","aa"],["cabaaba","abaaaa"],["cacc","accbbcbab"],["ccbcab","bac"],["bac","cba"],["ac","accabaccaa"],["bcbb","aa"],["ccbca","cbcababac"]]
 const wf = new WordFilter(words)
 
+console.dir(wf.trie)
 console.log(wf.f("bccbacbcba",'a'))

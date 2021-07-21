@@ -36,6 +36,8 @@ accounts[i][j] (for j > 0) is a valid email.
 */
 
 
+//todo: re-implement with union-find data structure
+
 /**
  * @param {string[][]} accounts
  * @return {string[][]}

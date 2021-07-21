@@ -19,27 +19,28 @@ The correct order is: "wertf".
 
 function  alienDictionary (words) {
 
-
     if(!words.length) return ""
 
     const dict = new Map()
 
-    for(let i = 0; i < words.length; i++) {
-        const word = words[i]
+    for(let i = 1; i < words.length; i++) {
+        
+      const prev = words[i-1], curr = words[i], len = Math.min(prev.length, curr.length)
 
-        for(let j = 0; j < word.length; j++) {
+       for(let j = 0; j < len; j++) {
+         const pJ = prev[j], cJ =curr[j]
+         if(pJ !== cJ) {
+           const  pSet = dict.get(pJ) || new Set()
+           pSet.add(cJ)
+           dict.set(pJ, pSet)
 
-            const char = word[j]
+           if(!dict.has(cJ)) {
+             dict.set(cJ, new Set())
+           }
+           break
+         }
+       }
 
-            if(!dict.has(char)) {
-                dict.set(char, new Set())
-            }
-
-            for(let k = 0; k < j; k++) {
-                if(word[k] === char) continue
-                dict.get(word[k]).add(char)
-            }
-        }
      }
     
      console.dir(dict)
