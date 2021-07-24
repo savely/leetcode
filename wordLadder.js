@@ -60,14 +60,16 @@ All the words in wordList are unique.
 
     let hasEndWord = false;
 
-    for(const word of wordList) {
+    for(let i = 0; i < wordList.length; i++) {
+
+      const word = wordList[i];
 
       hasEndWord |= word === endWord;
 
       for (const node of nodesFrom(word)) {
 
          if(nodes[node] === undefined) nodes[node] = [];
-         nodes[node].push(word);
+         nodes[node].push(i);
       }
     }
 
@@ -87,13 +89,15 @@ All the words in wordList are unique.
 
         while(queue.length) {
 
-            const currNode = queue.pop(), words = nodes[currNode] || [];
+            const currNode = queue.pop(), wordIds = nodes[currNode] || [];
 
             if(visited.has(currNode)) continue;
 
             visited.add(currNode);
 
-            for(const word of words) {
+            for(const id of wordIds) {
+
+                const word = wordList[id];
 
                 if(word === endWord) return depth + 1;
 
