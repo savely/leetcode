@@ -41,37 +41,36 @@ Constraints:
     
     if(n === 1) return 2;
 
-    let dp = [2];
-
-    const visited = new Set(dp);
+   
+    let dp = [2], count = 3;
 
     while(dp.length) {
     
-        let next = [];
+        let next = new Set();
 
         while(dp.length) {
 
             const num = dp.pop(); 
+
             const nextNums = [num << 1];
 
             if(num % 2 === 0) nextNums.push((num << 1) + 1);
 
             for(const nn of nextNums) {
 
-                if(nn > n || visited.has(nn)) continue;
+                if(nn > n) continue;
 
-                visited.add(nn);
-    
-                next.push(nn);
+                 next.add(nn);
     
             }
        }
-       dp = next;
+       count += next.size;
+       dp = [...next];
     }
 
-    return visited.size + 2;
+    return count;
 };
 
 //12577040
 
-console.log(findIntegers(12577040));
+console.log(findIntegers(999999999));
