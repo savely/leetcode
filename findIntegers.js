@@ -39,38 +39,39 @@ Constraints:
  */
  var findIntegers = function(n) {
     
-    if(n === 1) return 2;
 
-   
-    let dp = [2], count = 3;
+    const dp = new Array(32);
 
-    while(dp.length) {
-    
-        let next = new Set();
+    dp[0] = 1;
+    dp[1] = 2;
 
-        while(dp.length) {
-
-            const num = dp.pop(); 
-
-            const nextNums = [num << 1];
-
-            if(num % 2 === 0) nextNums.push((num << 1) + 1);
-
-            for(const nn of nextNums) {
-
-                if(nn > n) continue;
-
-                 next.add(nn);
-    
-            }
-       }
-       count += next.size;
-       dp = [...next];
+    for(let i = 2; i < 32; i++) {
+        dp[i] = dp[i-1] + dp[i - 2];
     }
 
-    return count;
+    let i = 30, sum = 0, prevBit = 0;
+
+        while (i >= 0) {
+
+            if ((n & (1 << i)) !== 0) {
+
+                sum += dp[i];
+
+                if (prevBit == 1) {
+                    sum--;
+                    break;
+                }
+
+                prevBit = 1;
+            } else
+                prevBit = 0;
+            i--;
+        }
+
+    return sum + 1;
 };
 
 //12577040
+//944060589
 
-console.log(findIntegers(999999999));
+console.log(findIntegers(944060589));
