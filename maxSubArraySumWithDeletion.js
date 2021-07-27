@@ -35,24 +35,39 @@ Constraints:
  * @return {number}
  */
  var maximumSum = function(arr) {
-    
-   
-    let maxSum = -Infinity;
-    
-    for(let i = 0; i < arr.length; i++) {
-        
-        let sum = arr[i];
-        let min = arr[i];
 
-        maxSum = Math.max(maxSum, arr[i]);
-        
-        for(let j = i+1; j < arr.length; j++) {
-            
-            sum += arr[j];
-            min = Math.min(min, arr[j]);
-            maxSum = Math.max(maxSum, sum, sum - min);
-        }
+    if(arr.length === 1) return arr[0];
+
+    const dpLeft = new Array(arr.length + 1), dpRight = new Array(arr.length + 1);
+
+    dpLeft[0] = 0;
+    dpLeft[1] = arr[0];
+    dpRight[dpRight.length - 1] = 0;
+
+    dpRight[dpRight.length - 2] = arr[arr.length - 1];
+ 
+    for(let i = 2; i < dpLeft.length; i++) {
+        dpLeft[i] = Math.max(arr[i - 1], arr[i - 1] + dpLeft[i - 1]);
     }
-    return maxSum;
+
+    for(let i = dpRight.length - 3; i >= 0; i--) {
+        dpRight[i] = Math.max(arr[i], arr[i] + dpRight[i + 1]);
+    }
+    
+    let max = dpLeft[dpLeft.length - 1];
+
+    for(let i = 0; i < arr.length; i++) {
+        max = Math.max(max, dpLeft[i] + dpRight[i + 1], (i > 0 ? dpLeft[i] : -Infinity), (i < arr.length ? dpRight[i] : -Infinity) );
+    }
+
+    return max;
 };
 
+let arr = [1,-2,0,3];
+arr = [1,-2,-2,3];
+//arr = [1,-2,-2,3];
+arr = [-1,-1,-1,-1];
+arr = [2,1,-2,-5,-2]; // 3
+arr = [-50];
+
+console.log(maximumSum(arr));
