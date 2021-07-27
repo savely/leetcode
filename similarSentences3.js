@@ -82,9 +82,3 @@ The words in sentence1 and sentence2 are separated by a single space.
 
    return suffix === sentence2.length || suffix + prefix === sentence2.length;
 };
-
-let sentence1 = "My name is Haley", sentence2 = "My Haley name";
-//sentence1 = "of", sentence2 = "A lot of words";
-//sentence1 =  "Eating right now", sentence2 = "Eating right now";
-
-console.log(areSentencesSimilar(sentence1, sentence2));
