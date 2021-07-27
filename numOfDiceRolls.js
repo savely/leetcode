@@ -79,12 +79,3 @@ Constraints:
 
     return dp[target] || 0;
 };
-
-let d = 1, f = 6, target = 3;
-d = 4, f = 6, target = 7;
-d = 1, f = 2, target = 3;
-d = 30, f = 30, target = 500;
-//d = 2, f = 5, target = 10;
-//d = 2, f =  12, target = 8;
-
-console.log(numRollsToTarget(d, f, target));
