@@ -62,12 +62,3 @@ Constraints:
 
     return max;
 };
-
-let arr = [1,-2,0,3];
-arr = [1,-2,-2,3];
-//arr = [1,-2,-2,3];
-arr = [-1,-1,-1,-1];
-arr = [2,1,-2,-5,-2]; // 3
-arr = [-50];
-
-console.log(maximumSum(arr));
