@@ -1,7 +1,8 @@
 /*
 #16. 3Sum Closest
 
-Given an array nums of n integers and an integer target, find three integers in nums such that the sum is closest to target. Return the sum of the three integers. 
+Given an array nums of n integers and an integer target, find three integers in nums such that the sum is closest to target. 
+Return the sum of the three integers. 
 You may assume that each input would have exactly one solution.
 
  
@@ -31,51 +32,33 @@ Constraints:
 
     const findClosest = (from, tgt) => {
 
-        let lo = from, hi = nums.length - 1;
+        let closest = Infinity;
 
-        if(nums[lo] >= tgt) return nums[lo];
+        let i = from, j = nums.length - 1;
 
-        if(nums[hi] <= tgt) return nums[hi];
+        while(j > i) {
 
-        while(hi > lo) {
+            const sum = nums[i] + nums[j];
 
-            const mid = (hi + lo) / 2 >> 0;
+            if(sum === tgt) return tgt;
 
-            if(nums[mid] === tgt) return nums[mid];
-
-            if(nums[mid] > tgt) {
-
-                if(nums[mid - 1] <= tgt) {
-
-                    return (tgt - nums[mid - 1]) < (nums[mid] - tgt) ? nums[mid - 1]  : nums[mid] ;
-                }
-                hi = mid - 1; 
-
-            } else {
-
-                if(nums[mid + 1] >=  tgt) {
-
-                    return (tgt - nums[mid]) < (nums[mid + 1] - tgt) ? nums[mid]: nums[mid + 1];
-                }
-                lo = mid + 1;                
+            if(Math.abs(tgt - sum) < Math.abs(tgt - closest)) {
+                closest = sum;
             }
+
+            sum < tgt ? i++ : j --;
         }
 
-        return nums[lo];
+        return closest;
     }
 
     let closest = Infinity;
 
     for(let i = 0; i < nums.length - 2; i++) {
 
-        for(let j = i + 1; j < nums.length - 1; j++) {
+        const currClosest =  nums[i] + findClosest(i  + 1, target - nums[i]);
 
-        const currClosest = nums[i] + nums[j] + findClosest(j + 1, target - nums[i] - nums[j]);
-
-        if(currClosest === target) return target;
-
-        closest = Math.abs(target - currClosest) < Math.abs(target - closest) ? currClosest : closest;
-        }
+        closest = Math.abs(target - currClosest) < Math.abs(target - closest) ? currClosest : closest;        
     }
 
     return closest;
