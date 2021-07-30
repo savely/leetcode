@@ -78,11 +78,3 @@ names[i] consists of lower case English letters, digits and/or round brackets.
 
     return ans;
 };
-
-let  names = ["pes","fifa","gta","pes(2019)"];
-names = ["gta","gta(1)","gta","avalon"];
-names = ["onepiece","onepiece(1)","onepiece(2)","onepiece(3)","onepiece"];
-names = ["wano","wano","wano","wano"];
-names = ["kaido","kaido(1)","kaido","kaido(1)"];
-
-console.table(getFolderNames(names));
