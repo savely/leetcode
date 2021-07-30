@@ -66,22 +66,3 @@ MapSum.prototype.sum = function(prefix) {
     
     return this.sumHash[prefix] ||  0;
 };
-
-
-/*
-["MapSum", "insert", "sum", "insert", "insert", "sum"]
-[[], ["apple",3], ["ap"], ["app",2], ["apple", 2], ["ap"]] //4
-[null,null,3,null,null,4]
-
-["MapSum", "insert", "sum", "insert", "sum", "sum", "insert", "sum", "sum", "sum", "insert", "sum", "sum"]
-[[], ["aa",3], ["a"], ["aa",2], ["a"], ["aa"], ["aaa", 3], ["aaa"], ["bbb"], ["ccc"], ["aewfwaefjeoawefjwoeajfowajfoewajfoawefjeowajfowaj", 111], ["aa"], ["a"]]
-[null,null,3,null,2,2,null,3,0,0,null,5,116]
-*/
-
-const ms = new MapSum();
-
-ms.insert("apple", 3);
-console.log(ms.sum("ap"));
-ms.insert("app", 2);
-ms.insert("apple", 2);
-console.log(ms.sum("ap"));
