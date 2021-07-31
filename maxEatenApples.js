@@ -38,30 +38,18 @@ days[i] = 0 if and only if apples[i] = 0.
 */
 
 var eatenApples = function(apples, days) {
-    
-  const expiryDates = {};
+
+  const dates = [];
 
   let maxDate = 0;
 
   for(let i = 0; i < apples.length; i++) {
 
-        const date = days[i] + i;
+    const date = days[i] + i;
 
-        if(expiryDates[date] === undefined) expiryDates[date] = [];
-
-        expiryDates[date].push([i, apples[i]]);
+    dates.push([i, date, apples[i]]);        
 
         maxDate = Math.max(maxDate, date);
-  }
-
-  const dates = [];
-
-  for(const date in expiryDates) {
-
-      for( const [startDate, app] of expiryDates[date]) {
-        dates.push([startDate, +date, app]);;
-      }
-
   }
 
   dates.sort(([sd1, ed1, _1], [sd2, ed2, _2]) => ed1 - ed2 || sd2 - sd1);
