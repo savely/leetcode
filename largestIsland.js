@@ -59,19 +59,25 @@ grid[i][j] is either 0 or 1.
 
             while(queue.length) {
 
-                const [m, n] = queue.pop();
+                let next = [];
 
-                for(const [x, y] of [[m+1,n],[m-1,n],[m,n+1],[m,n-1]]) {
+                while(queue.length) {    
 
-                    if(x < 0 || x > h) continue;
-                    if(y < 0 || y > w) continue; 
-                    if(grid[x][y] !== 1) continue;
+                    const [m, n] = queue.pop();
 
-                    square++; 
-                    grid[x][y] = currentIsland;
-                    queue.unshift([x,y]);
-                }            
-    
+                    for(const [x, y] of [[m+1,n],[m-1,n],[m,n+1],[m,n-1]]) {
+
+                        if(x < 0 || x > h) continue;
+                        if(y < 0 || y > w) continue; 
+                        if(grid[x][y] !== 1) continue;
+
+                        square++; 
+                        grid[x][y] = currentIsland;
+                        next.push([x,y]);
+                    }   
+                }
+                
+                queue.push(...next);
             }
 
             if(square ===  gridSquare) return square;
