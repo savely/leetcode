@@ -97,9 +97,3 @@ There is at least one water cell.
     
     return height;    
 };
-
-let isWater = [[0,1],[0,0]];
-isWater = [[0,0,1],[1,0,0],[0,0,0]];
-isWater = [[1,1,1,1,0],[1,1,0,1,0],[1,1,0,0,0],[0,0,0,0,0]];
-
-console.table(highestPeak(isWater));
