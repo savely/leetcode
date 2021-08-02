@@ -50,25 +50,24 @@ There is at least one water cell.
  */
  var highestPeak = function(isWater) {
 
-    const height = [];
+    const height = new Array(isWater.length).fill(0).map(_ => new Array(isWater[0].length).fill(Infinity));
+
+    const q = [];
 
     for(let i = 0; i < isWater.length; i++) {
 
-        height.push([]);
-
         for(let j = 0; j < isWater[0].length; j++) {
 
-            height[i].push(isWater[i][j] === 1 ? 0 : Infinity);
+            if(isWater[i][j] === 1) {
+                q.push([i,j]);
+                height[i][j] = 0;
+            }
         }
     }
 
-    for(let i = 0; i < height.length; i++) {
+    for(let i = 0; i < q.length; i++) {
 
-        for(let j = 0; j < height[0].length; j++) {
-
-            if(height[i][j] !== 0) continue;
-
-            const queue = [[i ,j]];
+            const queue = [[q[i][0] ,q[i][1]]];
 
             let level = 1;
 
@@ -90,11 +89,10 @@ There is at least one water cell.
                         next.push([x,y]);
                     }
                 }
-
+                
                 queue.push(...next);
-                level++;
+                level++;                
             }
-        }
     }
     
     return height;    
