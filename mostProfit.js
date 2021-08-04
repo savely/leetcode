@@ -99,12 +99,3 @@ m == worker.length
 
     return ans;
 };
-
-let difficulty = [2,4,6], profit = [10,20,30], worker = [4,5,6,7];
-//difficulty = [85,47,57], profit = [24,66,99], worker = [40,25,25];
-
-difficulty = [2,4,6,3], profit = [10,20,30,22], worker = [4,5,6,7,2,1,3];//136
-
-//difficulty = [13,37,58], profit = [4,90,96], worker = [34,73,45];//190
-
-console.log(maxProfitAssignment(difficulty, profit, worker));
