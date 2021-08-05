@@ -117,14 +117,3 @@ n == grid[i].length
 
     return false;
 };
-
-let grid = [[2,4,3],[6,5,2]];
-grid = [[1,2,1],[1,2,1]];
-grid = [[1,1,2]];
-grid = [[1,1,1,1,1,1,3]];
-grid = [[2],[2],[2],[2],[2],[2],[6]];
-grid = [[4,1],[6,1]];
-grid = [[1]];
-grid = [[4,1,3],[6,1,2]];
-
-console.log(hasValidPath(grid));
