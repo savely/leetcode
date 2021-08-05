@@ -89,8 +89,3 @@ sum(routes[i].length) <= 105
         }
     return -1;
 };
-
-let routes = [[1,2,7],[3,6,7]], source = 1, target = 6;
-routes = [[7,5,12],[4,5,15],[6],[15,19],[9,12,13]], source = 15, target = 13;
-
-console.log(numBusesToDestination(routes, source, target));
