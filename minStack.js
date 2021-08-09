@@ -1,54 +1,101 @@
 /**
+#155. Min Stack
+
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the MinStack class:
+
+MinStack() initializes the stack object.
+void push(val) pushes the element val onto the stack.
+void pop() removes the element on the top of the stack.
+int top() gets the top element of the stack.
+int getMin() retrieves the minimum element in the stack.
+ 
+
+Example 1:
+
+Input
+["MinStack","push","push","push","getMin","pop","top","getMin"]
+[[],[-2],[0],[-3],[],[],[],[]]
+
+Output
+[null,null,null,null,-3,null,0,-2]
+
+Explanation
+MinStack minStack = new MinStack();
+minStack.push(-2);
+minStack.push(0);
+minStack.push(-3);
+minStack.getMin(); // return -3
+minStack.pop();
+minStack.top();    // return 0
+minStack.getMin(); // return -2
+ 
+
+Constraints:
+
+-231 <= val <= 231 - 1
+Methods pop, top and getMin operations will always be called on non-empty stacks.
+At most 3 * 104 calls will be made to push, pop, top, and getMin.
+
+ */
+/**
  * initialize your data structure here.
  */
-var MinStack = function() {
-    this.entries    = []
-    this.minEntries = []
+ var MinStack = function() {
+    
+    this.stack = [];
+    this.minStack = [];
 };
 
 /** 
- * @param {number} x
+ * @param {number} val
  * @return {void}
  */
-MinStack.prototype.push = function(x) {
-      this.entries.unshift(x)
-      const min = this.getMin()
-      if(min === undefined || min >= x ) {
-          this.minEntries.unshift(x)
-      }
+MinStack.prototype.push = function(val) {
+    
+    this.stack.push(val);
+    
+    if(!this.minStack.length || val < this.getMin()) {
+        this.minStack.push(this.stack.length);
+    }
 };
 
 /**
  * @return {void}
  */
 MinStack.prototype.pop = function() {
-     const x = this.entries.shift()
-    if(x === this.getMin()) {
-     this.minEntries.shift()  
-    }
-
-    return x 
+    
+    const minEltIdx = this.minStack[this.minStack.length - 1]; 
+    
+    if(minEltIdx === this.stack.length) this.minStack.pop();
+    
+    return this.stack.pop();    
 };
 
 /**
  * @return {number}
  */
 MinStack.prototype.top = function() {
-    return this.entries[0]
+    return this.stack[this.stack.length - 1];
 };
 
 /**
  * @return {number}
  */
 MinStack.prototype.getMin = function() {
-    return this.minEntries[0]
+    
+     const minEltIdx = this.minStack[this.minStack.length - 1] - 1; 
+    
+    return this.stack[minEltIdx];
 };
+
 
 //a = ["push","push","push","getMin","pop","top","getMin"]
 //b = [[-2],[0],[-3],[],[],[],[]]
 
-a = ["push","push","push","getMin","top","pop","getMin"]
-b = [[-2],[0],[-1],[],[],[],[]]
+a = ["push","push","push","getMin","top","pop","getMin"];
+b = [[-2],[0],[-3],[],[],[],[]];
 
 const zip = function(ar1, ar2, zipper) {
     return zipper 
@@ -67,41 +114,4 @@ const run = function(obj, fun, args) {
 
 }
 
-//console.log(run(new MinStack(), a, b))
-
-
-/**
- * @param {string[]} strs
- * @return {string}
- */
-var longestCommonPrefix = function(strs) {
-    
-    if(strs.length < 1) return ''
-   
-    if(strs.length === 1) return strs[0]
-
-    let prefix = Array.from(strs[0])
-    
-    for(let i=1; i < strs.length; i++) {
-        
-        if(strs[i].length > prefix.length) {
-           prefix.length = strs[i].length
-        }  
-           
-        for(j = 0; j < prefix.length; j++) {
-            
-              if(strs[i][j] !== prefix[j]) {
-                  prefix.length = j
-                  break
-              }
-        }
-        
-        if(prefix.length === 0) return ''
-    }
-    
-    return prefix.join('')
-};
-
-const words = ["flower","flow","flight"]
-
-console.log(longestCommonPrefix(words))
+console.log(run(new MinStack(), a, b))

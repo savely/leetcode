@@ -1,23 +1,23 @@
 var groupAnagrams = function(strs) {
-
-    if(strs.length < 2) return [strs]
-
-    const res = []
-    const sorted = strs.map(str => Array.from(str).sort().join(''))
-    const hash = {}
-
-    for(let i=0; i < sorted.length; i++) {
-        if(hash[sorted[i]] === undefined) {
-            hash[sorted[i]] = [strs[i]]
-        } else {
-            hash[sorted[i]].push(strs[i]) 
-        }
-    }
-
-    for(const group in hash) {
-        res.push(hash[group])
-    }
-    return res
-};
+    
+    const map = {};
+     
+     for(const str of strs) {
+         
+         let hash = [...str].sort().join('');
+         
+         if(map[hash] === undefined) map[hash] = [];
+         
+         map[hash].push(str);
+     }
+     
+     const res = [];
+     
+     for(const str in map) {
+         res.push(map[str]);
+     }
+     
+     return res;
+ };
 
 console.log(groupAnagrams(["eat", "tea", "tan", "ate", "nat", "bat"]))
