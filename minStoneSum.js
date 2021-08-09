@@ -69,8 +69,3 @@ const { MaxPriorityQueue }  = require('@datastructures-js/priority-queue');
 
     return ans;
 };
-
-let piles = [5,4,9], k = 2;
-piles = [4,3,6,7], k = 3;
-
-console.log(minStoneSum(piles, k));
