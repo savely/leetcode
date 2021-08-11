@@ -39,68 +39,30 @@ grid[i][j] is either 0 or 1.
   
     const h = grid.length - 1, w = grid[0].length - 1;
 
+    const dfs = (i, j) => {
+
+        if(i < 0 || i > h) return;
+        if(j < 0 || j > w) return;
+        if(grid[i][j] === 0) return;
+
+        grid[i][j] = 0;
+
+        dfs(i + 1, j);
+        dfs(i - 1, j);
+        dfs(i, j + 1);
+        dfs(i, j - 1);
+    }
+
     for(let i = 0; i <= h; i++) {
 
-        if(!grid[i][0] && !grid[i][w]) continue;
-
-        const queue = [];
-
-        if(grid[i][0]) {
-            queue.push([i,0]);
-            grid[i][0] = 0;
-        }
-
-        if(grid[i][w]) {
-            queue.push([i,w]);
-            grid[i][w] = 0;
-        }
-
-        while(queue.length) {
-
-            const [i, j] = queue.pop();
-
-            for(const [x,y] of [[i + 1,j], [i - 1,j], [i, j+ 1], [i, j - 1]]) {
-                
-                if(x < 0 || x > h) continue;
-                if(y < 0 || y > w) continue;
-                if(grid[x][y] === 0) continue;
-
-                grid[x][y] = 0;
-                queue.unshift([x,y]);
-            }
-        }
+        dfs(i, 0);
+        dfs(i, w);
     }
 
     for(let i = 1; i <= w - 1; i++) {
 
-        if(!grid[0][i] && !grid[h][i]) continue;
-
-        const queue = [];
-
-        if(grid[0][i]) {
-            queue.push([0, i]);
-            grid[0][i] = 0;
-        }
-
-        if(grid[h][i]) {
-            queue.push([h, i]);
-            grid[h][i] = 0;
-        }
-
-        while(queue.length) {
-
-            const [i, j] = queue.pop();
-
-            for(const [x,y] of [[i + 1, j], [i - 1, j], [i, j+ 1], [i, j - 1]]) {
-                
-                if(x < 0 || x > h) continue;
-                if(y < 0 || y > w) continue;
-                if(grid[x][y] === 0) continue;
-
-                grid[x][y] = 0;
-                queue.unshift([x,y]);
-            }
-        }
+        dfs(0, i);
+        dfs(h, i);
     }
     
     let count = 0;
@@ -111,6 +73,5 @@ grid[i][j] is either 0 or 1.
         }
     }
 
-    console.table(grid);
     return count;
 };
