@@ -42,65 +42,109 @@ Constraints:
  */
  var removeBoxes = function(boxes) {
 
-    const continuousFrom = (arr, i) => {
+    const boxesCount = [];
 
-        const n = arr[i];
-        let count = 0;
+    let color = boxes[0], count = 1;
 
-        while(i < arr.length && arr[i++] === n) count++;
+    for(let i = 1; i < boxes.length; i++) {
 
-        return count;
-    };
+        if(boxes[i - 1] === boxes[i]) {
+            count++;
+            continue;
+        }
 
-    const key = boxes.join(':');
+        boxesCount.push([color, count]);
 
-    let dp = {}, max = 0, maxLen = boxes.length;
+        color = boxes[i];
+        count = 1;
+    }
+
+    boxesCount.push([color, count]);
+
+    const countContiguous = (from, visited) => {
+
+        let newVis = visited.slice(0, from);
+
+        const [color, count] = boxesCount[from];
+
+        newVis += "1";
+
+        let newCount = count;
+
+        for(let i = from + 1; i < boxesCount.length; i++) {
+
+            const [col, cnt] = boxesCount[i];
+
+            if(visited[i] === '1')  {
+                newVis  += '1';                
+                continue;
+            }
+
+            if(col !== color) break;
+
+            newCount += cnt;
+            newVis  += '1';
+        }
+
+        return [newCount * newCount, newVis + visited.slice(newVis.length)];
+    }
+
+
+    const key = "0".repeat(boxesCount.length), ansKey = '1'.repeat(boxesCount.length);
+    
+    let dp = {};
 
     dp[key] = 0;
 
-    while(maxLen > 1) {
+    let max = 0;
 
-        const nextDp = {};
+    while(true) {
 
-        let len = 0;
+        const newDp = {};
 
-        for(const key in dp) {
+        for(const vis in dp) {
 
-             const score = dp[key], arr = key.length ? key.split(':').map(n => +n) : [];
+            if(vis === ansKey) continue;
 
-             let i = 0;
+            const score = dp[vis];
 
-             while(i < arr.length) {
+            for(let i = 0; i < vis.length; i++) {
 
-                const count = continuousFrom(arr, i);
+                if(vis[i] === '1') continue;
 
-                const newKey = [...arr], newScore = score + count * count;
-                newKey.splice(i, count);
-                len = Math.max(len, newKey.length);
-                const k = newKey.join(':');
-                nextDp[k] = Math.max((nextDp[k] || 0), newScore);
-                i += count;
-            }             
+                [newScore, newVisited] = countContiguous(i, vis);
+
+                newDp[newVisited] = Math.max((newDp[newVisited] || 0), score + newScore);
+            }
+
         }
 
-        dp = nextDp;
+        dp = newDp;
 
-        maxLen = Math.min(maxLen, len);
-        max = Math.max(max, (dp[""] || 0));
+        console.log(Object.keys(dp).length);
+
+        max = Math.max(max, (dp[ansKey] || 0));
+
+        if(Object.keys(dp).length === 1) break;
     }
 
-    console.dir(dp);
 
-   return max;
+
+    //console.table(boxesCount);
+
+    return max;
 };
 
-let boxes = [1,3,2,2,2,3,4,3,1];
+//let boxes = [1,3,2,2,2,3,4,3,1];
 
-//boxes = [1,1,1];
+boxes = [1,1,1];
+boxes = [1,3,4,3,1];
+
 
 boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3,1,7];
-boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3];
+//boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3];
 
 boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3,1,7,3,2,3,3,3,1,1,1,5,7,2,3];
+
 
 console.log(removeBoxes(boxes));
