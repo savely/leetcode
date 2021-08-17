@@ -42,106 +42,49 @@ Constraints:
  */
  var removeBoxes = function(boxes) {
 
-    const boxesCount = [];
+    const l = boxes.length;
 
-    let color = boxes[0], count = 1;
+    let dp = new Array(l).fill(0).map(_ => new Array(l).fill(0).map(_1 => new Array(l).fill(0)));
 
-    for(let i = 1; i < boxes.length; i++) {
+    const f = (i, j, k) => {
 
-        if(boxes[i - 1] === boxes[i]) {
-            count++;
-            continue;
+        if(i > j) return 0;
+
+        if(dp[i][j][k] > 0) return dp[i][j][k];
+
+        const origI = i, origK = k;
+
+        while((i + 1) < j && boxes[i] === boxes[i + 1]) {
+            i++;
+            k++;
         }
 
-        boxesCount.push([color, count]);
+        let res = (k + 1) * (k + 1) + f(i + 1, j, 0);
 
-        color = boxes[i];
-        count = 1;
-    }
+        for(let l = i + 1; l <= j; l++) {
 
-    boxesCount.push([color, count]);
-
-    const countContiguous = (from, visited) => {
-
-        let newVis = visited.slice(0, from);
-
-        const [color, count] = boxesCount[from];
-
-        newVis += "1";
-
-        let newCount = count;
-
-        for(let i = from + 1; i < boxesCount.length; i++) {
-
-            const [col, cnt] = boxesCount[i];
-
-            if(visited[i] === '1')  {
-                newVis  += '1';                
-                continue;
+            if(boxes[i] === boxes[l]) {
+                res = Math.max(res, f(i + 1, l - 1, 0) + f(l, j, k + 1));
             }
-
-            if(col !== color) break;
-
-            newCount += cnt;
-            newVis  += '1';
         }
 
-        return [newCount * newCount, newVis + visited.slice(newVis.length)];
+        dp[origI][j][origK] = res;
+
+        return res;
     }
 
+    const res = f(0, l - 1, 0);
 
-    const key = "0".repeat(boxesCount.length), ansKey = '1'.repeat(boxesCount.length);
-    
-    let dp = {};
-
-    dp[key] = 0;
-
-    let max = 0;
-
-    while(true) {
-
-        const newDp = {};
-
-        for(const vis in dp) {
-
-            if(vis === ansKey) continue;
-
-            const score = dp[vis];
-
-            for(let i = 0; i < vis.length; i++) {
-
-                if(vis[i] === '1') continue;
-
-                [newScore, newVisited] = countContiguous(i, vis);
-
-                newDp[newVisited] = Math.max((newDp[newVisited] || 0), score + newScore);
-            }
-
-        }
-
-        dp = newDp;
-
-        console.log(Object.keys(dp).length);
-
-        max = Math.max(max, (dp[ansKey] || 0));
-
-        if(Object.keys(dp).length === 1) break;
-    }
-
-
-
-    //console.table(boxesCount);
-
-    return max;
+    return res;
 };
 
-//let boxes = [1,3,2,2,2,3,4,3,1];
+let boxes = [1,3,2,2,2,3,4,3,1];
 
-boxes = [1,1,1];
-boxes = [1,3,4,3,1];
+//boxes = [1,1,1];
+//boxes = [1,3,4,3,1];
 
 
-boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3,1,7];
+//boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3,1,7];
 //boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3];
 
 boxes = [1,3,2,5,6,5,2,2,5,5,7,7,6,5,5,3,4,3,1,7,3,2,3,3,3,1,1,1,5,7,2,3];
