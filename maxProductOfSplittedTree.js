@@ -81,11 +81,3 @@ The number of nodes in the tree is in the range [2, 5 * 104].
 
     return max % (10 ** 9 + 7);
 };
-
-let root = [1,2,3,4,5,6];
-root = [1,null,2,3,4,null,null,5,6];
-root = [2,3,9,10,7,8,6,5,4,11,1];
-root = [1,1];
-root = [43,71,611,287,90,319,null,766,533,null,565,191,844,405,912,1,546,334,780,109,232,997,336,962,null,162,148,562,463,399,238,null,534,156,null,494,null,834,18,null,null,null,null,256,910,null,552,null,null,956,545,859,163,589,454,null,119,null,null,null,null,null,null,null,null,803,188,776,null,407,429,null,850,287,967,299,51,157,903,null,797,616,776,null,null,83,null,null,487,null,null,null,965,null,509,null,null,null,null,null,null,461,795,null,null,null,null,987,503,691,772,399,738,944,822,null,874,null,null,null,null,858,null,null,null,null,null,null,null,null,null,null,917,null,null,621,370,null,null,836,null,null,null,null,null,null,411,null,null,null,null,463,411,149,null,417,69,null,null,null,614,942,283,30,675,null,44,null,null,null,null,139,173,823,null,381,null,null,851,null,null,null,586,null,null,null,null,826,338,null,null,null,247,null,null,null,null,null,846];
-
-console.log(maxProduct(fromArray(root)));
