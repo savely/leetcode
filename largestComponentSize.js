@@ -105,7 +105,7 @@ const union = (node1, node2) => {
 
         factors[m] = (factors[m] || makeSet());
 
-        const node = find(factors[m]);
+        const node = factors[m];
 
         for (let i = 2; i < factorsN.length; i++) {
 
@@ -113,7 +113,7 @@ const union = (node1, node2) => {
 
              factors[m] = (factors[m] || makeSet());
 
-             const currNode = find(factors[m]);
+             const currNode = factors[m];
 
              union(node, currNode);
         }
