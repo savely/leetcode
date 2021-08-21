@@ -125,10 +125,3 @@ const union = (node1, node2) => {
 
     return max;
 };
-
-let  nums = [4,6,15,35];
-nums = [20,50,9,63];
-nums = [2,3,6,7,4,12,21,39];
-nums = [83,99,39,11,19,30,31];
-
-console.log(largestComponentSize(nums));
