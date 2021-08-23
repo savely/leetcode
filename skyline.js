@@ -107,9 +107,3 @@ const { MaxPriorityQueue }  = require('@datastructures-js/priority-queue');
     }
     return res;
 };
-
-let buildings = [[2,9,10],[3,7,15],[5,12,12],[15,20,10],[19,24,8]];
-//buildings = [[0,2,3],[2,5,3]];
-//buildings = [[4,9,10],[4,9,15],[4,9,12],[10,12,10],[10,12,8]];// [[4,15],[9,0],[10,10],[12,0]]
-
-console.dir(getSkyline(buildings));
