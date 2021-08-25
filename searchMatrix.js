@@ -150,57 +150,7 @@ var removeOuterParentheses = function(S) {
 
   //console.log(removeOuterParentheses("()()"))
 
-  var sortedSquares = function(A) {
-    
-    if(A.length === 0) return A
-
-    if(A[0] >= 0) return A.map(x => x*x)
-
-    if(A[A.length-1] <= 0) return A.reverse().map(x => x*x)
-    
-    let pos = 0
-    
-    while(A[pos] < 0 && pos < A.length) {
-        pos++
-    }
-   
-    const res = []
-    let neg = pos - 1
-    
-    while(neg >= 0 || pos < A.length) {
-       
-        let n = A[neg] * A[neg]
-        let p = A[pos] * A[pos]
-
-        if(isNaN(p)) {
-            res.push(n)
-            neg--
-            continue
-        }
-        
-        if(isNaN(n)) {
-            res.push(p)
-            pos++
-            continue
-        }
-
-        if(n <= p) {
-            res.push(n)
-            neg--
-            continue
-        }
-        
-        res.push(p)
-        pos++
-    }
-    
-    return res
-};
-
-//console.log(sortedSquares([-4,-1,0,3,10]))
-//console.log(sortedSquares([-7,-3,2,3,11]))
-//console.log(sortedSquares([-7,-4,-3,-2,-1]))
-//console.log(sortedSquares([-3,0,2]))
+  
 
 var sortArrayByParity = function(A) {
     
