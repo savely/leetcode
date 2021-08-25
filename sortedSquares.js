@@ -26,47 +26,35 @@ nums is sorted in non-decreasing order.
 
 var sortedSquares = function(A) {
     
-    if(A.length === 0) return A
+    if(A.length === 0) return A;
 
-    if(A[0] >= 0) return A.map(x => x*x)
+    if(A[0] >= 0) return A.map(x => x*x);
 
-    if(A[A.length-1] <= 0) return A.reverse().map(x => x*x)
+    if(A[A.length-1] <= 0) return A.reverse().map(x => x*x);
     
-    let pos = 0
-    
-    while(A[pos] < 0 && pos < A.length) {
-        pos++
+    let i = 0;
+
+    while(A[i] < 0) i++;
+
+    const res = [];
+
+    let pos = i, neg = i - 1;
+
+    while(pos < A.length || neg > -1) {
+
+     const negSq = A[neg] * A[neg], posSq = A[pos] * A[pos];
+
+      if(neg < 0 || negSq >= posSq){
+          res.push(posSq);
+          pos++;
+          continue;
+      }
+      
+      if(pos >= A.length || posSq >= negSq) {
+          res.push(negSq);
+          neg--;
+      }
+      
     }
-   
-    const res = []
-    let neg = pos - 1
-    
-    while(neg >= 0 || pos < A.length) {
-       
-        let n = A[neg] * A[neg]
-        let p = A[pos] * A[pos]
-
-        if(isNaN(p)) {
-            res.push(n)
-            neg--
-            continue
-        }
-        
-        if(isNaN(n)) {
-            res.push(p)
-            pos++
-            continue
-        }
-
-        if(n <= p) {
-            res.push(n)
-            neg--
-            continue
-        }
-        
-        res.push(p)
-        pos++
-    }
-    
-    return res
+    return res;
 };
