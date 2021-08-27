@@ -71,8 +71,3 @@ var findLUSlength = function(strs) {
 
     return -1;
 };
-
-let strs = ["aba","cdc","eae", "zzaa","aazz","zzaa","aazzz","aazzz"];
-//strs = ["aabbcc", "aabbcc","c","e","aabbcd"];
-
-console.log(findLUSlength(strs));
