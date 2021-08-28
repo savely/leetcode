@@ -36,19 +36,21 @@ s consists of English letters, digits, symbols and spaces.
 
 var lengthOfLongestSubstring = function(s) {
     
-    let map = new Map()
-    let res = 0
-    let i = 0;
+    if(s.length < 2) return s.length;
     
-    for( j = 0; j < s.length; j++) {
-          if(map.has(s[j])) {
-             i = Math.max(map.get(s[j]), i)
-          }
-          res = Math.max(res, j-i+1)
-          map.set(s[j] , j+1)  
-                
+    const set = new Set([s[0]]);
+    
+    let max = 1, i = 1, j = 0;
+    
+    while(i < s.length || (s.length - j - 1) >= max) {
+        
+        if(i < s.length && !set.has(s[i])) {
+            set.add(s[i]);
+            max = Math.max(max, i - j  + 1);
+            i++;
+        } else {
+            set.delete(s[j++]);
+        }
     }
-    return res
+    return max;
 };
-
-console.log(lengthOfLongestSubstring("pwwkew"))
