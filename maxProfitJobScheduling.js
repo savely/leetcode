@@ -49,31 +49,34 @@ Constraints:
  */
  var jobScheduling = function(startTime, endTime, profit) {
     
+    const dp = new Array(startTime.length), order = new Array(startTime.length);
 
-    startTime = startTime.map((st, i) => [st, endTime[i], profit[i]]);
-    delete endTime;
-    delete profit;
+    for(let i = 0; i < startTime.length; i++) {
 
-    startTime.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+        dp[i] = Infinity;
+        order[i] = i;
+    }
 
-    const dp = new Array(startTime.length).fill(Infinity);
+    order.sort((a, b) => startTime[a] - startTime[b] || endTime[a] - endTime[b]);
 
     const f = from => {
 
         if (from >= startTime.length) return 0;
 
-        const [start ,end , profit] = startTime[from];
+        const pos = order[from];
+
+        const [start ,end , prof] = [startTime[pos], endTime[pos], profit[pos]];
 
         if(isFinite(dp[from])) return dp[from];        
 
         let maxNextProfit = 0, i = from + 1;
 
-        while(i < startTime.length && startTime[i][0] < end) {
-
+        while(i < startTime.length && startTime[order[i]] < end) {
+            
             maxNextProfit = Math.max(maxNextProfit, f(i++));
         }
 
-        dp[from] = Math.max(maxNextProfit, profit + f(i));
+        dp[from] = Math.max(maxNextProfit, prof + f(i));
 
         return dp[from];
     };
