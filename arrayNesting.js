@@ -1,28 +1,37 @@
 /*
-    #565
+    #565. Array Nesting
 
-A zero-indexed array A of length N contains all integers from 0 to N-1. Find and return the longest length of set S, where S[i] = {A[i], A[A[i]], A[A[A[i]]], ... } subjected to the rule below.
+You are given an integer array nums of length n where nums is a permutation of the numbers in the range [0, n - 1].
 
-Suppose the first element in S starts with the selection of element A[i] of index = i, the next element in S should be A[A[i]], and then A[A[A[i]]]… By that analogy, we stop adding right before a duplicate element occurs in S.
+You should build a set s[k] = {nums[k], nums[nums[k]], nums[nums[nums[k]]], ... } subjected to the following rule:
+
+The first element in s[k] starts with the selection of the element nums[k] of index = k.
+The next element in s[k] should be nums[nums[k]], and then nums[nums[nums[k]]], and so on.
+We stop adding right before a duplicate element occurs in s[k].
+Return the longest length of a set s[k].
 
  
 
 Example 1:
 
-Input: A = [5,4,0,3,1,6,2]
+Input: nums = [5,4,0,3,1,6,2]
 Output: 4
 Explanation: 
-A[0] = 5, A[1] = 4, A[2] = 0, A[3] = 3, A[4] = 1, A[5] = 6, A[6] = 2.
+nums[0] = 5, nums[1] = 4, nums[2] = 0, nums[3] = 3, nums[4] = 1, nums[5] = 6, nums[6] = 2.
+One of the longest sets s[k]:
+s[0] = {nums[0], nums[5], nums[6], nums[2]} = {5, 6, 2, 0}
+Example 2:
 
-One of the longest S[K]:
-S[0] = {A[0], A[5], A[6], A[2]} = {5, 6, 2, 0}
+Input: nums = [0,1,2]
+Output: 1
  
 
-Note:
+Constraints:
 
-N is an integer within the range [1, 20,000].
-The elements of A are all distinct.
-Each element of A is an integer within the range [0, N-1].    
+1 <= nums.length <= 105
+0 <= nums[i] < nums.length
+All the values of nums are unique. 
+
 */
 
 /**
@@ -30,78 +39,33 @@ Each element of A is an integer within the range [0, N-1].
  * @return {number}
  */
  var arrayNesting = function(nums) {
- 
-    let max = 0
-    
+
+    let res = 1;
+
     for(let i = 0; i < nums.length; i++) {
 
-        
-        if(nums[i] === -1) continue;
-        
-       let count = 1, idx = nums[i] 
-       
-       nums[i] = -1
-       
-        while(nums[idx] > -1) {
-            count++
-            const next = nums[idx]            
-            nums[idx] = -1
-            idx = next
+        if(nums[i] < 0) continue;
+
+        let j = nums[i], curr = 0;
+
+        while(nums[j] > -1) {
+
+            const next = nums[j];
+            curr++;
+            nums[j] = -1;
+            j = next;
         }
-        
-        max = Math.max(max, count)
-        
+
+        res = Math.max(res, curr);
     }
-    
-    return max
+
+    return res;    
 };
 
-let arr =  [5,4,0,3,1,6,2]
+let arr =  [5,4,0,3,1,6,2];
 
-//console.log(arrayNesting(arr))
+arr = nums = [0,1,2];
+
+console.log(arrayNesting(arr))
 
 
-const sum = a => {
-    return b => { 
-        if(b) return sum(a + b)
-
-        return a
-       }
-} 
-
-const calc = (f, ...params) => {
-    return (...args) => {
-        if(params.length + args.length >= f.length) {
-            return f.apply(this, params.concat(args))
-        }
-        return calc(f, ...params, ...args)
-    }
-}
-
-const curry = (f, ..._) => {
-      if(typeof f !== "function") {
-          throw new Error("curry() must accept function as a first parameter")
-      }  
-       
-    const params = [], func = f
-
-    const curried =  (arg, ...rest) => {
-
-        params.push(arg)
-        
-        if(params.length === f.length) {
-              return func.apply(this, params)
-        }
-
-        return curried
-    }
-
-    return curried
-}
-
-const sum3 = (a,b,c) => a + b + c
-const mul3  = (a,b,c) => a * b * c
-const f = curry(sum3)
-const g = curry(mul3)
-
-console.log(g(11)(4)(2))
