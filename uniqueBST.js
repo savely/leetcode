@@ -1,5 +1,6 @@
 /*
-95. Unique Binary Search Trees II
+#95. Unique Binary Search Trees II
+
 Given an integer n, return all the structurally unique BST's (binary search trees), which has exactly n nodes of unique values from 1 to n. 
 Return the answer in any order.
 
@@ -75,5 +76,3 @@ generate all structurally unique BST's (binary search trees) that store values 1
 
     return generate(1, n);
 };
-
-console.table(generateTrees(8).map(tree => toArray(tree)));
