@@ -2,7 +2,9 @@
 /*
 #209. Minimum Size Subarray Sum
 
-Given an array of positive integers nums and a positive integer target, return the minimal length of a contiguous subarray [numsl, numsl+1, ..., numsr-1, numsr] of which the sum is greater than or equal to target. If there is no such subarray, return 0 instead.
+Given an array of positive integers nums and a positive integer target, return the minimal length of a contiguous 
+subarray [numsl, numsl+1, ..., numsr-1, numsr] of which the sum is greater than or equal to target. 
+If there is no such subarray, return 0 instead.
 
  
 
@@ -38,21 +40,21 @@ Follow up: If you have figured out the O(n) solution, try coding another solutio
  */
 var minSubArrayLen = function(s, nums) {
     
-    let sum = 0, min = 0, hi = 0, lo = 0
+    let sum = nums[0], min = Infinity, left = 0, right = 0; 
 
-    while (hi <= nums.length) {
-        if(sum >= s) {
-            if(min === 0) {
-                min = hi - lo 
-             } else {
-                min = Math.min(min, hi - lo)
-             }
-             sum -= nums[lo++]            
-        } else {
-           sum += nums[hi++] 
+    while(right < nums.length) {
+
+        if(sum < s) {
+           sum += nums[++right];
+           continue;
         }
-    }
-    return min
-};
 
-console.log(minSubArrayLen(7,[2,3,1,2,4,3]))
+        if(sum >= s && left === right) return 1;
+
+        min = Math.min(min, right - left + 1);
+
+        sum -= nums[left++];
+    }
+
+    return isFinite(min) ? min : 0;
+};
