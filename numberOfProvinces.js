@@ -41,9 +41,10 @@ isConnected[i][j] == isConnected[j][i]
  * @return {number}
  */
  var findCircleNum = function(isConnected) {
-  
-    
+      
     const ds = new Array(isConnected.length).fill(-1);
+
+    let groups = isConnected.length;
 
     const find = (i) => {
 
@@ -57,6 +58,8 @@ isConnected[i][j] == isConnected[j][i]
         const pi = find(i), pj = find(j);
 
         if(pi === pj) return pi;
+
+        groups--;
 
         const ri = ds[pi], rj = ds[pj];
 
@@ -78,12 +81,5 @@ isConnected[i][j] == isConnected[j][i]
         }
     }
 
-    let numProvinces = 0;
-
-    for(let i = 0; i < ds.length; i++) {
-
-        if(ds[i] < 0) numProvinces++;
-    }
-
-    return numProvinces;
+    return groups;
 };
