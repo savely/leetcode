@@ -1,24 +1,55 @@
+/*
+#438. Find All Anagrams in a String
+
+Given two strings s and p, return an array of all the start indices of p's anagrams in s. You may return the answer in any order.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+ 
+
+Example 1:
+
+Input: s = "cbaebabacd", p = "abc"
+Output: [0,6]
+Explanation:
+The substring with start index = 0 is "cba", which is an anagram of "abc".
+The substring with start index = 6 is "bac", which is an anagram of "abc".
+Example 2:
+
+Input: s = "abab", p = "ab"
+Output: [0,1,2]
+Explanation:
+The substring with start index = 0 is "ab", which is an anagram of "ab".
+The substring with start index = 1 is "ba", which is an anagram of "ab".
+The substring with start index = 2 is "ab", which is an anagram of "ab".
+ 
+
+Constraints:
+
+1 <= s.length, p.length <= 3 * 104
+s and p consist of lowercase English letters.
+*/
 var findAnagrams = function(s, p) {
     
-    const hash = new Map()
-    const res  = []
+    const hash = new Map();
+    const res  = [];
 
     for(let i = 0; i < p.length; i++) {
         if(!hash.has(p[i])) {
-           hash.set(p[i],1)
-           continue
+           hash.set(p[i],1);
+           continue;
         }
-        hash.set(p[i], hash.get(p[i])+1)
+        hash.set(p[i], hash.get(p[i])+1);
     }
 
-    let tmp = new Map(hash)
+    let tmp = new Map(hash);
 
     for(let i = 0; i <= s.length-p.length; i++) {
         if(!hash.has(s[i])) {
-             continue
+             continue;
         }
-        tmp = new Map(hash)
-        let j = i
+        tmp = new Map(hash);
+        let j = i;
 
         while(tmp.size > 0) {
            if(!tmp.has(s[j])) {
@@ -26,27 +57,27 @@ var findAnagrams = function(s, p) {
            }
            let count = tmp.get(s[j])
            if(count === 1) {
-               tmp.delete(s[j])
+               tmp.delete(s[j]);
            } else {
-               tmp.set(s[j], count-1)
+               tmp.set(s[j], count-1);
            }
-           j++
+           j++;
         }
 
         if(tmp.size === 0) {
-            res.push(i)
+            res.push(i);
 
             while(j < s.length && s[i] === s[j]) {
-               i++
-               j++
-               res.push(i)
+               i++;
+               j++;
+               res.push(i);
             }
 
         } else if(!hash.has(s[j])) {
-            i = j
+            i = j;
         }
     }
-    return res
+    return res;
 };
 
-console.log(findAnagrams('aaaabaaaab','aaa'))
+console.log(findAnagrams('aaaabaaaab','aaa'));
