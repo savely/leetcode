@@ -61,24 +61,22 @@ Constraints:
     const dist = new Array(n).fill(-1);
     const childs  = new Array(n).fill(0);
 
-    const visited = new Set();
      
      const empty = new Set();
      
 
-    const dfs = node =>  {
+    const dfs = (node, parent) =>  {
 
         let sumDist = 0, count = 0;
 
-        if(visited.has(node)) return 0;
 
-        visited.add(node);
+        if(node === parent) return 0;
 
         for(const child of (adj[node] || empty)) {
 
-            if(visited.has(child)) continue;
+            if(child === parent) continue;
 
-            sumDist +=  dfs(child);
+            sumDist +=  dfs(child, node);
 
             count += 1 + childs[child];
         }
@@ -89,29 +87,25 @@ Constraints:
         return dist[node];
     };
 
-    dfs(0);
-
-    visited.clear();
+    dfs(0, n);
 
 
-    const dfs2 = node => {
+    const dfs2 = (node, parent) => {
 
-        if(visited.has(node)) return 0;
-
-        visited.add(node);
+        if(node === parent) return 0;
 
         for(const child of (adj[node] || empty)) {
 
-            if(visited.has(child)) continue;
+            if(child === parent) continue;
 
             dist[child] = dist[node] + n - 2 * (childs[child] + 1);
 
-            dfs2(child);
+            dfs2(child, node);
         }
         
     };
 
-    dfs2(0);
+    dfs2(0, n);
 
     return dist;
 };
