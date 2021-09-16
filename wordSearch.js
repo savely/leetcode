@@ -72,23 +72,3 @@ var exist = function(board, word) {
     
     return false;
 };
-
-let board =
-[
-  ['A','B','C','E'],
-  ['S','F','C','S'],
-  ['A','D','E','E']
-]
-
-
-let str = "ABCESEEEFS";
-
-board = [
-    ["A","B","C","E"],
-    ["S","F","E","S"],
-    ["A","D","E","E"]
-];
-
-str = 'ABCESEEEFSAD';
-
-console.log(exist(board, str));
