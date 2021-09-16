@@ -36,53 +36,59 @@ Constraints:
 */
 
 var exist = function(board, word) {
- 
-    if(board.length === 0) return false;
 
-    const search = function (vstd, idx, pos) {
+    const h = board.length - 1, w = board[0].length - 1;
 
-     if(word.length <= idx) return true;
-
-    let [m,n] = pos;
+    const dfs = function (i, j, idx) {
     
-    if(m < 0 || m >= board.length)    return false
-    if(n < 0 || n >= board[0].length) return false
-    if(board[m][n] !== word[idx])     return false
-    if(vstd.has(pos.toString()))      return false
+    if(i < 0 || i > h)  return false;
+    if(j < 0 || j > w)  return false;
+    if(board[i][j] !== word[idx])   return false;
 
-     idx++;
-     const visited = new Set(vstd);
-     visited.add(pos.toString());
+    if(idx === word.length - 1) return true;
 
-     return   search(visited, idx, [m+1,n])
-           || search(visited, idx, [m-1,n])
-           || search(visited, idx, [m,n+1])
-           || search(visited, idx, [m,n-1]);
+    const letter = board[i][j];
+
+    board[i][j] = '*';
+
+    const next = idx + 1;
+
+    const res = dfs(i + 1, j, next)
+                || dfs(i - 1, j, next)
+                || dfs(i, j + 1, next)
+                || dfs(i, j - 1, next);
+    
+    board[i][j] = letter;
+
+    return res;
     }
 
     for(let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[0].length; j++) {
-            if(search(new Set(), 0, [i,j] )) {
-                   return true;
-               }
+
+            if(board[i][j] === word[0] && dfs(i, j, 0)) return true;
         }
     }
     
     return false;
 };
 
-const board =
+let board =
 [
   ['A','B','C','E'],
   ['S','F','C','S'],
   ['A','D','E','E']
 ]
 
-board2 = [
+
+let str = "ABCESEEEFS";
+
+board = [
     ["A","B","C","E"],
     ["S","F","E","S"],
     ["A","D","E","E"]
-]
-str = "ABCESEEEFS"
+];
 
-console.log(exist(board2, 'ABCESEEEFSAB'))
+str = 'ABCESEEEFSAD';
+
+console.log(exist(board, str));
