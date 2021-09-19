@@ -56,9 +56,14 @@ Constraints:
          
         if(tgt < 0 ) return;
 
-        if( tgt === 0 && !visited.has(cand.toString())) {
+        const hash = cand.toString();
+
+        if(visited.has(hash)) return;
+
+        visited.add(hash);
+
+        if( tgt === 0) {
             res.push(Array.from(cand));
-            visited.add(cand.toString());
             return;
         }
 
@@ -68,6 +73,7 @@ Constraints:
           cand.pop();
         }
     }
+    
     backTrack(0, target);
 
     return res;
