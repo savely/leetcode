@@ -68,8 +68,3 @@ Constraints:
     
     return Math.min(...dp[matrix.length % 2 ? 0 : 1]);
 };
-
-let matrix = [[2,1,3],[6,5,4],[7,8,9]];
-matrix = [[2,1,3,0],[6,5,4,8],[7,8,9,4],[34,16,23,44]];
-
-console.log(minFallingPathSum(matrix));
