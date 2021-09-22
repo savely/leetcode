@@ -69,12 +69,3 @@ arr[i] contains only lower case English letters.
 
     return f(0, 0);
 };
-
-let arr = ["un","iq","ue"];
-
-arr = ["cha","r","act","ers"];
-
-arr = ["abcdefghijklmnopqrstuvwxyz"];
-arr = ["yy","bkhwmpbiisbldzknpm"];
-
-console.log(maxLength(arr));
