@@ -47,14 +47,18 @@ arr[i] contains only lower case English letters.
 
             if((b & code) !== 0) return [0, 0];
 
-            b |= 1 << (ch.charCodeAt(0) - 97);
+            b |= code;
         }
         return [str.length, b];
     }).filter(([length, _]) => length > 0);
 
+    const dp = {};
+
     const f = (idx, mask) => {
 
         if(idx >= arr.length) return 0;
+
+        if(dp[idx] && dp[idx][mask] !== undefined) return dp[idx][mask];        
 
         const [len , currMask] = arr[idx];
 
@@ -64,7 +68,11 @@ arr[i] contains only lower case English letters.
             curr = len + f(idx + 1, mask | currMask);
         }
 
-        return Math.max(curr, f(idx + 1, mask));
+        dp[idx] = (dp[idx] || {});
+
+        dp[idx][mask] = Math.max(curr, f(idx + 1, mask));
+
+        return dp[idx][mask];
     }
 
     return f(0, 0);
