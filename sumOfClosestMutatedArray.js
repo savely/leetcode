@@ -39,40 +39,22 @@ Constraints:
  * @return {number}
  */
  var findBestValue = function(arr, target) {
-    
-    const sums = [0];
 
     arr.sort((a, b) => a - b);
 
-    for(let i = 1; i <= arr.length; i++) {
-        sums[i] = sums[i - 1] + arr[i - 1];
-    }
+    let sum = 0;
 
-    if(sums[sums.length - 1] <= target) return arr[arr.length - 1];
+    for(let i = 0; i < arr.length; i++) {
 
-    let lo = 0, hi = arr.length - 1;
+        const el = arr[i], count = arr.length - i;
 
-    while(hi >= lo) {
+        if(sum + el * count > target) {
 
-        const mid = (hi + lo) / 2 >> 0, cand = sums[mid] + arr[mid] * (arr.length - mid);
-
-        if(cand === target) return arr[mid];
-
-        if(cand > target) {
-
-            const prevCand = sums[mid - 1] + (arr[mid - 1] || 0) * (arr.length - (mid - 1));
-
-            if(prevCand === target) return (arr[mid - 1] || 0);
-
-            if(prevCand > target) {
-                hi = mid - 1;
-                continue;
-            }
-            
-             return Math.ceil((target - sums[mid]) / (arr.length -  mid) - 0.5);
-        } else {
-            lo = mid + 1;
+            return Math.ceil((target - sum) / (arr.length - i ) - 0.5);
         }
+
+        sum += el;
     }
-    return 0;
+
+    return arr[arr.length - 1];
 };
