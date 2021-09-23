@@ -76,9 +76,3 @@ Constraints:
     }
     return 0;
 };
-
-let arr = [4,9,3], target = 10;
-//arr = [2,3,5], target = 10;
-arr = [60864,25176,27249,21296,20204], target = 56803; //11361
-
-console.log(findBestValue(arr, target));
