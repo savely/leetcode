@@ -47,6 +47,7 @@ grid[0][0] == grid[m - 1][n - 1] == 0
 
 */
 
+const { MinPriorityQueue }  = require('@datastructures-js/priority-queue');
 
 /**
  * @param {number[][]} grid
@@ -60,28 +61,38 @@ grid[0][0] == grid[m - 1][n - 1] == 0
 
     if(k >= m + n - 2) return m + n - 2;
 
-    const queue = [[0,0,k,0]], visited = new Set([`0:0:${k}`]);
+    const queue = new MinPriorityQueue(), minDist = {};
 
-    let steps = 0;
+    queue.enqueue([0,0,k], 0);
 
-    while(queue.length) {
+    minDist[`0:0:${k}`] = 0;
 
-        const [x, y, eliminate, steps] = queue.shift();
+    while(!queue.isEmpty()) {
+
+        const { element } = queue.dequeue();
+
+        const [x, y, eliminate] = element, dist = minDist[`${x}:${y}:${eliminate}`];
 
         for(const [i, j] of [[x+1,y],[x-1,y],[x,y+1],[x,y-1]]) {
 
-            if(i === m - 1 && j === n -1 && (eliminate - grid[i][j] >= 0)) return steps + 1;
+            if(i === m - 1 && j === n -1 && (eliminate - grid[i][j] >= 0)) {
+                return dist + 1;
+            }
 
             if(i < 0 || i >= m) continue;
             if(j < 0 || j >= n) continue;
 
             const elmnt = eliminate - grid[i][j];
 
-            if(elmnt < 0 || visited.has(`${i}:${j}:${elmnt}`)) continue;
+            if(elmnt < 0) continue;
 
-            visited.add(`${i}:${j}:${elmnt}`);
+            const newDist = dist + 1, key = `${i}:${j}:${elmnt}`;
 
-            queue.push([i, j, elmnt, steps + 1]);
+            if(minDist[key] !== undefined && minDist[key] <= newDist) continue;
+
+            minDist[key] = newDist;
+
+            queue.enqueue([i, j, elmnt], newDist + (m - i) + (n - j));
          }
 
     }
