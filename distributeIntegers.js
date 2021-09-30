@@ -1,7 +1,9 @@
 /*
 #1655. Distribute Repeating Integers
 
-You are given an array of n integers, nums, where there are at most 50 unique values in the array. You are also given an array of m customer order quantities, quantity, where quantity[i] is the amount of integers the ith customer ordered. Determine if it is possible to distribute nums such that:
+You are given an array of n integers, nums, where there are at most 50 unique values in the array. 
+You are also given an array of m customer order quantities, quantity, where quantity[i] is the amount of integers the ith customer ordered. 
+Determine if it is possible to distribute nums such that:
 
 The ith customer gets exactly quantity[i] integers,
 The integers the ith customer gets are all equal, and
@@ -48,7 +50,6 @@ m == quantity.length
 There are at most 50 unique values in nums.
 */
 
-const { MaxPriorityQueue }  = require('@datastructures-js/priority-queue');
 
 /**
  * @param {number[]} nums
@@ -57,37 +58,44 @@ const { MaxPriorityQueue }  = require('@datastructures-js/priority-queue');
  */
  var canDistribute = function(nums, quantity) {
 
+    const counts = Object.values(nums.reduce((acc, n) => {
+        acc[n] = (acc[n] || 0) + 1;
+        return acc;
+    }, {}));
+
+    counts.sort((a, b) => b - a)
     quantity.sort((a, b) => b - a);
-    
-    const numbers = new Array(50).fill(0);
 
-    for(const n of nums) {
-        numbers[n - 1]++;
-    }
+    if(quantity[0] > counts[0]) return false;
 
-    const queue = new MaxPriorityQueue();
+    const f = (idx, counts) => {
 
-    for(let i = 0; i < 50; i++) {
+        if(idx >= quantity.length) return false;
 
-        if(numbers[i] === 0) continue;
+        const qt = quantity[idx];
 
-        queue.enqueue(i + 1, numbers[i]);
-    }
+        for(let i = 0; i < counts.length; i++) {
 
-    for(const amount of quantity) {
+            if(counts[i] < qt) continue;
 
-        const {element : num, priority : count} = queue.front();
+            if(idx === quantity.length - 1) return true;
 
-        if(amount > count) return false;
+            cnts = [...counts];
 
-        queue.dequeue();
+            cnts[i] -= qt;
 
-        if(count > amount) queue.enqueue(num, count - amount);
-    }
+            if(f(idx + 1, cnts)) return true;
+        }
 
-    return true;
+        return false;
+    };
+
+    return f(0, counts);
 };
 
+let nums = [1,2,3,4], quantity = [2];
+nums = [1,2,2,2,3], quantity = [2,2];
+nums = [1,1,1,1,1], quantity = [2,3];
 nums = [1,1,1,1,2,2,2], quantity = [3,2,2];
 
 console.log(canDistribute(nums, quantity));
