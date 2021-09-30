@@ -63,10 +63,7 @@ There are at most 50 unique values in nums.
         return acc;
     }, {}));
 
-    counts.sort((a, b) => b - a)
     quantity.sort((a, b) => b - a);
-
-    if(quantity[0] > counts[0]) return false;
 
     const f = (idx, counts) => {
 
@@ -80,9 +77,10 @@ There are at most 50 unique values in nums.
 
             if(idx === quantity.length - 1) return true;
 
-            cnts = [...counts];
+            const cnts = [...counts];
 
             cnts[i] -= qt;
+
 
             if(f(idx + 1, cnts)) return true;
         }
@@ -92,10 +90,3 @@ There are at most 50 unique values in nums.
 
     return f(0, counts);
 };
-
-let nums = [1,2,3,4], quantity = [2];
-nums = [1,2,2,2,3], quantity = [2,2];
-nums = [1,1,1,1,1], quantity = [2,3];
-nums = [1,1,1,1,2,2,2], quantity = [3,2,2];
-
-console.log(canDistribute(nums, quantity));
