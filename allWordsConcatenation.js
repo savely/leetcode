@@ -97,9 +97,3 @@ words[i] consists of lower-case English letters.
 
     return res;    
 };
-
-let s = "barfoothefoobarman", words = ["foo","bar"];
-//s = "wordgoodgoodwordgoodbestword", words = ["word","good","best","word"];
-s = "barfoofoobarthefoobarman", words = ["bar","foo","the"];
-
-console.table(findSubstring(s, words));
