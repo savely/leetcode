@@ -67,35 +67,10 @@ var findWords = function(board, words) {
         for(let j = 0; j <= w; j++) {
 
             dfs([i, j], trie);
+
+            if(res.indexOf(false) < 0) return words;
         }
     }
 
     return words.filter((w, i) => res[i]);
 };
-
-let board = 
-  [
-    ['o','a','a','n'],
-    ['e','t','a','e'],
-    ['i','h','k','r'],
-    ['i','f','l','v']
-  ];
-  
-let words = ["oath","pea","eat","rain"];
-
-board = [["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"],
-         ["a","a","a","a","a","a","a","a","a","a","a","a"]];
-
-words = ["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"];
-
-console.log(findWords(board, words))

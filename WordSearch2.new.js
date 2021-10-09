@@ -86,29 +86,3 @@ var findWords = function(board, words) {
     
     return words.filter((w, i) => res[i]);
 };
-
-
-let board = [["o","a","a","n"],
-             ["e","t","a","e"],
-             ["i","h","k","r"],
-             ["i","f","l","v"]];
-
-let words = ["oath","pea","eat","rain"];
-
-board = [["a","b"]];
-words = ["ab"];
-
-board = [["o","a","a","n"],
-         ["e","t","a","e"],
-         ["i","h","k","r"],
-         ["i","f","l","v"]];
-words = ["oath","pea","eat","rain","hklf", "hf"];
-words = ["hklf", "hf"];
-
-board = [["a","b","c"],
-         ["a","e","d"],
-         ["a","f","g"]];
-
-//words = ["eaafgdcba","eaabcdgfa"];
-
-console.log(findWords(board, words));
