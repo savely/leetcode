@@ -2,104 +2,113 @@
 #212. Word Search II
 Given an m x n board of characters and a list of strings words, return all words on the board.
 
-Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once in a word.
+Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. 
+The same letter cell may not be used more than once in a word.
+
+Example 1:
+
+
+Input: board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
+Output: ["eat","oath"]
+Example 2:
+
+
+Input: board = [["a","b"],["c","d"]], words = ["abcb"]
+Output: []
+ 
+
+Constraints:
+
+m == board.length
+n == board[i].length
+1 <= m, n <= 12
+board[i][j] is a lowercase English letter.
+1 <= words.length <= 3 * 104
+1 <= words[i].length <= 10
+words[i] consists of lowercase English letters.
+All the strings of words are unique.
 */
 
 var findWords = function(board, words) {
     
-    const neighbours = (i, j) => {
-        return [[i - 1, j], [i, j - 1], [i + 1, j], [i, j + 1]].filter(([a, b]) => {
-        if(a < 0 || a > board.length -1) return false;
-        if(b < 0 || b > board[0].length -1) return false;
-        return true
-    })
-}
-        
-    const find = function(word, pos, i, j, visited) {
-      
-        if(pos === word.length - 1) return true
-            
-        const hash = `${i}|${j}`
-       
-        if(visited.has(hash) || board[i][j] !== word[pos]) return false
-        
-        visited.add(hash)
-        
-       
-        for (const [nextI, nextJ] of neighbours(i, j)) {
-            
-            const nextHash = `${nextI}|${nextJ}`
-            
-            if(board[nextI][nextJ] === word[pos + 1] && ! visited.has(nextHash)) {
-                
-                return  find(word, pos + 1, nextI, nextJ, new Set([...visited]))               
-            }
-        }
-        
-       return false 
-    }
-    
-    const wordsDict = new Map()
-    
-    for(const word of words) {
-        
-        const arr = wordsDict.get(word[0]) || []
-        arr.push(word)
-        wordsDict.set(word[0], arr)
-    }
-    
-    const res = []
-    
-    
-    for(let i = 0; i < board.length; i++) {
-        for(let j = 0; j < board[0].length; j++) {
-            
-            const letter = board[i] [j], words = wordsDict.get(letter)
+    const h = board.length - 1, w = board[0].length - 1;
 
-            if(!words) continue;
-            
+    const dfs = function (i, j, word, idx) {
+    
+    if(i < 0 || i > h)  return false;
+    if(j < 0 || j > w)  return false;
+    if(board[i][j] !== word[idx])   return false;
 
-            const toDelete = new Set()
-            
-            for (const word of words) {
-                
-                if(find(word, 0, i, j, new Set())) {
-                    toDelete.add(word) 
-                    res.push(word)
+    if(idx === word.length - 1) return true;
+
+    const letter = board[i][j];
+
+    board[i][j] = '*';
+
+    const next = idx + 1;
+
+    const res = dfs(i + 1, j, word, next)
+                || dfs(i - 1, j, word, next)
+                || dfs(i, j + 1, word, next)
+                || dfs(i, j - 1, word, next);
+    
+    board[i][j] = letter;
+
+    return res;
+    };
+
+    const wMap = {}, res = {};
+
+    for(let i = 0; i < words.length; i++) {
+
+        const word = words[i];
+        wMap[word[0]] = wMap[word[0]] || {};
+        wMap[word[0]][i] = true;
+    }
+
+    for(let i = 0; i <= h; i++) {
+
+        for(let j = 0; j <= w; j++) {
+
+            const ch = board[i][j], ids = wMap[ch] || {};
+
+            for(const id in ids) {
+
+                const word = words[id];
+
+                if(dfs(i, j, word, 0)) {
+                    res[id] = true;
+                    delete wMap[ch][id];
                 }
             }
-            if(toDelete.size) {
-                const newArr = []
-                for(let i = 0; i < words.length; i++) {
-                    if(!toDelete.has(words[i])) {
-                        newArr.push(words[i])
-                    }
-                }
-                wordsDict.set(letter, newArr)
-            }
-            
         }
     }
     
-    return res
+    return words.filter((w, i) => res[i]);
 };
 
 
 let board = [["o","a","a","n"],
              ["e","t","a","e"],
              ["i","h","k","r"],
-             ["i","f","l","v"]]
+             ["i","f","l","v"]];
 
-let words = ["oath","pea","eat","rain"]
+let words = ["oath","pea","eat","rain"];
 
-board = [["a","b"]]
-words = ["ab"]
+board = [["a","b"]];
+words = ["ab"];
 
 board = [["o","a","a","n"],
          ["e","t","a","e"],
          ["i","h","k","r"],
-         ["i","f","l","v"]]
-words = ["oath","pea","eat","rain","hklf", "hf"]
-words = ["hklf", "hf"]
+         ["i","f","l","v"]];
+words = ["oath","pea","eat","rain","hklf", "hf"];
+words = ["hklf", "hf"];
 
-console.log(findWords(board, words))
+board = [["a","b","c"],
+         ["a","e","d"],
+         ["a","f","g"]];
+
+//words = ["eaafgdcba","eaabcdgfa"];
+
+console.log(findWords(board, words));
