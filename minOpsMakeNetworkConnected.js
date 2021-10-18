@@ -88,10 +88,6 @@ Constraints:
     
     let disconnected = -1;
     
-    //console.log(numCables);
-    
-    //console.table(dSet);
-    
     for(const p of dSet) {
         disconnected += p < 0 ? 1 : 0;
         
@@ -100,11 +96,3 @@ Constraints:
     
     return disconnected;
 };
-
-let n = 6, connections = [[0,1],[0,2],[0,3],[1,2],[1,3]];
-
-n = 5, connections = [[0,1],[0,2],[3,4],[2,3]];
-
-n = 12, connections = [[1,5],[1,7],[1,2],[1,4],[3,7],[4,7],[3,5],[0,6],[0,1],[0,4],[2,6],[0,3],[0,2]]; //4
-
-console.log(makeConnected(n, connections));
