@@ -49,17 +49,9 @@ Constraints:
  */
  var findTheWinner = function(n, k) {
     
-    const arr = new Array(n). fill(0).map((_, i) => i + 1)
-    
-    let pos = k; let leaves = k;
-    
-    while(arr.length > 1) {
-        
-       while(pos-- > 0) arr.push(arr.shift());
-        
-        res = arr.pop();
-        pos = k % arr.length;        
-    }
-    
-    return arr[0];
+  let res = 0;
+
+  for(let i = 1; i <= n; i++) res = (res + k) % i;
+
+  return res + 1;
 };
