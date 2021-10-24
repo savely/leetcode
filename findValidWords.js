@@ -54,37 +54,37 @@ Each puzzles[i] does not contain repeated characters.
         return b;
     }
 
-    const puzmap = {};
-    let i = 0;
-
-    for(const puzzle of puzzles) {
-        puzmap[puzzle[0]] = puzmap[puzzle[0]] || [];
-        puzmap[puzzle[0]].push([toBin(puzzle), i++]);
-    }
-
-    let ans = new Array(puzzles.length).fill(0);
+    const wordMap = {};
 
     for(const word of words) {
 
-        const letters = {};
-        const wordMask = toBin(word);
-
-        for(const letter of word) {
-
-            if(letters[letter]) continue;
-
-            letters[letter] = true;
-
-            for(const [puzMask, idx] of (puzmap[letter] || [])) {
-               ans[idx] += (wordMask & puzMask) === wordMask ? 1 : 0;
-            }
-        }
+        const msk = toBin(word);
+        wordMap[msk] = (wordMap[msk] || 0) + 1;
     }
+
+    puzzles = puzzles.map(puz => [toBin(puz[0]), toBin(puz)]);
+
+    const ans = new Array(puzzles.length).fill(0);
+
+    for(const key in wordMap) {
+
+        const wordMask = +key;
+
+        for(let i = 0; i < puzzles.length; i++) {
+
+            const [first, puzMask] = puzzles[i];
+
+            if((first & wordMask) === 0) continue;
+
+            ans[i] += (wordMask & puzMask) === wordMask ? wordMap[wordMask] : 0;
+        }
+    }   
+
     return ans;
 };
 
 let words = ["aaaa","asas","able","ability","actt","actor","access"], puzzles = ["aboveyz","abrodyz","abslute","absoryz","actresz","gaswxyz"];
 
-words = ["apple","pleas","please"], puzzles = ["aelwxyz","aelpxyz","aelpsxy","saelpxy","xaelpsy"];
+//words = ["apple","pleas","please"], puzzles = ["aelwxyz","aelpxyz","aelpsxy","saelpxy","xaelpsy"];
 
 console.table(findNumOfValidWords(words, puzzles));
