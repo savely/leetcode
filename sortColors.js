@@ -35,46 +35,44 @@ nums[i] is 0, 1, or 2.
 
 */
 
-
 /**
  * @param {number[]} nums
  * @return {void} Do not return anything, modify nums in-place instead.
  */
  var sortColors = function(nums) {
+    
+    const f = (left, right, color) => {
+        
+        while(right >= left) {
 
-    if(nums.length < 2) return nums
+            if(nums[left] === color) {
+                left++;
+                continue;    
+            }
 
-     let red = 0, white = 1, blue = 2
-     let lo = 0, mid = 0,  hi = nums.length - 1
-     
-     const swap = function(i,j) {
-       const tmp = nums[i]
-       nums[i] = nums[j]
-       nums[j] = tmp
-     }
+            if(nums[right] === color) {
+                const t = nums[right];
+                nums[right] = nums[left];
+                nums[left] = t;
+            }
 
-     while(mid <= hi) {
-         if(nums[mid] === red) {
-            swap(lo,mid)
-             lo++
-             mid++
-             continue
-         }
-         
-         if(nums[mid] === white) {
-           mid++
-           continue  
-         }
-
-        swap(mid, hi) 
-        hi--  
-     }
-
+            right--;
+        }
+        return left;       
+    };
+    
+    const len = nums.length - 1;
+    
+    f(f(0, len, 0), len, 1);
+    
+    return nums;
 };
 
-const toColors = c => c == 0 ? 'r' :(c == 1 ? 'w' : 'b')
-const xs = [2,0,2,1,1,0,0,1,2]
-console.log(xs.map(toColors))
-console.log('------------------------------')
-sortColors(xs)
-console.log(xs.map(toColors))
+
+const toColors = c => c == 0 ? 'r' :(c == 1 ? 'w' : 'b');
+let nums = [2,0,2,1,1,0,0,1,2];
+nums = [2,0,1]
+console.log(nums.map(toColors));
+console.log('------------------------------');
+sortColors(nums);
+console.log(nums.map(toColors));
