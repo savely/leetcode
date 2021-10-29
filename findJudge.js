@@ -64,29 +64,25 @@ Constraints:
  */
  var findJudge = function(N, trust) {
     
-    const citizens = new Set()
-    const candidates = new Map()
-    
-    if(trust.length === 0) return N === 1
-    
-    for(let [citizen, candidate] of trust) {
-        citizens.add(citizen)
-        if(citizens.has(candidate)) {
-           candidates.set(candidate, -Infinity)
-           continue
-        }
-        
-        if(!candidates.has(candidate)) {
-            candidates.set(candidate, 1)
-            continue
-        }
-        
-        candidates.set(candidate,candidates.get(candidate)+1)
+    const inDegree = new Array(N).fill(0) , outDegree = new Array(N).fill(0);
+
+    for(const [trustee, trusted] of trust) {
+
+        inDegree[trusted - 1]++;
+        outDegree[trustee - 1]++;
     }
-    
-    for(let [candidate, count] of candidates) {
-        if(count === N-1 && !citizens.has(candidate)) return candidate
+
+    let judge = -1;
+
+    for(let i = 0; i < N; i++) {
+
+        if(outDegree[i] === 0 && inDegree[i] === N - 1) {
+
+            if(judge > 0) return -1;
+
+            judge = i + 1;
+        }
     }
-    
-    return -1
+
+    return judge;
 };
