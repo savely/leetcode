@@ -46,36 +46,23 @@ Constraints:
  * @return {number}
  */
  var getMaxLen = function(nums) {
-    
-    const getMaxSubLen = (from, to) => {
 
-        if(to < from) return 0;
-
-        let left = from;
-    
-        while( left < to && nums[left] > 0) left++;
-
-        if(left === from) return to - left;
-
-        let right = to;
-
-        while(right > from && nums[right] > 0 && right - from < to - left) right--;
-
-        return Math.max(to - left, right - from);
-
-    };
-
-    let lastZero = -1, sign = 1, maxLen = 0;    
+    let lastZero = -1, sign = 1, maxLen = 0, firstNeg = -1, lastNeg = -1;    
 
     for(let i = 0; i < nums.length; i++) {
 
         if(nums[i] === 0) {
-            const len = sign > 0 ? i  - (lastZero + 1) : getMaxSubLen(lastZero + 1, i - 1);
+
+            const from = lastZero + 1, to = i - 1, len = sign > 0 ? i  - from : Math.max(to - firstNeg, lastNeg - from);
             maxLen = Math.max(maxLen, len);
             lastZero = i;
             sign = 1;
+            firstNeg = -1; 
+            lastNeg = -1;            
         } else {
             sign *= nums[i] > 0 ? 1 : -1;
+            firstNeg = nums[i] < 0 && firstNeg < 0 ? i : firstNeg;
+            lastNeg  = nums[i] < 0 ? i : lastNeg;
         }
     }
 
@@ -83,15 +70,7 @@ Constraints:
 
     if(lastZero === nums.length - 1) return maxLen;
 
-    const len =  sign > 0 ? nums.length - lastZero - 1 : getMaxSubLen(lastZero + 1, nums.length - 1);
+    const len =  sign > 0 ? nums.length - lastZero - 1 : Math.max(nums.length - 1 - firstNeg, lastNeg - lastZero - 1);
 
     return Math.max(maxLen, len);
 };
-
-let nums = [1,-2,-3,4];
-//nums = [0,1,-2,-3,-4];
-//nums = [-1,-2,-3,0,1];
-//nums = [0,-1,-2,-2,0,0,-2];
-nums = [-16,0,-5,2,2,-13,11,8]// 6
-//nums = [0,-19,26,-24,-13,-2,26,10,0,4,0,-26,-22,9,35,-11,-14,0,-29]; //7
-console.log(getMaxLen(nums));
