@@ -7,11 +7,11 @@ function ListNode(val) {
 function arrayToList(arr) {
     if (arr.length === 0)
         return null;
-    var head = new ListNode(arr.shift());
-    var a2l = function (arr, node) {
+    let head = new ListNode(arr.shift());
+    const a2l = function (arr, node) {
         if (arr.length === 0)
             return;
-        var nextNode = new ListNode(arr.shift());
+        let nextNode = new ListNode(arr.shift());
         node.next = nextNode;
         a2l(arr, nextNode);
     };
@@ -23,9 +23,9 @@ function printList(list) {
         return "";
     }
     if (list.next === null) {
-        return "(" + list.val + ")";
+        return `(${list.val})`;
     }
-    return "(" + list.val + ")->" + printList(list.next);
+    return `(${list.val})->` + printList(list.next);
 }
 /**
  * @param {ListNode} head
@@ -35,8 +35,8 @@ var swapPairs = function (head) {
     if (head === null || head.next === null) {
         return head;
     }
-    var newHead = head.next;
-    var temp = newHead.next;
+    const newHead = head.next;
+    const temp = newHead.next;
     newHead.next = head;
     head.next = swapPairs(temp);
     return newHead;
@@ -49,7 +49,7 @@ var reverseList = function (head) {
     if (head === null || head.next === null) {
         return head;
     }
-    var newHead = reverseList(head.next);
+    const newHead = reverseList(head.next);
     head.next.next = head;
     head.next = null;
     return newHead;
@@ -64,16 +64,16 @@ var mergeTwoLists = function (l1, l2) {
         return null;
     if (l1 !== null && l2 !== null) {
         if (l1.val <= l2.val) {
-            var newHead_1 = new ListNode(l1.val);
-            newHead_1.next = mergeTwoLists(l1.next, l2);
-            return newHead_1;
+            const newHead = new ListNode(l1.val);
+            newHead.next = mergeTwoLists(l1.next, l2);
+            return newHead;
         }
-        var newHead_2 = new ListNode(l2.val);
-        newHead_2.next = mergeTwoLists(l1, l2.next);
-        return newHead_2;
+        const newHead = new ListNode(l2.val);
+        newHead.next = mergeTwoLists(l1, l2.next);
+        return newHead;
     }
-    var node = (l1 === null) ? l2 : l1;
-    var newHead = new ListNode(node.val);
+    const node = (l1 === null) ? l2 : l1;
+    const newHead = new ListNode(node.val);
     newHead.next = mergeTwoLists(node.next, null);
     return newHead;
 };
@@ -83,8 +83,8 @@ var isPalindrome = function (head) {
     var len = function (list) {
         if (list === null)
             return 0;
-        var count = 1;
-        var probe = list.next;
+        let count = 1;
+        let probe = list.next;
         while (probe !== null) {
             probe = probe.next;
             count++;
@@ -95,7 +95,7 @@ var isPalindrome = function (head) {
         if (head === null || head.next === null) {
             return head;
         }
-        var newHead = reverseList(head.next);
+        const newHead = reverseList(head.next);
         head.next.next = head;
         head.next = null;
         return newHead;
@@ -103,23 +103,23 @@ var isPalindrome = function (head) {
     var jumpTo = function (list, pos) {
         if (pos === 0)
             return list;
-        var i = 1;
-        var probe = list.next;
+        let i = 1;
+        let probe = list.next;
         while (i < pos) {
             probe = probe.next;
             i++;
         }
         return probe;
     };
-    var length = len(head);
+    const length = len(head);
     if (length < 2)
         return true;
-    var middle = Math.floor(length / 2);
-    var revHead = reverseList(jumpTo(head, middle));
-    var res = true;
-    var i = 0;
-    var p1 = head;
-    var p2 = revHead;
+    const middle = Math.floor(length / 2);
+    const revHead = reverseList(jumpTo(head, middle));
+    let res = true;
+    let i = 0;
+    let p1 = head;
+    let p2 = revHead;
     while (i < middle) {
         if (p1.val !== p2.val) {
             res = false;
@@ -130,7 +130,7 @@ var isPalindrome = function (head) {
         p2 = p2.next;
     }
     //restoring the list  
-    var lastNode = jumpTo(head, middle - 1);
+    const lastNode = jumpTo(head, middle - 1);
     lastNode.next = reverseList(revHead);
     return res;
 };
@@ -138,8 +138,8 @@ var removeNthFromEnd = function (head, n) {
     var jumpTo = function (pos) {
         if (pos === 0)
             return head;
-        var i = 1;
-        var probe = head.next;
+        let i = 1;
+        let probe = head.next;
         while (i < pos) {
             probe = probe.next;
             i++;
@@ -161,12 +161,11 @@ var removeNthFromEnd = function (head, n) {
     }
     return head;
 };
-
-
-var k = arrayToList([1, 2, 3, 4, 11, 12, 13, 14]);
-var l = arrayToList([1, 2, 3, 2, 1]);
+const k = arrayToList([1, 2, 3, 4, 11, 12, 13, 14]);
+const l = arrayToList([1, 2, 3, 2, 1]);
 console.log(printList(k));
 console.log('---------------');
-console.log(removeNthFromEnd(k, 7));
+console.log(removeNthFromEnd(k, 1));
 console.log('---------------');
 console.log(printList(k));
+//# sourceMappingURL=swapNodes.js.map
