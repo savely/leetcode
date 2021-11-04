@@ -53,7 +53,8 @@ Constraints:
 
         if(nums[i] === 0) {
 
-            const from = lastZero + 1, to = i - 1, len = sign > 0 ? i  - from : Math.max(to - firstNeg, lastNeg - from);
+            const from = lastZero + 1, to = i - 1;
+            const len = sign > 0 ? i  - from : Math.max(to - firstNeg, lastNeg - from);
             maxLen = Math.max(maxLen, len);
             lastZero = i;
             sign = 1;
