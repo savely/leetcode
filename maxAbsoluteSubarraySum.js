@@ -1,5 +1,5 @@
 /*
-1749. Maximum Absolute Sum of Any Subarray
+#1749. Maximum Absolute Sum of Any Subarray
 
 You are given an integer array nums. The absolute sum of a subarray [numsl, numsl+1, ..., numsr-1, numsr] is abs(numsl + numsl+1 + ... + numsr-1 + numsr).
 
@@ -66,9 +66,3 @@ Constraints:
 
     return Math.max(positive, maxPositiveSum())
 };
-
-
-let nums = [1,-3,2,3,-4];
-nums = [2,-5,1,-4,3,-2];
-
-console.log(maxAbsoluteSum(nums));
