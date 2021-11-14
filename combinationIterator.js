@@ -41,75 +41,34 @@ It's guaranteed that all calls of the function next are valid.
  * @param {number} combinationLength
  */
  var CombinationIterator = function(characters, combinationLength) {
-
-    this.min = characters.charCodeAt(0);
-    this.max = characters.charCodeAt(characters.length - 1);
-    this.len = combinationLength;
-    this.current = [];
-    this.nextCombination = "";
-
-    for(let i = 0; i< this.len; i++) {
-        this.current.push(this.min);
-    }
-
-    this.currentCombination = this._stringify();
-    this._next();
-    
-};
-
-CombinationIterator.prototype._next = function() {
-
-    let curry = 1, isValid = true;
-
-    for(let i = this.len - 1; i >= 0; i--) {
-
-        const next = this.current[i] + curry, isNextValid = next <= this.max;
-
-        if(isNextValid) {
-            this.current[i] = next;
-            break;
+    const res = [];
+    const traverse = (str, index) => {
+        if (str.length === combinationLength) {
+            res.push(str);
+            return;
         }
-
-        if(i === 0 && !isNextValid) {
-            isValid = false;
-            break;
+        for (let i = index; i < characters.length; i++) {
+            traverse(str+characters[i], i+1);
         }
-
-        this.current[i] = this.min;
     }
-
-    this.nextCombination = isValid ? this._stringify() : "";
+    traverse('', 0);
+    this.combinations = res;
+    this.currIndex = 0;
 };
-
-CombinationIterator.prototype._stringify = function() {
-
-    let str = "";
-
-    for(const code of this.current) {
-        str += String.fromCharCode(code);
-    }
-
-    return str;
-}
 
 /**
  * @return {string}
  */
 CombinationIterator.prototype.next = function() {
-
-    const ret = this.currentCombination;
-    this.currentCombination = this.nextCombination;
-
-    if(this.hasNext()) this._next();
-
-    return ret;
+    this.currIndex++;
+    return this.combinations[this.currIndex - 1];
 };
 
 /**
  * @return {boolean}
  */
 CombinationIterator.prototype.hasNext = function() {
-    return this.currentCombination !== "";
+    return this.currIndex < this.combinations.length;
 };
 
 /** 
@@ -118,5 +77,3 @@ CombinationIterator.prototype.hasNext = function() {
  * var param_1 = obj.next()
  * var param_2 = obj.hasNext()
  */
-
-const iterator = new CombinationIterator("abc", 2);
