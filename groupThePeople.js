@@ -43,7 +43,7 @@ Constraints:
  */
  var groupThePeople = function(groupSizes) {
     
-    const sizes = {};
+    const sizes = {}, res = [];
     
     for(let i = 0; i < groupSizes.length; i++) {
         
@@ -51,29 +51,12 @@ Constraints:
         
         sizes[size] = sizes[size] || [];
         sizes[size].push(i);
+
+        if(sizes[size].length === +size) {
+            res.push([... sizes[size]]);
+            sizes[size] = [];
+        }
     }
-    
-    let res = [];
-    
-    for(const size in sizes) {
-        
-        const arr = sizes[size], chunk = [];
-        
-        for(const el of arr) {
-            
-            chunk.push(el);
-            
-            if(chunk.length === +size) {
-                res.push([...chunk]);
-                chunk.length = 0;
-            }
-        }   
-    }
-    
+
     return res;
 };
-
-let groupSizes = [2,1,3,3,3,2];
-groupSizes = [3,3,3,3,3,1,3];
-
-console.table(groupThePeople(groupSizes));
