@@ -49,44 +49,43 @@ let temp = fist row
  */
  var kthSmallest = function(matrix, k) {
     
-    let arr = matrix[0];
-    
-    for(let i = 1; i < matrix.length; i++) {
-        arr = arr.concat(matrix[i]);
-    }
 
-    return quickSelect(arr, 0, arr.length - 1, k - 1);
-};
+    const h = matrix.length - 1, w = matrix[0].length - 1;
 
-const swap  = (arr, i, j) => {
+    const countLessOrEqual = (n) => {
 
-   if(i === j) return;
+        let row = 0, col = w, count = 0;
 
-    const tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
-};
+        while(row <= h) {
 
-const quickSelect = (arr, from, to, k) => {
+            while(matrix[row][col] > n) col--;
 
-    if(from === to) return arr[to];
+            if(col < 0) break;
 
-    const idx = Math.floor(Math.random() * (to - from)) + from;
-    swap(arr, idx, to);
-    let pivot = arr[to];
-    let left = from;
+            count += col + 1;
+            row++;
+        }
+        return count;
+    };
 
-    for(let i = from; i < to; i++) {
+    let lo = matrix[0][0], hi = matrix[h][w];
 
-        if(arr[i] < pivot) {
-            swap(arr, i, left++);
+    while(hi >= lo) {
+
+        const mid = (hi + lo) / 2 >> 0;
+
+        if(countLessOrEqual(mid) >= k) {
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
         }
     }
-    
-    swap(arr, left, to);
-    if(left === k) return arr[left];
 
-    if(left < k) return quickSelect(arr, left + 1, to, k);
-
-    return quickSelect(arr, from, left - 1, k);
+    return lo;
 }
+
+matrix = [[1,5,9],[10,11,13],[12,13,15]], k = 8;
+
+matrix = [[-5]], k = 1;
+
+console.log(kthSmallest(matrix, k));
