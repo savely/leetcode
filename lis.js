@@ -1,49 +1,57 @@
+/*
+#300. Longest Increasing Subsequence
+
+Given an integer array nums, return the length of the longest strictly increasing subsequence.
+
+A subsequence is a sequence that can be derived from an array by deleting some or no elements without changing the order of the remaining elements. For example, [3,6,2,7] is a subsequence of the array [0,3,1,6,2,2,7].
+
+ 
+
+Example 1:
+
+Input: nums = [10,9,2,5,3,7,101,18]
+Output: 4
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+
+Example 2:
+
+Input: nums = [0,1,0,3,2,3]
+Output: 4
+
+Example 3:
+
+Input: nums = [7,7,7,7,7,7,7]
+Output: 1
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 2500
+    -104 <= nums[i] <= 104
+
+ 
+
+Follow up: Can you come up with an algorithm that runs in O(n log(n)) time complexity?
+
+*/
 /**
  * @param {number[]} nums
  * @return {number}
  */
-var lengthOfLIS = function(nums) {
+ var lengthOfLIS = function(nums) {
 
- const seq = [nums[0]];
+    const dp = new Array(nums.length).fill(1);
 
- const search  = (n) => {
+    let max = 1;
 
-       if(seq.length === 1) return 0;
-
-        let lo = 0, hi = seq.length -1;
-
-        while(hi > lo)  {
-
-            const mid = (hi + lo) / 2 >> 0, el = seq[mid];
-
-            if(el >= n) {
-                if(seq[mid - 1] < n) return mid;
-                hi = mid - 1;
-            } else {
-                if(seq[mid + 1] >= n) return mid + 1;
-                lo = mid + 1;
+    for(let i = 1; i < dp.length; i++) {
+        for(let j = i - 1; j >= 0; j--) {
+            if(nums[j] < nums[i] && dp[j] >= dp[i]) {
+                dp[i] = dp[j] + 1;
+                max = Math.max(max, dp[i]);
             }
         }
-
-        return lo;
     }
-
-    for(let i = 1; i < nums.length; i++) {
-        
-        if(nums[i] > seq[seq.length - 1]) {
-            seq.push(nums[i]);
-            continue;
-        }
-        const idx = search(nums[i]);
-        seq[idx] = nums[i];
-    }
-
-    return seq.length;
+    return max;
 };
-
-let arr = [10,9,2,5,3,7,101,18];
-arr = [0,1,0,3,2,3];
-arr = [4,10,4,3,8,9];
-arr = [3,5,6,2,5,4,19,5,6,7,12]; //6
-
-console.log(lengthOfLIS(arr))
