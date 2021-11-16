@@ -49,10 +49,44 @@ let temp = fist row
  */
  var kthSmallest = function(matrix, k) {
     
+    let arr = matrix[0];
+    
+    for(let i = 1; i < matrix.length; i++) {
+        arr = arr.concat(matrix[i]);
+    }
 
+    return quickSelect(arr, 0, arr.length - 1, k - 1);
 };
 
-let  matrix = [[1,5,9],
-               [10,11,13],
-               [12,13,15]];
-let k = 8;
+const swap  = (arr, i, j) => {
+
+   if(i === j) return;
+
+    const tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+};
+
+const quickSelect = (arr, from, to, k) => {
+
+    if(from === to) return arr[to];
+
+    const idx = Math.floor(Math.random() * (to - from)) + from;
+    swap(arr, idx, to);
+    let pivot = arr[to];
+    let left = from;
+
+    for(let i = from; i < to; i++) {
+
+        if(arr[i] < pivot) {
+            swap(arr, i, left++);
+        }
+    }
+    
+    swap(arr, left, to);
+    if(left === k) return arr[left];
+
+    if(left < k) return quickSelect(arr, left + 1, to, k);
+
+    return quickSelect(arr, from, left - 1, k);
+}
