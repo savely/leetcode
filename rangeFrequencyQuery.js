@@ -40,25 +40,16 @@ At most 105 calls will be made to query
  */
  var RangeFreqQuery = function(arr) {
 
-    this.array = arr;
-    this.subRangeSize = Math.sqrt(this.array.length) >> 0;
-    this.subRangeFreqs = [];
-
-    let freq = {};
+    this.freq = {};
+    this.arr = arr;
 
     for(let i = 0; i < arr.length; i++) {
 
         const num = arr[i];
-    
-        if(i >= this.subRangeSize && i % this.subRangeSize === 0) {
-            this.subRangeFreqs.push({...freq});
-            freq = {};
-        }
-        
-        freq[num] = (freq[num] || 0) + 1;        
-    }
 
-    this.subRangeFreqs.push(freq);
+        this.freq[num] = this.freq[num] || [];
+        this.freq[num].push(i);      
+    }
 
 };
 
@@ -68,25 +59,78 @@ At most 105 calls will be made to query
  * @param {number} value
  * @return {number}
  */
+ var RangeFreqQuery = function(arr) {
+
+    this.freq = {};
+
+    for(let i = 0; i < arr.length; i++) {
+
+        const num = arr[i];
+
+        this.freq[num] = this.freq[num] || [];
+        this.freq[num].push(i);      
+    }
+
+};
+
+/** 
+ * @param {number} left 
+ * @param {number} right 
+ * @param {number} value
+ * @return {number}
+ */
+
 RangeFreqQuery.prototype.query = function(left, right, value) {
 
-    let fr = 0;
+    const fst = this.search(value, left);
 
-    const leftIdx = left / this.subRangeSize >> 0, rightIdx = right / this.subRangeSize >> 0;
+    if(fst < 0) return 0;
 
-    for(let i = leftIdx; i <= rightIdx; i++) {
-        fr += this.subRangeFreqs[i][value] || 0;
-    }
+    const lst = this.search(value, right, false, fst);
 
-    for(let i = leftIdx * this.subRangeSize; i < left; i++) {
-        fr -= this.array[i] === value ? 1 : 0;
-    }
+    if(lst < 0) return 0;
 
-    for(let i = right + 1; i < Math.min((rightIdx + 1) * this.subRangeSize, this.array.length); i++) {
-        fr -= this.array[i] === value ? 1 : 0;
-    }
-    return fr;
+    return lst - fst + 1;
 };
+
+RangeFreqQuery.prototype.search = function(val, idx, bigger = true, from = 0) {
+
+    const arr = this.freq[val];
+
+    if(arr === undefined || arr.length === 0) return -1;
+
+    if(bigger && arr[arr.length - 1] < idx) return -1;
+
+    if(!bigger && arr[0] > idx) return -1;
+
+    if(arr.length === 1) return 0;
+
+    let lo = from, hi = arr.length - 1;
+
+    while(hi >= lo) {
+
+        const mid = (hi + lo) >> 1;
+
+        if(arr[mid] === idx) return mid;
+
+        if(arr[mid] > idx) {
+
+            const prev = mid > 0 ? arr[mid - 1] : -1;
+
+            if(prev < idx && bigger) return mid;
+            hi = mid - 1;
+        } else {
+
+            const next = mid >= arr.length - 1 ? Infinity : arr[mid + 1];
+            if(next > idx && !bigger) return mid;
+            lo = mid + 1;
+        }
+    }
+
+    return -1;
+};
+
+
 
 /** 
  * Your RangeFreqQuery object will be instantiated and called as such:
@@ -122,7 +166,15 @@ testcase = [[[5,1,7,10,7,8,6,3,9,1,1,4,10,9,1,9,5,9,4,3]],[6,16,1],[4,15,7]];
 
 testcase = [[[5,1,7,10,7,8,6,3,9,1,1,4,10,9,1,9,5,9,4,3]],[3,16,3]];
 //[null,2,0,0,1,0,1,3,1,1,0]
-testcase = [[[8,4,2,5,4,5,8,6,2,3]],[2,8,3]]
+//testcase = [[[8,4,2,5,4,5,8,6,2,3]],[2,8,3]];
+//testcase = [[[12,33,4,56,22,2,34,33,22,12,34,56]],[1,2,4],[0,11,33]];
+testcase = [[[8,4,2,5,4,5,8,6,2,3]],[5,6,2]];
+
+testcase = [[[1,1,1,2,2]],[0,2,1]]; //[null,0,3,1,1]
+
+testcase = [[[12,33,22,4,33,4,56,22,2,34,33,4,22,12,34,56]],[1,10,4],[0,11,33],[1,13,22],[4, 14, 56],[0,1,33]];//[2,3,3,1,1]
+
+
 
 const runner = new Runner(testcase);
 
