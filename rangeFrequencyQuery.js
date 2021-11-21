@@ -42,24 +42,23 @@ At most 105 calls will be made to query
 
     this.array = arr;
     this.subRangeSize = Math.sqrt(this.array.length) >> 0;
-    this.partials = [];
-    this.partials[0] = {};
+    this.subRangeFreqs = [];
 
-    const freq = {};
+    let freq = {};
 
     for(let i = 0; i < arr.length; i++) {
 
         const num = arr[i];
-        freq[num] = freq[num] || 0;
     
         if(i >= this.subRangeSize && i % this.subRangeSize === 0) {
-            this.partials.push(Object.assign({}, freq));
+            this.subRangeFreqs.push({...freq});
+            freq = {};
         }
-
-        freq[num]++;        
+        
+        freq[num] = (freq[num] || 0) + 1;        
     }
 
-    this.partials.push(freq);
+    this.subRangeFreqs.push(freq);
 
 };
 
@@ -73,26 +72,18 @@ RangeFreqQuery.prototype.query = function(left, right, value) {
 
     let fr = 0;
 
-    if(right - left <= this.subRangeSize) {
-        
-        for(let i = left; i <= right; i++) {
-            fr += this.array[i] === value ? 1 : 0;
-        }
+    const leftIdx = left / this.subRangeSize >> 0, rightIdx = right / this.subRangeSize >> 0;
 
-        return fr;
+    for(let i = leftIdx; i <= rightIdx; i++) {
+        fr += this.subRangeFreqs[i][value] || 0;
     }
-    const leftIdx = left / this.subRangeSize >> 0, rightIdx = right / this.subRangeSize >> 0 + 1;
-
-    const leftVal = this.partials[leftIdx][value] || 0, rightVal = this.partials[rightIdx][value] || 0;
-
-    fr = rightVal - leftVal;
 
     for(let i = leftIdx * this.subRangeSize; i < left; i++) {
         fr -= this.array[i] === value ? 1 : 0;
     }
 
-    for(let i = rightIdx * this.subRangeSize; i <= right; i++) {
-        fr += this.array[i] === value ? 1 : 0;
+    for(let i = right + 1; i < Math.min((rightIdx + 1) * this.subRangeSize, this.array.length); i++) {
+        fr -= this.array[i] === value ? 1 : 0;
     }
     return fr;
 };
@@ -126,7 +117,12 @@ testcase = [[[5,1,7,10,7,8,6,3,9,1,1,4,10,9,1,9,5,9,4,3]],[9,11,1],[10,12,2],[14
 testcase = [[[5,1,7,10,7,8,6,3,9,1,1,4,10,9,1,9,5,9,4,3]],[4,15,7]];
 //[null,2,0,0,1,0,1,3,1,1,0]
 //testcase = [[[12, 22, 4, 33, 4, 56, 22, 2, 34, 33, 4, 22, 12, 34, 56]],[0,11,33]]
-//testcase = [[[12,33,22,4,33,4,56,22,2,34,33,4,22,12,34,56]],[1,13,22],[4, 14, 56],[0,1,33]]; // 3,1,1
+testcase = [[[12,33,22,4,33,4,56,22,2,34,33,4,22,12,34,56]],[1,13,22],[4, 14, 56],[0,1,33]]; // 3,1,1
+testcase = [[[5,1,7,10,7,8,6,3,9,1,1,4,10,9,1,9,5,9,4,3]],[6,16,1],[4,15,7]];
+
+testcase = [[[5,1,7,10,7,8,6,3,9,1,1,4,10,9,1,9,5,9,4,3]],[3,16,3]];
+//[null,2,0,0,1,0,1,3,1,1,0]
+testcase = [[[8,4,2,5,4,5,8,6,2,3]],[2,8,3]]
 
 const runner = new Runner(testcase);
 
