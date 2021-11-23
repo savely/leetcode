@@ -99,11 +99,3 @@ Constraints:
     
     return dist + key.length;
 };
-
-let ring = "godding", key = "godding";
-//ring = "blbfjlahck";
-//key = "bblcllbhlbjflllfblabalhfkflhhclbahhllbalbhbbbkkhcafblbcjljbcflhlkjcjacjkjackkkcbfbajjlblcakhkfajffbb"
-//304
-//key = "bblc";//8
-
-console.log(findRotateSteps(ring, key));
