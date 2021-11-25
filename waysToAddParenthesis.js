@@ -37,57 +37,36 @@ All the integer values in the input expression are in the range [0, 99].
  */
  var diffWaysToCompute = function(expression) {
 
-    const ans = [], ops = {'+': (x, y) => x + y, '-' : (x, y) => x - y, '*' : (x, y) => x * y};
+    const ops = {'+': (x, y) => x + y, '-' : (x, y) => x - y, '*' : (x, y) => x * y};
 
-    const ways = (expr) => {
+    const ways = (start, end) => {
 
-        let stack = [], res = [];
+        if(start > end) return [];
 
-        while(expr.length) {
+        const part = expression.slice(start,end);
 
-            const token = expr.shift();
+        if(part.search(/[+*-]/) < 0) return [+part];
 
-            if(!stack.length || typeof stack[stack.length - 1] === 'function') {
-                stack.push(+token);
-                continue;
+        let res = [];
+
+        for(let i = start; i < end; i++) {
+
+            if(!(expression[i] in ops)) continue;
+
+            const op = ops[expression[i]];
+
+            const left = ways(start, i), right = ways(i + 1, end);
+
+            for(const l of left) {
+                for(const r of right) {
+                    res.push(op(l,r));
+                }
             }
-
-            if(!(token in ops)) {
-                stack[stack.length - 1] *= 10 + +token;
-                continue;
-            }
-
-            const f = ops[token];
-
-            if(stack.length > 1) {
-                const [x, op, y] = stack;
-                stack = [op(x, y)];
-            }
-
-           // if(expr.some((ch) => ch in ops)) {
-                for(const val of ways([...expr])) {
-                    res.push(f(stack[0], val))
-                //}
-            }
-
-            if(expr.length) stack.push(f);
         }
-
-        if(stack.length > 1) {
-            const [x, op, y] = stack;
-             stack = [op(x, y)];
-        }
-
-        res.push(stack[0]);
 
         return res;
     }
 
-    return ways([...expression]);
+    return ways(0, expression.length);
 
 };
-
-let expression = "2-1-1";
-expression = "2*3-4*5";
-
-console.table(diffWaysToCompute(expression));
