@@ -1,30 +1,57 @@
+/*
+#84. Largest Rectangle in Histogram
+
+Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.
+
+ 
+
+Example 1:
+
+
+Input: heights = [2,1,5,6,2,3]
+Output: 10
+Explanation: The above is a histogram where width of each bar is 1.
+The largest rectangle is shown in the red area, which has an area = 10 units.
+Example 2:
+
+
+Input: heights = [2,4]
+Output: 4
+ 
+
+Constraints:
+
+1 <= heights.length <= 105
+0 <= heights[i] <= 104
+
+*/
+
+
 var largestRectangleArea = function(heights) {
 
-    if(heights.length === 0) return 0
+    if(heights.length === 0) return 0;
 
-    let stack = []
-    let area  = 0
-    let idx  =  0
+    let area  = 0;
+    let i  =  0;
 
-    while(idx < heights.length) {
-      
-        if(stack.length === 0 || heights[idx] >= heights[stack[0]]) {
-            stack.unshift(idx++)
-            continue
+    while(i < heights.length) {
+
+        if(heights[i] === 0) {
+            i++;
+            continue;
         }
 
-        let top = stack.shift()
-        area = Math.max(area, heights[top] * (stack.length === 0 ? idx : idx - stack[0] - 1))
-        
+        let left = i; right = i;
+
+        while(left >= 0 && heights[left] >= heights[i]) left--;
+        while(right < heights.length && heights[right] >= heights[i]) right++;
+
+        area = Math.max(area, heights[i] * (right - left - 1));
+
+        i++;
      }
 
-     while (stack.length > 0) {
-        let top = stack.shift()
-        area = Math.max(area, heights[top] * (stack.length === 0 ? idx : idx - stack[0] - 1))
-
-     }
-
-    return area
+    return area;
 };
 
-console.log(largestRectangleArea([2,1,5,6,7,2,3]))
+console.log(largestRectangleArea([2,1,5,6,7,2,3]));
