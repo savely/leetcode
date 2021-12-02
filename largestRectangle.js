@@ -54,4 +54,9 @@ var largestRectangleArea = function(heights) {
     return area;
 };
 
-console.log(largestRectangleArea([2,1,5,6,7,2,3]));
+let arr = [2,1,5,6,7,2,3];
+arr = new Array(100000).fill(0).map((_, i, arr) => i < (arr.length / 2) ? i + 1 : arr.length - i);
+
+//console.table(arr);
+
+console.log(largestRectangleArea(arr));
