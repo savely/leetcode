@@ -50,30 +50,35 @@ items[i].length == 2
  * @param {number[]} queries
  * @return {number[]}
  */
- var maximumBeauty = function(items, queries) {
 
-    const maxBeauty = {};
+ var maximumBeauty = function(items, queries) {
 
     items.sort(([p1, b1], [p2, b2]) => p1 - p2 || b2 - b1);
 
-    let currMax = 0;
+    const newItems = [items[0]];
 
-    for(const [price, beauty] of items) {
+    let [currPrice, currMax] = items[0];
+
+    for(let i = 1; i < items.length; i++) {
+
+        const [price, beauty] = items[i];
+        
+        if(price === currPrice) continue;
+
+        currPrice = price;
 
         currMax = Math.max(currMax, beauty);
         
-        maxBeauty[price] = currMax;
+        newItems.push([currPrice, currMax]);
     }
 
-    items = Object.entries(maxBeauty);
-
-
+    items = newItems;
 
     const search = (price) => {
 
-        if(price < +items[0][0]) return 0;
+        if(price < items[0][0]) return 0;
 
-        if(price >= +items[items.length - 1][0]) return items[items.length - 1][1];
+        if(price >= items[items.length - 1][0]) return items[items.length - 1][1];
 
         let lo = 0, hi = items.length - 1;
 
@@ -81,10 +86,10 @@ items[i].length == 2
 
             const mid = (hi + lo) >> 1, [pr, bty] = items[mid];
 
-            if(price === +pr) return bty;
+            if(price === pr) return bty;
 
-            if(+pr > price) {
-                if(items[mid - 1] && +items[mid - 1][0] < price) return +items[mid - 1][1];
+            if(pr > price) {
+                if(items[mid - 1] && items[mid - 1][0] < price) return items[mid - 1][1];
                 hi = mid - 1;
             } else {
                 lo = mid + 1;
@@ -103,9 +108,3 @@ items[i].length == 2
 
     return res;
 };
-
-let items = [[1,2],[3,2],[2,4],[5,6],[3,5]], queries = [1,2,3,4,5,6];
-items = [[1,2],[1,2],[1,3],[1,4]], queries = [1];
-items = [[10,1000]], queries = [5];
-
-console.table(maximumBeauty(items, queries));
