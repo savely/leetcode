@@ -43,42 +43,43 @@ words[i] consists of lowercase English letters.
 letter is a lowercase English letter.
 At most 4 * 104 calls will be made to query.
 */
-
-
  class Trie {
 
-    constructor(code, isEnd = false) {
+    constructor(code = '', isEnd = false) {
 
         this.code = code;
         this.isEnd = isEnd;
         this.children = {};
-    } 
+    }
 
     add(word, i = 0) {
 
         if(i >= word.length) return;
 
-        const code = word.charCodeAt(i) - 97;
+        const char = word.charAt(word.length -  1 - i);
 
-        this.children[code] = this.children[code] || new Trie(code);
+        this.children[char] = this.children[char] || new Trie(char);
 
-        this.children[code].isEnd = this.children[code].isEnd || i === word.length - 1;
+        this.children[char].isEnd = this.children[char].isEnd || i === word.length - 1;
 
-        if(i < word.length - 1) this.children[code].add(word, i + 1);
+        if(i < word.length - 1) this.children[char].add(word, i + 1);
     }
 
- };
+};
 
 /**
  * @param {string[]} words
  */
  var StreamChecker = function(words) {
     
-    this.trie = new Trie(null);
+    this.trie = new Trie();
 
-    for(const word of words) this.trie.add(word);
+    for(const word of words) {
+        this.trie.add(word);
+    }
 
-    this.endings = new Set();
+    this.letters = [];
+
 };
 
 /** 
@@ -87,34 +88,24 @@ At most 4 * 104 calls will be made to query.
  */
 StreamChecker.prototype.query = function(letter) {
     
-    const letterCode = letter.charCodeAt(0) - 97;
 
-    const nextEndingsSet = new Set();
+    this.letters.push(letter);
+     return this.search(this.trie, this.letters.length - 1);
+};
 
-    let isWord = false;
+StreamChecker.prototype.search = function (trie, i) {
 
-    for(const { children } of this.endings) {
+    if(i < 0) return false;
 
-        const nextNode = children[letterCode];
+    const letter = this.letters[i], children = trie.children;
 
-        if(!nextNode) continue;
+    if(!children[letter]) {
+        return false;
+    };
 
-        isWord = isWord || nextNode.isEnd;
+    if(children[letter].isEnd) return true;
 
-        nextEndingsSet.add(nextNode);
-
-    }
-
-    if(this.trie.children[letterCode]) {
-
-        isWord = isWord || this.trie.children[letterCode].isEnd;
-
-        nextEndingsSet.add(this.trie.children[letterCode]);
-    } 
-
-    this.endings = nextEndingsSet;
-
-    return isWord;
+    return this.search(children[letter], i - 1)
 };
 
 /** 
@@ -130,20 +121,21 @@ let queries = [["a"], ["b"], ["c"], ["d"], ["e"], ["f"], ["g"], ["h"], ["i"], ["
 [[["ab","ba","aaab","abab","baa"]],["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]]
 */
 
-//words = ["ab","ba","aaab","abab","baa"];
-//queries = [["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]];
+words = ["ab","ba","aaab","abab","baa"];
+queries = [["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]];
 
 
 const checker = new StreamChecker(words);
 
 const res = [];
 
-for(const [ch] of queries) {
+for(let i = 0; i < queries.length; i++) {
+    const [ch] = queries[i];
     res.push(checker.query(ch));
 }
 
-console.table(res);
+//console.table(res);
 
-//const expected = [false,false,false,false,false,true,true,true,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,true,true,true,false];
+const expected = [false,false,false,false,false,true,true,true,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,true,true,true,false];
 
-//console.table(res.map((res, i) => [res, expected[i]]));
+console.table(res.map((res, i) => [res, expected[i]]));
