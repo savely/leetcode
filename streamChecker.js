@@ -78,16 +78,7 @@ At most 4 * 104 calls will be made to query.
 
     for(const word of words) this.trie.add(word);
 
-    this.endings = {};
-
-    for(const code in this.trie.children) {
-
-        const child = this.trie.children[code];
-
-        this.endings[code] = this.endings[code] || new Set();
-
-        this.endings[code].add(child);
-    }
+    this.endings = new Set();
 };
 
 /** 
@@ -102,25 +93,26 @@ StreamChecker.prototype.query = function(letter) {
 
     let isWord = false;
 
-    const letterEndings = this.endings[letterCode] || new Set();
+    for(const { children } of this.endings) {
 
-    for(const {code, isEnd, children} of letterEndings) {
+        const nextNode = children[letterCode];
 
+        if(!nextNode) continue;
 
-        if(letterCode !== code) continue;
+        isWord = isWord || nextNode.isEnd;
 
-        isWord = isWord || isEnd;
+        nextEndingsSet.add(nextNode);
 
-        for(const code in children) {
-            const child = children[code];
-            if(!this.endings[code] || !this.endings[code].has(child)) nextEndingsSet.add(child);
-        }
     }
 
-    for(const node of nextEndingsSet) {
-        this.endings[node.code] = this.endings[node.code] || new Set();
-        this.endings[node.code].add(node);
-    }
+    if(this.trie.children[letterCode]) {
+
+        isWord = isWord || this.trie.children[letterCode].isEnd;
+
+        nextEndingsSet.add(this.trie.children[letterCode]);
+    } 
+
+    this.endings = nextEndingsSet;
 
     return isWord;
 };
@@ -138,9 +130,8 @@ let queries = [["a"], ["b"], ["c"], ["d"], ["e"], ["f"], ["g"], ["h"], ["i"], ["
 [[["ab","ba","aaab","abab","baa"]],["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]]
 */
 
-words = ["ab","ba","aaab","abab","baa"];
-
-queries = [["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]];
+//words = ["ab","ba","aaab","abab","baa"];
+//queries = [["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]];
 
 
 const checker = new StreamChecker(words);
@@ -151,6 +142,8 @@ for(const [ch] of queries) {
     res.push(checker.query(ch));
 }
 
-const expected = [false,false,false,false,false,true,true,true,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,true,true,true,false];
+console.table(res);
 
-console.table(res.map((res, i) => [res, expected[i]]));
+//const expected = [false,false,false,false,false,true,true,true,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,true,true,true,false];
+
+//console.table(res.map((res, i) => [res, expected[i]]));
