@@ -113,29 +113,3 @@ StreamChecker.prototype.search = function (trie, i) {
  * var obj = new StreamChecker(words)
  * var param_1 = obj.query(letter)
  */
-
-let words = ["cd", "f", "kl"];
-let queries = [["a"], ["b"], ["c"], ["d"], ["e"], ["f"], ["g"], ["h"], ["i"], ["j"], ["k"], ["l"]]
-
-/*
-[[["ab","ba","aaab","abab","baa"]],["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]]
-*/
-
-words = ["ab","ba","aaab","abab","baa"];
-queries = [["a"],["a"],["a"],["a"],["a"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["b"],["b"],["b"],["a"],["b"],["a"],["b"],["a"],["a"],["a"],["b"],["a"],["a"],["a"]];
-
-
-const checker = new StreamChecker(words);
-
-const res = [];
-
-for(let i = 0; i < queries.length; i++) {
-    const [ch] = queries[i];
-    res.push(checker.query(ch));
-}
-
-//console.table(res);
-
-const expected = [false,false,false,false,false,true,true,true,true,true,false,false,true,true,true,true,false,false,false,true,true,true,true,true,true,false,true,true,true,false];
-
-console.table(res.map((res, i) => [res, expected[i]]));
