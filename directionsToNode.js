@@ -47,49 +47,32 @@ const{ TreeNode, fromArray, toArray }  = require('./treeUtil');
  var getDirections = function(root, startValue, destValue) {
 
 
-    const lca = (node) => {
+    const f = (node, searchVal, path = "") => {
 
-        if(!node) return null;
+        if(!node) return '';
 
-        if(node.val === startValue || node.val === destValue) return node;
+        if(node.val === searchVal) return  path;
 
-        const left = lca(node.left);
-        const right = lca(node.right);
-
-        return (left && right) ? node : left || right;
-    };
- 
-    const f = (node, path = "") => {
-
-        if(!node) return [null, ''];
-
-        if(node.val === startValue || node.val === destValue) return [node, path];
-
-        const [leftNode, leftPath] = f(node.left, path + "L");
+        const leftPath = f(node.left, searchVal, path + "L");
         
-        if(leftNode) return [leftNode, leftPath];
-        return f(node.right, path + "R");
+        if(leftPath) return leftPath;
+
+        return f(node.right, searchVal, path + "R");
     }
 
-    const ancestor = lca(root);
+    const startPath = f(root, startValue), destPath = f(root, destValue);
 
-    const [leftNode, leftPath] = f(ancestor.left);
-    const [rightNode, rightPath] = f(ancestor.right);
+    let i = 0;
 
-    if(ancestor.val === startValue) {
-        return leftNode ? "L" + leftPath : 'R' + rightPath;
-    }
+    while (startPath[i] === destPath[i]) i++;
 
-    if(ancestor.val === destValue) {
-        const len =  leftNode ? leftPath.length : rightPath.length;
 
-        return "U".repeat(len + 1);
-    }
-
-    if(leftNode.val === startValue) {
-
-        return "U".repeat(leftPath.length + 1) + "R" + rightPath;
-    }
-
-    return "U".repeat(rightPath.length + 1) + "L" + leftPath;
+    return "U".repeat(startPath.length - i) + destPath.slice(i);
 };
+
+let root = [5,1,2,3,null,6,4], startValue = 3, destValue = 6;
+root = [2,1], startValue = 2, destValue = 1;
+
+const tree =fromArray(root);
+
+console.log(getDirections(tree, startValue, destValue));
