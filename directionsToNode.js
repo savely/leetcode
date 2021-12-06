@@ -70,9 +70,3 @@ const{ TreeNode, fromArray, toArray }  = require('./treeUtil');
     return "U".repeat(startPath.length - i) + destPath.slice(i);
 };
 
-let root = [5,1,2,3,null,6,4], startValue = 3, destValue = 6;
-root = [2,1], startValue = 2, destValue = 1;
-
-const tree =fromArray(root);
-
-console.log(getDirections(tree, startValue, destValue));
