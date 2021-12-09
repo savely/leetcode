@@ -44,21 +44,15 @@ Constraints:
  */
  var canReach = function(arr, start) {
 
-    const dp = new Array(arr.length).fill(Infinity);
-
     const f = (i) => {
 
-        if(i < 0 || i >= arr.length) return false;
+        if(i < 0 || i >= arr.length || arr[i] < 0) return false;
 
         if( arr[i] === 0) return true;
 
-        if(isFinite(dp[i])) return dp[i];
+        arr[i] *= -1; //preventing cycles
 
-        dp[i] = false; //preventing cycles
-
-        dp[i] =  f(i -  arr[i]) || f(i +  arr[i]);
-
-        return dp[i];
+        return  f(i -  arr[i]) || f(i +  arr[i]);
     }
     
     return f(start);
