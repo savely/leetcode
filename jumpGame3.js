@@ -50,22 +50,16 @@ Constraints:
 
         if(i < 0 || i >= arr.length) return false;
 
-        const jump = arr[i];
-
-        if(jump === 0) return true;
+        if( arr[i] === 0) return true;
 
         if(isFinite(dp[i])) return dp[i];
 
-        dp[i] = false; //to prevent cycles
+        dp[i] = false; //preventing cycles
 
-        dp[i] =  f(i - jump) || f(i + jump);
+        dp[i] =  f(i -  arr[i]) || f(i +  arr[i]);
 
         return dp[i];
     }
     
     return f(start);
 };
-
-let arr = [3,0,2,1,2], start = 2;
-
-console.log(canReach(arr, start));
