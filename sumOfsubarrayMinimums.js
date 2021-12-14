@@ -33,33 +33,39 @@ Constraints:
  */
  var sumSubarrayMins = function(arr) {
 
-    const  leftStack = [], rightStack = [];
+    const  minStack = [], left = [], right = [];
+
+    for(let i = 0; i < arr.length; i++) {
+
+        while(minStack.length && arr[  minStack[minStack.length - 1] ] >= arr[i]) minStack.pop();
+
+        left.push( minStack.length ? i - minStack[minStack.length - 1] : i + 1);
+
+        minStack.push(i);
+    }
+
+    minStack.length = 0;
+
+    for(let i = arr.length - 1; i >= 0; i--) {
+
+        while(minStack.length && arr[  minStack[minStack.length - 1] ] > arr[i]) minStack.pop();
+
+        right.unshift( minStack.length ? minStack[minStack.length - 1] - i : arr.length - i);
+
+        minStack.push(i);
+    }
 
     let sum = 0;
 
     for(let i = 0; i < arr.length; i++) {
-
-        const right = arr.length - 1 - i;
-
-        while(leftStack.length && arr[ leftStack[leftStack.length - 1] ] >= arr[i]) leftStack.pop();
-
-        const  distLeft = leftStack.length ? i - leftStack[leftStack.length - 1] - 1 : i;
-
-        leftStack.push(i);
-
-        while(rightStack.length && arr[ rightStack[rightStack.length - 1] ] >= arr[right]) rightStack.pop();
-
-        const distRight = rightStack.length ? rightStack[rightStack.length - 1] - right -  1: arr.length - 1 - right;
-
-        rightStack.push(right);
-
-        sum +=  distLeft * arr[i] + distRight * arr[right];        
+        sum = (sum + arr[i] * left[i] * right[i]) % (10 ** 9 + 7);
     }
 
     return sum;
 };
 
 let arr = [3,1,2,4];
-//arr = [11,81,94,43,3];
+arr = [11,81,94,43,3];
+//arr = [1,11,81,22,94,17,1,43,3];//462
 
 console.log(sumSubarrayMins(arr));
