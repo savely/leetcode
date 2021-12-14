@@ -33,32 +33,29 @@ Constraints:
  */
  var sumSubarrayMins = function(arr) {
 
-    const  minStack = [], left = [], right = [];
+    const  leftStack = [], rightStack = [], left = [], right = [];
 
     for(let i = 0; i < arr.length; i++) {
 
-        while(minStack.length && arr[  minStack[minStack.length - 1] ] >= arr[i]) minStack.pop();
+        while(leftStack.length && arr[  leftStack[leftStack.length - 1] ] >= arr[i]) leftStack.pop();
 
-        left.push( minStack.length ? i - minStack[minStack.length - 1] : i + 1);
+        left.push( leftStack.length ? i - leftStack[leftStack.length - 1] : i + 1);
 
-        minStack.push(i);
-    }
+        leftStack.push(i);
 
-    minStack.length = 0;
+        const  rIdx = arr.length - 1 - i;
 
-    for(let i = arr.length - 1; i >= 0; i--) {
+        while(rightStack.length && arr[  rightStack[rightStack.length - 1] ] > arr[rIdx]) rightStack.pop();
 
-        while(minStack.length && arr[  minStack[minStack.length - 1] ] > arr[i]) minStack.pop();
+        right.push( rightStack.length ? rightStack[rightStack.length - 1] - rIdx: arr.length - rIdx);
 
-        right.unshift( minStack.length ? minStack[minStack.length - 1] - i : arr.length - i);
-
-        minStack.push(i);
+        rightStack.push(rIdx);
     }
 
     let sum = 0;
 
     for(let i = 0; i < arr.length; i++) {
-        sum = (sum + arr[i] * left[i] * right[i]) % (10 ** 9 + 7);
+        sum = (sum + arr[i] * left[i] * right[arr.length - 1 - i]) % (10 ** 9 + 7);
     }
 
     return sum;
