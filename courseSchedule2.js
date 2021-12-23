@@ -1,4 +1,6 @@
 /*
+#210. Course Schedule II
+
 There are a total of n courses you have to take, labeled from 0 to n-1.
 
 Some courses may have prerequisites, for example to take course 0 you have to first take course 1, which is expressed as a pair: [0,1]
@@ -29,45 +31,50 @@ Explanation: There are a total of 4 courses to take. To take course 3 you should
  */
 var findOrder = function(numCourses, prerequisites) {
 
-    const toAdjList = function(edges, graphArr) {
-        return edges.reduce((acc, edge) => {
-            const [start , end] = edge
-            acc[start].push(end)
-            return acc
-        },graphArr)
+
+    const adj = {}, dep = {};
+
+    for(const [end, start] of prerequisites) {
+        adj[end] = adj[end] || new Set();
+        adj[end].add(start);
+
+        dep[start] = dep[start] || new Set();
+        dep[start].add(end);
     }
-    
-    const visited = new Set(), visiting = new Set()
-    const graph = toAdjList(prerequisites,new Array(numCourses).fill(0).map(_ => []))
 
+    const path = new Set();
 
-    const dfs = function (vertex) {
-        if(visiting.has(vertex)) return false
-        if(visited.has(vertex)) return true
-        
-        const adjVertices = graph[vertex]
+    let queue = [];
 
-        if(adjVertices.length === 0) {
-            visited.add(vertex)
-            return true
+    for(let i = 0; i < numCourses; i++) {
+
+        if(adj[i]) continue;
+
+        queue.push(i);
+        path.add(i);
+    }
+
+    while(queue.length) {
+
+        const next = new Set();
+
+        while(queue.length) {
+
+            const node = queue.pop(), deps = dep[node] || new Set();
+
+                for(const course of deps) {
+
+                    adj[course].delete(node);
+
+                    if(!adj[course].size) {
+                        path.add(course);
+                        next.add(course);
+                    }
+                }
         }
 
-        visiting.add(vertex)
-
-        for(let i = 0; i < adjVertices.length; i++) {
-              if(!dfs(adjVertices[i])) return false
-        }
-
-        visiting.delete(vertex)
-        visited.add(vertex)
-        return true
+        queue.push(...next)
     }
 
-    for (let v = 0; v < graph.length; v++) {
-            if(!dfs(v)) return []
-    }
-    return Array.from(visited)
+    return path.size === numCourses ? [...path] : [];
 };
-
-
-console.log(findOrder(4,[[1,0],[2,0],[3,1],[3,2]]))
