@@ -103,13 +103,3 @@ var calculate = function(s) {
 
     return res;
 };
-
-let s = "3+2*2";
-s =  s = " 3/2 ";
-s = " 3+30 / 2*2 ";
-//s = "1-1+1";
-//s = "23"
-
-//s = "1*2-3/4+5*6-7*8+9/10"; //-24
-
-console.log(calculate(s));
