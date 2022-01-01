@@ -51,29 +51,21 @@ n == nums.length
     
     prep.push(1);
 
-    const dp = {}; 
+    const dp = new Array(prep.length).fill(0).map(() => new Array(prep.length).fill(0)); 
 
     const f = (from, to) => {
 
         if(from < 0 || to > prep.length  - 1) return 0;
 
-        const hash = `${from}|${to}`;
 
-        if(dp[hash] !== undefined) return dp[hash];
-
-        dp[hash] = 0;
+        if(dp[from][to] > 0 ) return dp[from][to];
 
         for(let i = from; i <= to; ++i) {
-            dp[hash] = Math.max(dp[hash], prep[from - 1] * prep[i] * prep[to + 1] + f(from, i - 1) + f(i + 1, to));
+            dp[from][to] = Math.max(dp[from][to], prep[from - 1] * prep[i] * prep[to + 1] + f(from, i - 1) + f(i + 1, to));
         }
 
-        return dp[hash];
+        return dp[from][to];
     }
     
     return f(1, prep.length - 2);
 };
-
-let nums = [3,1,5,8];
-//nums = [1,5];
-
-console.log(maxCoins(nums));
