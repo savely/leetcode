@@ -16,6 +16,11 @@ Example 2:
 Input: s = "a"
 Output: [["a"]]
 
+Constraints:
+
+1 <= s.length <= 16
+s contains only lowercase English letters.
+
 */
 
 /**
@@ -23,29 +28,49 @@ Output: [["a"]]
  * @return {string[][]}
  */
  const partition = (s) => {
+
     const res = [];
-  
-    const isPalindrome = (l, r) => {
-      while (l < r) {
-        if (s[l] !== s[r]) return false;
-        l++;
-        r--;
-      }
-      return true;
-    };
-  
-    const go = (l, list) => {
-      if (l === s.length) {
-        res.push(list);
-      } else {
-        for (let r = l; r < s.length; r++) {
-          if (isPalindrome(l, r)) {
-            go(r + 1, [...list, s.slice(l, r + 1)]);
-          }
+
+    const dp = new Array(s.length).fill(0).map(() => new Array(s.length).fill(0));
+    
+    for(let i = 0; i < s.length; i++) {
+
+        for(let j = i; j >= 0; j--) {
+
+            if(s[i] === s[j] && ( i - j < 2 || dp[i - 1][j + 1])) {
+                dp[i][j] = 1;
+            }
         }
-      }
-    };
-  
-    go(0, []);
+    }
+
+    const f = (i, path) => {
+
+        if(i === s.length) {
+
+            const arr = [];
+            let prev = 0;
+
+            for(const end of path) {
+                arr.push(s.slice(prev, end));
+                prev = end;
+            }
+
+            res.push(arr);
+        }
+
+        for(let j = i; j < s.length; j++) {
+
+            if(dp[j][i]) {
+                f(j + 1, [...path, j + 1]);
+            }
+        }
+    }
+
+    f(0, []);
+
     return res;
   };
+
+  let s = "abaaba";
+
+  console.table(partition(s));
