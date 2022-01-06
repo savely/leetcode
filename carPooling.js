@@ -56,23 +56,28 @@ Constraints:
  */
  var carPooling = function(trips, capacity) {
 
-  const pass = new Array(1001).fill(0);
+  const timeline = [];
 
-  for(let i = 0; i < trips.length; i++) {
+  for(const [num, start, end] of trips) {
 
-    const [n, start, end] = trips[i];
-    pass[start] += n;
-    pass[end] -= n;
+    if(num > capacity) return false;
+
+    timeline.push([-1 * num, start], [num, end]);
   }
 
-  let onBoard = 0;
+  timeline.sort(([num1, time1], [num2, time2]) => time1 - time2 || num2 - num1);
 
-  for(let i = 0; i < 1001; i++) {
-    
-    onBoard += pass[i];
+  let curr = capacity;
 
-    if(onBoard > capacity) return false;
+  for(const [num, _] of timeline) {
+    curr += num;
+
+    if(curr < 0) return false;
   }
 
   return true;
 };
+
+let trips = [[8,2,3],[4,1,3],[1,3,6],[8,4,6],[4,4,8]], capacity = 12;
+
+console.log(carPooling(trips, capacity));
