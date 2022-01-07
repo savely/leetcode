@@ -42,8 +42,6 @@ Could you solve this efficiently without using extra space?
 
 */
 
-const { runInThisContext } = require("vm");
-
 /**
  * Definition for singly-linked list.
  * function ListNode(val, next) {
@@ -68,7 +66,7 @@ Solution.prototype.getRandom = function() {
 
     while(node) {
 
-        if(Math.floor(math.rand() * size) === 0) {
+        if(Math.floor(Math.random() * size) === 0) {
             reservoir = node.val;
         }
         size++;
