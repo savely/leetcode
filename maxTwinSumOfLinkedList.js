@@ -55,47 +55,43 @@ There is only one node with a twin in the linked list having twin sum of 1 + 100
  */
  var pairSum = function(head) {
     
-    const p = printList;
+    let node = head, len = 0;
 
-    const copy = new ListNode(head.val);
-    let node1 = copy, node2 = head.next, len = 1;
-
-    while(node2) {
-        node1.next = new ListNode(node2.val);
-        node1 = node1.next;
-        node2 = node2.next;
+    while(node) {
         len++;
+        node = node.next;
     }
 
-    const f = (node) => {
-      
-    if(!node || !node.next) return node;
-        
-        const rev = f(node.next);
-        node.next.next = node;
-        node.next = null;
+    const arr = [];
 
-        return rev;
-    };
-    
-    let rev = f(copy);
-    
-    let max = 0;
-    len = len / 2;
-    
-    while(len) {
-        max = Math.max(max, head.val + rev.val);
-        head = head.next;
-        rev = rev.next;
-        len--;
+    let max = 0, start = len;
+
+    len = 0;
+    node = head;
+
+    while(node) {
+
+        if(start > len) {
+            arr.push(node.val);
+        } 
+
+        start--;
+
+        if(start < len) {
+            max = Math.max(max, node.val + arr[start])
+        }
+
+        len++;
+
+        node = node.next;
     }
-    
+
     return max;
 };
 
 let head = [4,2,2,3];
 //head = [5,4,2,1];
-//head = [1,100000];
+head = [1,100000];
 
 const list = arrayToList(head);
 
