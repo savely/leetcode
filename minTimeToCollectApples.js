@@ -55,8 +55,6 @@ hasApple.length == n
 
     const f = (node) => {
 
-        //if(visited.has(node)) return 0;
-
         visited.add(node);
 
         let childPaths = 0;
