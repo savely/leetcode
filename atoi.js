@@ -1,5 +1,5 @@
 /*
-8. String to Integer (atoi)
+#8. String to Integer (atoi)
 
 Implement the myAtoi(string s) function, which converts a string to a 32-bit signed integer (similar to C/C++'s atoi function).
 
@@ -66,53 +66,67 @@ Constraints:
 0 <= s.length <= 200
 s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+', '-', and '.'.
 */
+
+
 /**
  * @param {string} str
  * @return {number}
  */
-var myAtoi = function(str) {
-    
-    if(str.length === 0) return 0
-    
-    let start = 0, end = str.length-1 
-    
-    while(start < str.length && str[start] === ' ') {
-        start++
-    }
+ var myAtoi = function(str) {
 
-    while(end >= 0 && isNaN(parseInt(str[end]))) {
-        end--
-    }
-    
-    if(end < 0 || start > str.length-1) return 0
-    
-    if(!['+','-'].includes(str[start])
-       && isNaN(parseInt(str[start]))) return 0
-    
-    let sign = 1, pow10 = 1, int  = 0
-    
-    if(str[start] === '+') {
-        start++
-    }else if(str[start] === '-') {
-        start++
-        sign = -1
-    }
-    
-    for(let i = end; i >= start; i--) {
-        if(str[i] === '.') {
-         int = 0
-         pow10 = 1
-         continue
+    if(str.length === 0) return 0;
+
+    const MAX_INT_NEG = 2 ** 31, MAX_INT_POS = MAX_INT_NEG - 1;
+
+    const readSign = () => {
+
+        let pos = 0;
+
+        while(pos < str.length) {
+
+            if(str[pos] === " ") {
+                pos++;
+                continue;
+            }
+
+            if(str[pos] === "-") return [pos + 1, -1];
+
+            if(str[pos] === "+") return [pos + 1, 1];
+
+            if(!Number.isNaN(+str[pos])) return [pos, 1];
+
+            return [-1, 1];
         }
 
-        const digit = parseInt(str[i])
-        
-        if(isNaN(digit)) return 0
-        
-        int += digit * pow10
-        pow10 *= 10
+        return [-1, 1];
     }
-    return sign * Math.min(2147483648, int)
-};
+    
+    const readNUmber = (start, sign) => {
 
-console.log(myAtoi('+-2'))
+        let num = 0, i = start;
+
+        while(i < str.length) {
+
+            const digit = +str[i];
+
+            if(str[i] === " " || Number.isNaN(digit)) return sign * num;
+
+            num = num * 10 + digit;
+
+            if(sign > 0 && num > MAX_INT_POS) return MAX_INT_POS;
+
+            if(sign < 0 && num > MAX_INT_NEG) return sign * MAX_INT_NEG;
+            
+            i++;
+        }
+
+        return sign * num;
+    };
+
+
+    const [start, sign] = readSign();
+
+    if(start < 0) return 0;
+
+    return readNUmber(start, sign);
+};
