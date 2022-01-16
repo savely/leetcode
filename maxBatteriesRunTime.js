@@ -42,29 +42,29 @@ Constraints:
 */
 
 
-const { MaxPriorityQueue } = require('@datastructures-js/priority-queue');
-
 var maxRunTime = function(n, batteries) {
 
     if(batteries.length < n) return 0;
 
     if(batteries.length === n) return Math.min(...batteries);
 
-    const queue = new MaxPriorityQueue();
-
     let sum = 0;
-
+    
     for(const battery of batteries) {
-        queue.enqueue(battery);
         sum += battery;
     }
 
+    batteries.sort((a,b) => b - a);
+
     let avg = Math.floor(sum / n);
 
-    while((queue.front())["element"] > avg) {
-        sum -= (queue.dequeue())["element"];
+    for(let i = 0; i < batteries.length; i++) {
+
+        if(batteries[i] <= avg) return avg;
+
+        sum -= batteries[i];
         n--;
-        avg = Math.floor(sum / n); 
+        avg = Math.floor(sum / n);
     }
 
     return avg;
