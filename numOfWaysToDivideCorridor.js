@@ -48,9 +48,8 @@ corridor[i] is either 'S' or 'P'.
  */
  var numberOfWays = function(corridor) {
 
-    const mod = 10 ** 9;
-
-    let pairs = 0, ways = 1, i = 0, currSeats = 0;
+    const mod = 1000_000_007;
+    let seats = 0, ways = 1, i = 0, currSeats = 0;
 
     while(i < corridor.length) {
 
@@ -60,23 +59,15 @@ corridor[i] is either 'S' or 'P'.
 
             while(corridor[j] === 'P') j++;
 
-            ways = j < corridor.length ? (ways * (j - i + 1)) % mod : ways;
-            ways = ways % mod;
-            pairs++;
+            ways = j < corridor.length ? (ways * (j - i + 1)) % mod  : ways;
             currSeats = 0;
             i = j;
 
         } else {
+            seats += corridor[i] === "S" ? 1 : 0;
             currSeats += corridor[i++] === "S" ? 1 : 0;
         }
     }
     
-    return pairs > 0 ? ways : 0;
+    return seats > 1 && seats % 2 === 0 ? ways: 0;
 };
-
-let corridor = "SSPPSSPPPSSPSS";
-corridor = "PPSPSP";
-//corridor = "SSPPSPS";
-//corridor = "SPPPSPPSSPPPSPSPSSPP";
-
-console.log(numberOfWays(corridor));
