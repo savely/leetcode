@@ -24,7 +24,7 @@ The number of nodes in each tree is in the range [0, 5000].
 
 */
 
-const { TreeNode, fromArray, toArray } = reqiure(".\treeUtil");
+const  { TreeNode, fromArray, toArray } = require("./treeUtil");
 /**
  * @param {TreeNode} root1
  * @param {TreeNode} root2
@@ -35,8 +35,23 @@ const { TreeNode, fromArray, toArray } = reqiure(".\treeUtil");
     const f = (root) => {
 
         if(!root) return [];
-
-        return [...f(root.left), root.val, ...f(root.right)];
+    
+        const res = [], stack = [];
+    
+        while(root || stack.length) {
+    
+            while(root) {
+                stack.push(root);
+                root = root.left;
+            }
+    
+            root = stack.pop();
+            res.push(root.val);
+    
+            root = root.right;
+        }
+    
+        return res;
     };
 
     const arr1 = f(root1), arr2 = f(root2), res = [];
@@ -59,3 +74,12 @@ const { TreeNode, fromArray, toArray } = reqiure(".\treeUtil");
 };
 
 
+
+
+let root1 = [2,1,4], root2 = [1,0,3];
+root1 = [1,null,8], root2 = [8,1];
+
+const t1 = fromArray(root1), t2 = fromArray(root2);
+
+
+console.table(getAllElements(t1, t2));
