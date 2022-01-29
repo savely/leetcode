@@ -1,8 +1,8 @@
 /*
 #84. Largest Rectangle in Histogram
 
-Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.
-
+Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, 
+return the area of the largest rectangle in the histogram.
  
 
 Example 1:
@@ -29,14 +29,11 @@ Constraints:
 
 var largestRectangleArea = function(heights) {
 
-    if(heights.length === 0) return 0;
-
-    let area  = 0;
-    let i  =  0;
+   let area  = 0, i =  0;
 
     while(i < heights.length) {
 
-        if(heights[i] === 0) {
+        if(heights[i] === 0 || heights[i] === heights[i - 1]) {
             i++;
             continue;
         }
