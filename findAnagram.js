@@ -30,54 +30,45 @@ Constraints:
 s and p consist of lowercase English letters.
 */
 var findAnagrams = function(s, p) {
-    
-    const hash = new Map();
-    const res  = [];
 
-    for(let i = 0; i < p.length; i++) {
-        if(!hash.has(p[i])) {
-           hash.set(p[i],1);
-           continue;
-        }
-        hash.set(p[i], hash.get(p[i])+1);
+    if(p.length > s.length) return [];
+
+    const target = new Array(26).fill(0);
+
+    for(const ch of p) {
+        target[ch.charCodeAt(0) - 97]++;
     }
 
-    let tmp = new Map(hash);
+    const res = [];
 
-    for(let i = 0; i <= s.length-p.length; i++) {
-        if(!hash.has(s[i])) {
-             continue;
-        }
-        tmp = new Map(hash);
-        let j = i;
+    let diff = p.length, counters = [...target], start = 0, end = 0;
 
-        while(tmp.size > 0) {
-           if(!tmp.has(s[j])) {
-               break
-           }
-           let count = tmp.get(s[j])
-           if(count === 1) {
-               tmp.delete(s[j]);
-           } else {
-               tmp.set(s[j], count-1);
-           }
-           j++;
-        }
+    while(start <= s.length - p.length) {
 
-        if(tmp.size === 0) {
-            res.push(i);
+        while(diff > 0 && end < s.length) {
 
-            while(j < s.length && s[i] === s[j]) {
-               i++;
-               j++;
-               res.push(i);
+            const idx = s.charCodeAt(end) - 97;
+
+            if(target[idx] === 0) {
+                diff = p.length;
+                counters = [...target];
+                start = end = end + 1;
+                continue;
             }
 
-        } else if(!hash.has(s[j])) {
-            i = j;
+            if(counters[idx] === 0) break;
+
+            counters[idx]--;
+            diff--;
+            end++;
         }
+
+        if(diff === 0) res.push(start);
+
+        counters[s.charCodeAt(start) - 97]++;
+        diff++;
+        start++;
     }
+
     return res;
 };
-
-console.log(findAnagrams('aaaabaaaab','aaa'));
