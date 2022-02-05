@@ -42,39 +42,61 @@ The sum of lists[i].length won't exceed 10^4.
 
 
 const {ListNode, arrayToList, printList} = require("./listUtil");
-const { MinPriorityQueue }  = require('@datastructures-js/priority-queue');
 
 /**
  * @param {ListNode[]} lists
  * @return {ListNode}
  */
 var mergeKLists = function(lists) {
-    
-    const queue = new MinPriorityQueue();
 
-    for(const list of lists) {
+    if(!lists.length) return null;    
 
-        if(list !== null) queue.enqueue(list, list.val);
-    }
+    const merge = (l1, l2) => {
 
-    let head = null, node = null;
+        if(!l1) return l2;
 
-    while(queue.size()) {
+        if(!l2) return l1;
 
-        const {element : list} = queue.dequeue(); 
+        let head = null, node = null;
 
-        if(!head) {
-            node = list;
+        if(l1.val < l2.val) {
+            node = l1;
             head = node;
+            l1 = l1.next;
         } else {
-            node.next = list;
-            node = node.next;
+            node = l2;
+            head = node;
+            l2 = l2.next;
         }
 
-        if(list.next) {
-            queue.enqueue(list.next, list.next.val);
+        while(l1 && l2) {
+
+            if(l1.val < l2.val) {
+                node.next = l1;
+                node = node.next;
+                l1 = l1.next;
+            } else {
+                node.next = l2;
+                node = node.next;
+                l2 = l2.next;
+            }
         }
+
+        node.next = l1 ? l1 : l2;
+
+        return head;
     }
 
-    return head;    
+    while(lists.length > 1) {
+
+        const nextLists = [];
+
+        for(let i = 0; i < lists.length; i += 2) {
+            nextLists.push(merge(lists[i], lists[i + 1] || null));
+        }
+
+        lists = nextLists;
+    }
+
+    return lists[0];
 };
