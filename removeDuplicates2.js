@@ -55,21 +55,25 @@ nums is sorted in non-decreasing order.
 
  var removeDuplicates = function(nums) {
     
-    const visited = {};
-
-    let start = -1, end = 0;
+    let last = -Infinity, count = 0, start = -1, end = 0;
 
     while(end < nums.length) {
 
         const num = nums[end];
-        visited[num] = (visited[num] || 0) + 1;
 
-        if((start < 0 && visited[num] < 3) || (start > -1 && visited[num] > 2)) {
+        if(num === last) {
+            count++;
+        } else {
+            last = num;
+            count = 1;
+        }
+
+        if((start < 0 && count < 3) || (start > -1 && count > 2)) {
             end++;
             continue;
         }
 
-        if(visited[num] > 2 && start < 0) {
+        if(count > 2 && start < 0) {
             start = end;
             end++;
             continue;
