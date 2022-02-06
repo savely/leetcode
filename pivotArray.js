@@ -45,21 +45,30 @@ pivot equals to an element of nums.
  */
  var pivotArray = function(nums, pivot) {
 
-  const lesser = [], bigger = [];
 
-  for(const num of nums) {
-      
-    if(num === pivot) continue;
+    let low = 0, same = 0;
 
-    num > pivot ? bigger.push(num) : lesser.push(num);
-  }
-    
-  const count = nums.length - lesser.length - bigger.length;
+    for(const num of nums) {
+        low += num < pivot ? 1 : 0;
+        same += num === pivot ? 1 : 0; 
+    }
 
-  return lesser.concat(Array(count).fill(pivot), bigger);
+    let hi = same + low;
+    same = low;
+    low = 0;
+
+    const res = new Array(nums.length).fill(0);
+
+    for(const num of nums) {
+
+        if(num < pivot) {
+            res[low++] = num;
+        } else if(num === pivot) {
+            res[same++] = pivot;
+        } else {
+            res[hi++] = num;
+        }
+    }
+
+    return res;
 };
-
-let nums = [9,12,5,10,14,3,10], pivot = 10;
-nums = [-3,4,3,2], pivot = 2;
-
-console.log(pivotArray(nums, pivot));
