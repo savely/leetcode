@@ -48,22 +48,14 @@ nums is sorted in non-decreasing order.
 
 */
 
-const { star } = require("cli-spinners");
-
 /**
  * @param {number[]} nums
  * @return {number}
  */
 
-var removeDuplicates = function(nums) {
+ var removeDuplicates = function(nums) {
     
     const visited = {};
-
-    const swap = (i, j) => {
-        const t = nums[i];
-        nums[i] = nums[j];
-        nums[j] = t;
-    }
 
     let start = -1, end = 0;
 
@@ -83,12 +75,8 @@ var removeDuplicates = function(nums) {
             continue;
         }
 
-        swap(start, end);
-        start++;
-        end++;
+        nums[start++] = nums[end++];
     }
-
-    console.table(nums);
 
     return start < 0 ? nums.length : start;
 };
