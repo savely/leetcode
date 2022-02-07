@@ -29,33 +29,29 @@ s and t consist of lowercase English letters.
 
 */
 
-const f = function(str) {
-    return Array.from(str).reduce((acc, c) => {
-    if(acc[c] === undefined) {
-        acc[c] = 0;
-    }
-    acc[c] ++;  
-    return acc;
-    }, {})
- }
-
- /**
+/**
  * @param {string} s
  * @param {string} t
  * @return {character}
  */
 
-var findTheDifference = function(s, t) {
-
-    const freq  = f(s);
+ var findTheDifference = function(s, t) {
+    
+    const chars = new Array(26).fill(0);
     
     for(let i = 0; i < t.length; i++) {
-        const ch = t[i];
-        if(freq[ch] === undefined || freq[ch] === 0)  {
-            return ch;
-        }
-        freq[ch] -= 1;
-    }
-};
 
-findTheDifference('abcd', 'abcde');
+        chars[t.charCodeAt(i) - 97]++;
+    
+        if(i < s.length) {
+            chars[s.charCodeAt(i) - 97]--;
+        }
+    }
+    
+    
+    for(let i = 0; i < chars.length; i++) {
+        if(chars[i] > 0) return String.fromCharCode(i + 97);
+    }
+    
+    return "";
+};
