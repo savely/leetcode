@@ -41,84 +41,61 @@ All the words in wordList are unique.
  */
  var ladderLength = function(beginWord, endWord, wordList) {
 
-    const nodesFrom = (word) => {
-
-        const arr = [...word], nodes = [];
-
-        for(let i = 0; i < arr.length; i++) {
-
-            arr[i] = '*';
-
-            nodes.push(arr.join(''));
-
-            arr[i] = word[i];
-        }
-        return nodes;
-    }
-
-    const nodes = {};
-
-    let hasEndWord = false;
+    const map = new Map();
 
     for(let i = 0; i < wordList.length; i++) {
-
-      const word = wordList[i];
-
-      hasEndWord |= word === endWord;
-
-      for (const node of nodesFrom(word)) {
-
-         if(nodes[node] === undefined) nodes[node] = [];
-         nodes[node].push(i);
-      }
+        map.set(wordList[i], i);
     }
 
-    if(!hasEndWord) return 0;
+    if(!map.has(endWord)) return 0;
 
-    if(beginWord === endWord) return 1;
+    let queue = [map.get(endWord)];
 
-    const queue = nodesFrom(beginWord); 
-    
-    let depth = 1;
+    map.delete(endWord);
 
-    const visited = new Set();
+    let length = 1;
 
     while(queue.length) {
 
-        const next = new Set();
+        const next = [];
 
         while(queue.length) {
 
-            const currNode = queue.pop(), wordIds = nodes[currNode] || [];
+            const idx = queue.pop();
 
-            if(visited.has(currNode)) continue;
+            const arr = [...wordList[idx]];
 
-            visited.add(currNode);
+            for(let i = 0; i < arr.length; i++) {
 
-            for(const id of wordIds) {
+                const orig = arr[i];
 
-                const word = wordList[id];
+                for(let j = 0; j < 26; j++) {
+                    arr[i] = String.fromCharCode(j + 97);
 
-                if(word === endWord) return depth + 1;
+                    const searchWord = arr.join('');
 
-                for(const node of nodesFrom(word)) {
+                    if(searchWord === beginWord) return length + 1;
 
-                    if(visited.has(node)) continue;
-
-                    next.add(node);
+                    if(map.has(searchWord)) {
+                        next.push(map.get(searchWord));
+                        map.delete(searchWord);
+                    }
                 }
+
+                arr[i] = orig;
             }
+
         }
 
-        queue.push(...next);
-        depth++;
+        queue = next;
+        length++;
     }
-    
+
     return 0;
 };
 
-/* //"hit" -> "hot" -> "dot" -> "dog" -> cog"
+ //"hit" -> "hot" -> "dot" -> "dog" -> cog"
 //let beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"];
-beginWord = "hit", endWord = "keg", wordList = ["hot","dot","dog","lot","log","cog","keg","lag", "leg", "peg"];
+let beginWord = "hit", endWord = "keg", wordList = ["hot","dot","dog","lot","log","cog","keg","lag", "leg", "peg"];
 
-console.log(ladderLength(beginWord, endWord, wordList)); */
+console.log(ladderLength(beginWord, endWord, wordList));
