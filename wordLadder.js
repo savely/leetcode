@@ -63,16 +63,13 @@ All the words in wordList are unique.
 
             const idx = queue.pop();
 
-            const arr = [...wordList[idx]];
+            const word = wordList[idx];
 
-            for(let i = 0; i < arr.length; i++) {
-
-                const orig = arr[i];
+            for(let i = 0; i < word.length; i++) {
 
                 for(let j = 0; j < 26; j++) {
-                    arr[i] = String.fromCharCode(j + 97);
 
-                    const searchWord = arr.join('');
+                    searchWord = word.slice(0, i) + String.fromCharCode(j + 97) + word.slice(i + 1);
 
                     if(searchWord === beginWord) return length + 1;
 
@@ -81,10 +78,7 @@ All the words in wordList are unique.
                         map.delete(searchWord);
                     }
                 }
-
-                arr[i] = orig;
             }
-
         }
 
         queue = next;
