@@ -32,28 +32,3 @@ var combinationSum = function(candidates, target) {
 };
 
 //console.log(combinationSum([2,3,5], 8))
-
-var subsets = function(nums) {
-    
-    const superSet = [[]]
-    const set      = []
-    const visited  = new Set()
-    
-    const backTrack = function(idx) {
-        for(let i = idx; i < nums.length; i++) {
-            set.push(nums[i])
-            backTrack(i+1)
-            const hash = set.sort().toString()
-            if(!visited.has(hash)) {
-              visited.add(hash)  
-              superSet.push(Array.from(set))
-            }
-            set.pop()
-        }
-    }
-    
-    backTrack(0)
-    return superSet
-};
-
-console.log(subsets([4,4,4,1,4]))
