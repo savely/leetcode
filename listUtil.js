@@ -1,6 +1,6 @@
-function ListNode(val) {
+function ListNode(val, next) {
     this.val = val;
-    this.next = null;
+    this.next = next;
 }
 
 function arrayToList(arr) {
@@ -19,13 +19,10 @@ function arrayToList(arr) {
 }
 
 function printList(list) {
-    if (typeof list.val === 'undefined') {
+    if (!list) {
         return "";
     }
-    if (list.next === null) {
-        return "(" + list.val + ")";
-    }
-    return "(" + list.val + ")->" + printList(list.next);
+    return `(${list.val})${list.next ? "->" : ""}${printList(list.next)}`;
 }
 
 module.exports = {ListNode, arrayToList, printList};
