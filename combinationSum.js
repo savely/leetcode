@@ -1,5 +1,5 @@
 /*
-# 39. Combination Sum
+#39. Combination Sum
 
 Given an array of distinct integers candidates and a target integer target, return a list of all unique combinations of candidates where the chosen numbers sum to target. You may return the combinations in any order.
 
@@ -46,26 +46,20 @@ All elements of candidates are distinct.
  
 var combinationSum = function(candidates, target) {
 
-    const sorted = candidates.sort((a,b) => a-b);
-    const cand = [];
-    const res = [];
+    candidates.sort((a,b) => a - b);
 
-    const backTrack = function(idx,tgt) {
-         
-        if(tgt < 0 ) return;
+    const dp = new Array(target + 1).fill(0).map(_ => []);
+    dp[0].push([]);
 
-        if( tgt === 0) {
-            res.push(Array.from(cand));
-            return;
-        }
+    for(let i = 1; i < dp.length; i++) {
 
-        for(let i = idx; i < sorted.length && sorted[i] <= tgt; i++) {
-          cand.push(sorted[i]);
-          backTrack(i, tgt - sorted[i]);
-          cand.pop();
+        for(let j = 0; j < candidates.length && candidates[j] <= i; j++) {
+
+            for (const arr of dp[i - candidates[j]]) {
+                if(!arr.length || arr[arr.length - 1] <= candidates[j]) dp[i].push([...arr, candidates[j]]);
+            }
         }
     }
-    backTrack(0, target);
 
-    return res;
+    return dp[target];
 };
