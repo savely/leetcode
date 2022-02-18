@@ -1,4 +1,6 @@
 /*
+#402. Remove K Digits
+
 Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
 
 Note:
@@ -26,58 +28,33 @@ Explanation: Remove all the digits from the number and it is left with nothing w
  * @param {number} k
  * @return {string}
  */
-var removeKdigits = function(num, k) {
-  
-    if(num.length <= k) return '0'
+ var removeKdigits = function(num, k) {
 
-    const trimZeroes = function(arr) {
-        if(!arr.length) return ['0']
+    const minStack = [];
 
-        if(arr[0] !== '0') return arr
-    
-        let pos = 1
+    let i = 0;
+
+    while(i < num.length && k > 0) {
+
+        const dig = +num.charAt(i);
+
+        while(minStack.length && k > 0 && dig < minStack[minStack.length - 1] ) {
+            minStack.pop();
+            k--;
+        }
+
+        if(minStack.length || dig > 0) {
+            minStack.push(dig);
+        }
         
-        while(pos < arr.length && arr[pos] === '0') {
-            pos++
-        }
-         return pos === arr.length ? ['0'] : arr.slice(pos, arr.length)
-    }    
+        if(minStack.length + num.length - i <= k) return "0";
 
-    const  f = function (arr, pos, n) {
-
-        if(n === 0) return arr
-
-        if(pos > arr.length-1) {
-            arr.length -= Math.min(n, arr.length)
-            return arr
-        }
-
-        if(arr[0] === '0') {
-           arr.splice(0, 1)
-           return f(arr, pos, n)
-        }
-
-        if(arr[pos] > arr[pos+1]) {
-            arr.splice(pos, 1)    
-            return f(arr, Math.max(0, pos-1), n-1)
+        i++;
     }
-      return f(arr, pos+1, n)
-  }
 
-    const arr =  f(Array.from(num), 0, k)
+    while(!minStack.length && num[i] === "0") i++;
+  
+    const res =  minStack.join('') + num.slice(i);
 
-    return trimZeroes(arr).join('')
+    return (k > 0 ? res.slice(0, res.length - k)  : res) || "0";
 };
-
-
-console.log(removeKdigits("100200", 1))
-
-//console.log(removeKdigits("94399", 2))
-1432219
-
-console.log(removeKdigits("1432219", 2))
-//console.log(removeKdigits("1219", 2))
-
-
-
-
