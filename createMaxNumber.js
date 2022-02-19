@@ -1,10 +1,13 @@
 /*
 #321. Create Maximum Number
 
-You are given two integer arrays nums1 and nums2 of lengths m and n respectively. nums1 and nums2 represent the digits of two numbers. 
+You are given two integer arrays nums1 and nums2 of lengths m and n respectively. nums1 and nums2 represent 
+the digits of two numbers. 
+
 You are also given an integer k.
 
-Create the maximum number of length k <= m + n from digits of the two numbers. The relative order of the digits from the same array must be preserved.
+Create the maximum number of length k <= m + n from digits of the two numbers. 
+The relative order of the digits from the same array must be preserved.
 
 Return an array of the k digits representing the answer.
 
@@ -119,17 +122,3 @@ n == nums2.length
 
     return maxSeq;
 };
-
-let nums1 = [3,4,6,5], nums2 = [9,1,2,5,8,3], k = 5;
-nums1 = [3,9], nums2 = [8,9], k = 3;
-nums1 = [6,7], nums2 = [6,0,4], k = 5;
-//nums1 = [3,4,6,5,3,2,5,7,9,2,1,4,7,7,2,3,4,5,6,2,3,4,6,7,8,2,3,1,4,5,3,2,1,6,8,7,4,3,2,2,1,3,4,3,1,3,3,4,5,2,4,4,3,4,3,4,3,1,7,8,6,4,2,3,4,5,6,3,4,3,1,3,9,7,4,4,4];
-//nums2 = [4,6,7,6,5,9,9,9,1,2,5,8,3,4,8,8,5,6,3,4,1,6,8,9,7,6,4,4,3,4,5,4,9,3,1,3,5,6,7,4,5,2];
-//k = 109; //[9,9,9,8,8,8,5,6,3,4,6,5,3,4,3,2,5,7,9,2,1,6,8,9,7,6,4,4,3,4,5,4,9,3,1,4,7,7,2,3,4,5,6,2,3,4,6,7,8,2,3,1,4,5,3,2,1,6,8,7,4,3,2,2,1,3,5,6,7,4,5,2,1,3,4,3,1,3,3,4,5,2,4,4,3,4,3,4,3,1,7,8,6,4,2,3,4,5,6,3,4,3,1,3,9,7,4,4,4];
-
-//nums1 = [2,5,6,4,4,0], nums2 =[7,3,8,0,6,5,7,6,2], k = 15; //[7,3,8,2,5,6,4,4,0,6,5,7,6,2,0]
-//nums1 = [6,7], nums2 = [6,0,4], k = 1; //[6,7,6,0,4]
-
-nums1 = [8,5,9,5,1,6,9], nums2 = [2,6,4,3,8,4,1,0,7,2,9,2,8], k = 20;// [8,5,9,5,2,6,4,3,8,4,1,6,9,1,0,7,2,9,2,8];
-
-console.table(maxNumber(nums1, nums2, k));
