@@ -18,6 +18,18 @@ function arrayToList(arr) {
     return head;
 }
 
+function listToArray(head) {
+
+    const res = [];
+
+    while(head) {
+        res.push(head.val);
+        head = head.next;
+    }
+
+    return res;
+}
+
 function printList(list) {
     if (!list) {
         return "";
@@ -25,4 +37,4 @@ function printList(list) {
     return `(${list.val})${list.next ? "->" : ""}${printList(list.next)}`;
 }
 
-module.exports = {ListNode, arrayToList, printList};
+module.exports = {ListNode, arrayToList, printList, listToArray};
