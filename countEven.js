@@ -28,6 +28,8 @@ Constraints:
 
 */
 
+//TODO : understand and implement O(1) solution
+
 /**
  * @param {number} num
  * @return {number}
@@ -40,9 +42,9 @@ Constraints:
         
         let odds = 0, n = i;
         
-        while(n > 2) {
+        while(n > 0) {
             odds += n % 2;
-            n = n >> 1;
+            n = n /10 >> 0;
         }
         
         count += odds  % 2 ? 0 : 1;
@@ -50,7 +52,3 @@ Constraints:
     
     return count;
 };
-
-let num = 10;
-
-console.log(countEven(num));
