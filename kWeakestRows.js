@@ -1,81 +1,65 @@
-function Heap(compareFunc) {
-    this.arr = []
-    this.compareFunc = compareFunc
-}
+/*
 
-Heap.prototype.pop = function() {
+# 1337. The K Weakest Rows in a Matrix
 
-  if(this.size() === 0) return undefined
-  
-  const val = this.arr[0]
+You are given an m x n binary matrix mat of 1's (representing soldiers) and 0's (representing civilians). The soldiers are positioned in front of the civilians. That is, all the 1's will appear to the left of all the 0's in each row.
 
-  const last = this.arr.pop()
+A row i is weaker than a row j if one of the following is true:
 
-  if(this.arr.length === 0) return val
+    The number of soldiers in row i is less than the number of soldiers in row j.
+    Both rows have the same number of soldiers and i < j.
 
-  this.arr[0] = last
-  this.sinkDown(0)
+Return the indices of the k weakest rows in the matrix ordered from weakest to strongest.
 
-  return val
-}
+ 
 
-Heap.prototype.push = function(val) {
-this.arr.push(val)
-this.bubbleUp(this.arr.length-1)
-}
+Example 1:
 
-Heap.prototype.size = function() {
-    return this.arr.length
-}
+Input: mat = 
+[[1,1,0,0,0],
+ [1,1,1,1,0],
+ [1,0,0,0,0],
+ [1,1,0,0,0],
+ [1,1,1,1,1]], 
+k = 3
+Output: [2,0,3]
+Explanation: 
+The number of soldiers in each row is: 
+- Row 0: 2 
+- Row 1: 4 
+- Row 2: 1 
+- Row 3: 2 
+- Row 4: 5 
+The rows ordered from weakest to strongest are [2,0,3,1,4].
 
-Heap.prototype.bubbleUp = function(n) {
-  const val = this.arr[n]
+Example 2:
 
-  while(n > 0) {
-      const parentN = Math.floor((n+1)/2)-1
-      const parent = this.arr[parentN]
+Input: mat = 
+[[1,0,0,0],
+ [1,1,1,1],
+ [1,0,0,0],
+ [1,0,0,0]], 
+k = 2
+Output: [0,2]
+Explanation: 
+The number of soldiers in each row is: 
+- Row 0: 1 
+- Row 1: 4 
+- Row 2: 1 
+- Row 3: 1 
+The rows ordered from weakest to strongest are [0,2,3,1].
 
-      if(this.compareFunc(val,parent) > -1) break
+ 
 
-      this._swap(n, parentN)
-      n = parentN
-  }
-}
+Constraints:
 
-Heap.prototype.sinkDown = function(n) {
+    m == mat.length
+    n == mat[i].length
+    2 <= n, m <= 100
+    1 <= k <= m
+    matrix[i][j] is either 0 or 1.
 
-    const val = this.arr[n]
-    const len = this.arr.length
-
-    while(true) {
-       let child2N = (n+1) * 2
-       let child1N = child2N -1
-       let swap  = null
-       let child1 = null
-       let child2 = null
-
-       if(child1N < len) {
-         child1 = this.arr[child1N]
-          swap = this.compareFunc(val,child1) > -1 ? child1N : swap
-       }
-
-       if(child2N < len) {
-        child2 = this.arr[child2N]
-        swap = this.compareFunc(swap === null? val: child1, child2) > -1 ? child2N : swap
-     }
-
-     if(swap === null) break
-
-    this._swap(swap, n)
-    n = swap
-    }
-}
-
-Heap.prototype._swap = function(m,n) {
-    const tmp = this.arr[m]
-    this.arr[m] = this.arr[n]
-    this.arr[n] = tmp
-} 
+*/
 
 
 /**
@@ -83,55 +67,53 @@ Heap.prototype._swap = function(m,n) {
  * @param {number} k
  * @return {number[]}
  */
-var kWeakestRows = function(mat, k) {
+ var kWeakestRows = function(mat, k) {
     
-    const heap = new Heap(([ones1, pos1], [ones2, pos2]) => {
-        
-        if(ones1 === ones2) return pos1 - pos2
-
-        return ones1 - ones2
-    })
-
-    const bSearch = function(row) {
-
-        if(row[0] === 0) return 0
-
-        let lo = 0, hi = row.length - 1
-
-        if(row[hi] === 1) return hi
-
-        while(hi > lo) {
-            const mid = Math.ceil((hi + lo) / 2)
-
-            if(hi - lo === 1) return row[lo] === 0 ? lo : hi
-
-            if(row[mid] === 0 && row[mid-1] === 1) return mid
-
-            if(row[mid] === 1) {
-                lo = mid
-            } else {
-                hi = mid
-            }
-        }
-
-        return lo
+    const ones = mat.map(row => row.reduce((acc, n) => acc + n), 0);
+   
+    const check = (n) => ones.reduce((acc, count) => {
+       return count > n ? acc : acc + 1;
+    }, 0);
+   
+    let lo = 0, hi = mat[0].length;
+   
+    while(hi > lo) {
+   
+        const mid = (hi + lo) / 2 >> 0,count = check(mid);
+   
+       if(count === k) {
+           lo = mid;
+           break;
+       }
+   
+       if(count > k) {
+   
+           if(mid === 0 || check(mid - 1) < k) {
+               lo = mid;
+             break;
+           }
+   
+           hi = mid - 1;
+       } else {
+           lo = mid + 1;
+       }
     }
-
-     for(let i = 0; i < mat.length; i++) {
-
-        const row = mat[i]
-        let ones = bSearch(row)
-
-        heap.push([ones, i])
-     }
-
-     const res = []
-
-     while(k-- > 0) {
-         res.push(heap.pop()[1])
-     }
-
-     return res
+   
+    let res = [], eq = [];
+   
+    for(let i = 0; i < ones.length; i++) {
+        if(ones[i] < lo) res.push(i);
+   
+        if(ones[i] === lo) eq.push(i);
+    }
+   
+    for(let i = 0;  i < eq.length && res.length < k; i++) {
+        res.push(eq[i]);
+    }
+       
+    res.sort((a, b) => ones[a] - ones[b] || a - b);
+   
+    return res;
 };
 
 let mat = 
@@ -141,15 +123,18 @@ let mat =
  [1,1,0,0,0],
  [1,1,1,1,1]]
 
- mat = [[1,0],[0,0],[1,0]]
+//mat = [[1,0],[0,0],[1,0]]
 
- mat = [[1,1,0],[1,0,0],[1,0,0],[1,1,1],[1,1,0],[0,0,0]]
+//mat = [[1,1,0],[1,0,0],[1,0,0],[1,1,1],[1,1,0],[0,0,0]]
 
-mat = [[1,1,1,1,1],
+/*mat = [[1,1,1,1,1],
        [1,0,0,0,0],
        [1,1,0,0,0],
        [1,1,1,1,0],
-       [1,1,1,1,1]]
+       [1,1,1,1,1]];*/
 
+mat = [[1,1,1,1,0,0],[1,0,0,0,0,0],[1,1,1,1,1,1]];
+
+mat = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0],[1,1,1,0],[0,0,0,0]];
  
-console.log(kWeakestRows(mat, 3))
+console.log(kWeakestRows(mat, 3));
