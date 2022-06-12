@@ -27,28 +27,28 @@ Explanation: The optimal subarray here is [5,2,1] or [1,2,5].
  */
  var maximumUniqueSubarray = function(nums) {
     
-    const last = {}
-    
-    last[nums[0]] = 0
-    
-    let max = nums[0], curr = nums[0], currMinIdx = 0
-    
-    for(let i = 1; i < nums.length; i++) {
-        
-        const el = nums[i], lastIdx = last[el]
-        nums[i] += nums[i-1]
-        curr += el
-        last[el] = i
-       
-        if(lastIdx >= currMinIdx) {
+    const set = new Set();
+
+    let maxVal = 0, currVal = 0, start = 0, end = 0;
+
+    while(end < nums.length) {
+
+        while(set.has(nums[end])) {
             
-            curr -= nums[lastIdx] 
-            curr += currMinIdx === 0 ? 0 : nums[currMinIdx - 1]
-            currMinIdx = lastIdx + 1
+            currVal -= nums[start];
+            set.delete(nums[start++]);
         }
 
-        max = Math.max(max, curr)
-        
+        set.add(nums[end]);
+        currVal += nums[end];
+        maxVal = Math.max(maxVal, currVal);
+        end++;
     }
-    return max
+
+    return maxVal;
 };
+
+let nums = [4,2,4,5,6];
+nums = [5,2,1,2,5,2,1,2,5];
+
+console.log(maximumUniqueSubarray(nums));
