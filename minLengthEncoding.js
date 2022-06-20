@@ -61,9 +61,16 @@ Constraints:
 
             if(set.has(needle)) continue;
 
-            if(haystack.lastIndexOf(needle) === start) {
+            let found = true;
+            for(let k = needle.length - 1; k >= 0; k--) {
+                if(needle[k] !== haystack[start + k]) {
+                    found = false;
+                    break;
+                }
+            }
+
+            if(found) {
                 set.add(needle);
-                continue;
             }
         }
 
@@ -74,6 +81,6 @@ Constraints:
 };
 
 let words = ["time", "me", "bell"];
-words = ["t"];
+//words = ["t"];
 
 console.log(minimumLengthEncoding(words));
