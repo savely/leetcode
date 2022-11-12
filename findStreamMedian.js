@@ -38,12 +38,19 @@ At most 5 * 104 calls will be made to addNum and findMedian.
 
 //TODO : implenment two heaps approach
 
+
+
 /**
  * initialize your data structure here.
  */
+
+ const { MinPriorityQueue, MaxPriorityQueue}  = require('@datastructures-js/priority-queue');
+
  var MedianFinder = function() {
     
-    this.arr  = [];
+    this.minQueue  = new MinPriorityQueue();
+    this.maxQueue = new MaxPriorityQueue();
+    this.length = 0;
 };
 
 /** 
@@ -52,18 +59,27 @@ At most 5 * 104 calls will be made to addNum and findMedian.
  */
 MedianFinder.prototype.addNum = function(num) {
 
-  if(this.arr.length === 0 || num >= this.arr[this.arr.length -1]) {
-    this.arr.push(num);
-    return;
-  }
-  if(this.arr[0] >=  num) {
-    this.arr.splice(0, 0, num);
-    return;
+  this.length++;
+
+  if(this.maxQueue.size() && num > this.maxQueue.front()["element"]) {
+      this.minQueue.enqueue(num);
+  } else {
+      this.maxQueue.enqueue(num);  
   }
 
-  const pos = this.findPos(num);
 
-  this.arr.splice(pos, 0 , num);
+  while(this.maxQueue.size() - this.minQueue.size() > (this.length % 2)) {
+
+    const {element} = this.maxQueue.dequeue();
+    this.minQueue.enqueue(element);
+  }
+
+  while(this.minQueue.size() - this.maxQueue.size() > ((this.length + 1) % 2)) {
+
+    const {element} = this.minQueue.dequeue();
+    this.maxQueue.enqueue(element);
+  }
+
 };
 
 /**
@@ -71,44 +87,15 @@ MedianFinder.prototype.addNum = function(num) {
  */
 MedianFinder.prototype.findMedian = function() {
 
-    const len = this.arr.length - 1;
+ const left = this.maxQueue.front()["element"];
 
-    if(this.arr.length === 1) return this.arr[0];
+ if(this.length % 2) return left;
 
-    if(this.arr.length === 2) return (this.arr[0] + this.arr[1]) / 2;
+ const right = this.minQueue.front()["element"];
 
-    if(this.arr.length % 2) return this.arr[(this.arr.length - 1) / 2];
-
-    const mid = this.arr.length / 2 >> 0, el1 = this.arr[mid], el2 = this.arr[mid - 1];
-    
-    return (el1 + el2) / 2;
+ return (left + right) / 2;
 };
 
-MedianFinder.prototype.findPos = function(n) {
-
-   let lo = 0, hi = this.arr.length;
-   
-   while(hi > lo) {
-
-        const mid = (hi + lo) / 2 >> 0, el = this.arr[mid];
-
-        if(el === n) return mid;
-
-        if (n < el) {
-
-            if(this.arr[mid - 1] < n) return mid;
-
-            hi = mid - 1;
-            continue;
-        }
-
-        if(this.arr[mid + 1] > n) return mid + 1;
-
-        lo = mid + 1;
-   }
-
-   return lo;
-}
 
 /** 
  * Your MedianFinder object will be instantiated and called as such:
@@ -124,6 +111,7 @@ finder.addNum(10);
 finder.addNum(2);
 finder.addNum(6);
 finder.addNum(5);
+
 
 //["MedianFinder","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian","addNum","findMedian"]
 //[[],[6],[],[10],[],[2],[],[6],[],[5],[],[0],[],[6],[],[3],[],[1],[],[0],[],[0],[]]
