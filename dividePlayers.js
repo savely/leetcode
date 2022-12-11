@@ -49,18 +49,48 @@ Constraints:
 
 var dividePlayers = function(skill) {
     
-    skill.sort((a, b) => a - b);
+  const values = new Array(1001).fill(0);
+  let min = Infinity, max = - Infinity;
+
+  for(const val of skill) {
     
-    let sum = skill[0] + skill[skill.length - 1], chemistry = skill[0] * skill[skill.length - 1];
-    
-    let left = 1, right = skill.length - 2;
-    
-    while(right > left) {
-        
-        if(skill[left] + skill[right] !== sum) return -1;
-        
-        chemistry += skill[left++] * skill[right--];
+    if(val < min) {
+        min = val;
+    } 
+    if(val > max) {
+        max = val;
     }
-    
+
+    values[val]++;
+  }
+
+  const sum = min + max;
+
+  let chemistry = 0;
+
+    for(let i = 1; i < values.length; i++) {
+
+        const count = values[i], pairIdx = i <= sum ? sum - i : i - sum, pairCount = values[pairIdx] || 0;
+
+        if(count !== pairCount) return -1;
+
+        if(count === 0) continue;
+
+        if(i === pairIdx && count % 2) return -1;
+
+        chemistry += i * pairIdx * (i === pairIdx ? count / 2 : count);
+
+        values[i] = 0;
+        values[pairIdx] = 0;
+    }
+
     return chemistry;
 };
+
+let skill = [3,2,5,1,3,4];
+//skill = [3,4];
+//skill = [1,1,2,3];
+skill = [1000,1000];
+skill = [5,1,2,4];
+
+console.log(dividePlayers(skill));
