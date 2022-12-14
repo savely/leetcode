@@ -35,16 +35,20 @@ Constraints:
  * @return {number}
  */
 var rob = function(nums) {
-    
-    if(nums.length === 0) return 0
-    if(nums.length === 1) return nums[0]
-    
-    const dp = []
-    dp[0] = nums[0]
-    dp[1] = Math.max(nums[0], nums[1])
-    
-    for (let i = 2; i < nums.length; i++) {
-        dp[i]  = Math.max(dp[i-1], dp[i-2] + nums[i])
-    }
-  return dp[nums.length-1]  
-};
+
+    let prev = 0, curr = 0;
+
+     for(let i = 0; i < nums.length; i++){
+         let temp = Math.max(nums[i] + prev, curr);
+         prev = curr;
+         curr = temp;
+     }
+     return curr;
+ };
+
+let nums = [1,2,3,1];
+nums = [2,7,9,3,1];
+nums = [2,1,1,2];
+
+
+console.log(rob(nums));
