@@ -58,49 +58,37 @@ Constraints:
  * @return {number[]}
  */
 var cycleLengthQueries = function(n, queries) {
-    
-    const findCommonRoot = (node1, node2) => {
-
-        const path = {};
-
-        while(node1 !== 1) {
-            path[node1] = node1;
-            node1 = node1 % 2 ? node1 - 1 : node1 / 2;
-        }
-
-        while(node2 !== 1) {
-
-            if(path[node2] !== undefined) return node2;
-            node2 = node2 % 2 ? (node2 - 1) /2 : node2 / 2;
-        }
-
-        return 1;
-    };
-
-    const distance = (node, root) => {
-
-        let dist = 0;
-
-        while(node !== root) {
-            dist++;
-            node = node % 2 ? (node - 1) / 2 : node / 2;
-        }
-
-        return dist;
-    };
 
     const ans = [];
 
-    for(const [a, b] of queries) {
+    for(let [a, b] of queries) {
 
-        const root = findCommonRoot(a,  b);
-        ans.push(distance(a, root) + distance(b, root) + 1);
+        const path = {};
+
+        let depthA = 0;
+
+        while(a > 0) {
+            path[a] = depthA++;
+            a = a % 2 ? (a - 1) / 2 : a / 2;
+        }
+
+        let depthB = 0;
+
+        while(b > 0) {
+            if(path[b] !== undefined) {
+                ans.push(depthB + path[b] + 1);
+                break;
+            }
+            depthB++;
+            b = b % 2 ? (b - 1) / 2 : b / 2;
+        }
     }
 
     return ans;
 };
 
 let n = 3, queries = [[5,3],[4,7],[2,3]];
-n = 2, queries = [[1,2]]
+//n = 2, queries = [[1,2]];
+//queries = [[27899,75321]];
 
 console.log(cycleLengthQueries(n,  queries));
