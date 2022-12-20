@@ -42,16 +42,37 @@ Constraints:
 
 var canVisitAllRooms = function(rooms) {
     
-    const keys = [0], openedRooms = new Set();
+    const visited = new Array(rooms.length).fill(false);
+    visited[0] = true;
     
-    while (keys.length) {
+    let stack = [...rooms[0]];
+    let count = 1;
+    
+    while(stack.length) {
         
-        const key = keys.pop(), newKeys = rooms[key];
+        const nextStack = [];
         
-        openedRooms.add(key);
-        
-        keys.push(...newKeys.filter( k => !openedRooms.has(k)));
+        while (stack.length) {
+            
+            const room = stack.pop();
+            
+            if(visited[room]) continue;
+            
+            visited[room] = true;
+            count++;
+            
+            for(const next of rooms[room]) {
+                
+                if(!visited[next]) nextStack.push(next);
+            }    
+        }
+
+        stack = nextStack;
     }
-     
-    return openedRooms.size === rooms.length ;  
- };
+    
+    return count === rooms.length;
+};
+
+let keys =  [[2,3],[],[2],[1,3]];
+
+console.log(canVisitAllRooms(keys));
