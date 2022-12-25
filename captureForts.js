@@ -54,7 +54,7 @@ var captureForts = function(forts) {
         
         if(forts[i] < 0) {
             
-            if(mine > -1 && forts[i - 1] === 0) {
+            if(mine > -1) {
                 maxDist = Math.max(maxDist, i - mine - 1);
             }
             
@@ -64,7 +64,7 @@ var captureForts = function(forts) {
         
         if(forts[i] > 0) {
             
-            if(enemy > -1 && forts[i - 1] === 0) {
+            if(enemy > -1) {
                 maxDist = Math.max(maxDist, i - enemy - 1);
             }
             
