@@ -50,22 +50,22 @@ const { MaxPriorityQueue }  = require('@datastructures-js/priority-queue');
     
     const queue = new MaxPriorityQueue();
 
+    let sum = 0;
+
     for(const pile of piles) {
         queue.enqueue(pile);
+        sum += pile;
     }
 
-    while(k > 0) {
-        const {element} = queue.dequeue();
-        queue.enqueue(element - ((element / 2) >> 0));
-        k--;
+    while(k-- > 0) {
+        const {element} = queue.dequeue(), next = element % 2 ? (element + 1) / 2 : element / 2;
+        
+        if(next > 0) {
+            queue.enqueue(next);
+        }
+        
+        sum -= (element - next);
     }
 
-    let ans = 0;
-
-    while(queue.size()) {
-        const {element} = queue.dequeue();
-        ans += element;
-    }
-
-    return ans;
+    return sum;
 };
