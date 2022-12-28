@@ -34,14 +34,18 @@ Constraints:
  */
 
 const canJump = function(nums) {
+    
+    if(nums.length < 2) return true;
 
-    const len = nums.length-1;
-    let left = len;
-
-    for(let i = len-1; i >=0; i--) {
-        if(i + nums[i] >= left) {
-            left = i;
-        }
+    let i = 1, j = nums[0];
+    
+    while(i <= j) {
+        
+        j = Math.max(j, i + nums[i++]);
+        
+        if(j >= nums.length - 1) return true;
+        
     }
-    return left === 0;
+    
+    return false;
 }
