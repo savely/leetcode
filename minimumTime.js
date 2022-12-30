@@ -49,10 +49,48 @@ The given graph is a directed acyclic graph.
 
 */
 
-const { MinPriorityQueue }  = require('@datastructures-js/priority-queue');
+const { PriorityQueue }  = require('@datastructures-js/priority-queue');
 
 var minimumTime = function(n, relations, time) {
 
-    const inDegree = new Array(n).fill(0);
-    
+    const prerequisites = new Array(n + 1).fill(0).map((_) => []);
+    const inDegree = new Array(n + 1).fill(0);
+
+    for(const [pre, course] of relations) {
+        prerequisites[pre].push(course);
+        inDegree[course]++;
+    }
+
+    const queue = new PriorityQueue({compare : ([id1, time1], [id2, time2]) => time1 - time2});
+
+    for(let i = 1; i < inDegree.length; i++) {
+
+        if(inDegree[i] === 0) {
+            queue.enqueue([i, time[i - 1]]);
+        }
+    }
+
+    let totalTime = 0; 
+
+    while(queue.size()) {
+
+        const [courseId, finishTime] = queue.dequeue(), courses = prerequisites[courseId];
+        totalTime = finishTime;
+
+        for(const id of courses) {
+            inDegree[id]--;
+
+            if(inDegree[id] === 0) {
+                queue.enqueue([id, finishTime + time[id - 1]]);
+            }
+        }
+
+    }
+   
+    return totalTime;
 };
+
+let n = 3, relations = [[1,3],[2,3]], time = [3,2,5];
+n = 5, relations = [[1,5],[2,5],[3,5],[3,4],[4,5]], time = [1,2,3,4,5];
+
+console.log(minimumTime(n, relations, time));
