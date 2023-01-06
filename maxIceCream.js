@@ -47,19 +47,32 @@ Constraints:
  */
 var maxIceCream = function(costs, coins) {
     
-    costs.sort((a, b) => a - b);
-    
-    let count = 0;
-    
-    for(let i = 0; i < costs.length; i++) {
-        
-        const price = costs[i];
-        
-        if (price > coins) return count;
-        
-        coins -= price;
-        count++;
+    const costCount = [];
+
+    for(const cost of costs) {
+        costCount[cost] = (costCount[cost] || 0) + 1; 
     }
     
+    let count = 0;
+
+    for(let i = 1; i < costCount.length; i++) {
+
+        if(i  > coins) return count;
+
+        if(costCount[i] === undefined) continue;
+
+        const bars = Math.min(costCount[i], Math.floor(coins / i));
+
+        coins -= i * bars;
+        count += bars;
+    }
+
     return count;
 };
+
+
+let costs = [1,3,2,4,1], coins = 7;
+costs = [10,6,8,7,7,8], coins = 5;
+costs = [1,6,3,1,2,5], coins = 20;
+
+console.log(maxIceCream(costs, coins));
