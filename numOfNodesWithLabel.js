@@ -61,32 +61,30 @@ var countSubTrees = function(n, edges, labels) {
         
     }
     
-    const f = (node, parents) => {
+    const f = (node, parent) => {
 
-        const label = labels[node];
+        const label = labels[node].charCodeAt(0) - 97;
 
-        ans[node]++;
-        
-        parents[label] = parents[label] || [];
-
-        for(const parent of parents[label]) {
-            
-            ans[parent]++;
-        }
-        
-        const newParents = JSON.parse(JSON.stringify(parents));
-        newParents[label].push(node);
+        const ret = new Array(26).fill(0);
+        ret[label]++;
         
         for(const child of adj[node]) {
 
-            if(ans[child] === 0) {
-                f(child, newParents);
+            if(child === parent) continue;
+
+            const counts = f(child, node);
+
+            for(let i = 0; i < 26; i++) {
+                ret[i] += counts[i];
             }
         }
-        
+
+        ans[node] = ret[label];
+
+        return ret;
     } ;
     
-    f(0, {});
+    f(0, null);
     
     return ans;
 };
