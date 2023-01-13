@@ -95,6 +95,7 @@ var maxPower = function(stations, r, k) {
 
         return true;
     };
+    
 
     check(6);
 
