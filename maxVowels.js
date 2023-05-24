@@ -1,9 +1,40 @@
 /*
-Given a string s and an integer k.
 
-Return the maximum number of vowel letters in any substring of s with length k.
+#1456. Maximum Number of Vowels in a Substring of Given Length
 
-Vowel letters in English are (a, e, i, o, u).
+Given a string s and an integer k, return the maximum number of vowel letters in any substring of s with length k.
+
+Vowel letters in English are 'a', 'e', 'i', 'o', and 'u'.
+
+ 
+
+Example 1:
+
+Input: s = "abciiidef", k = 3
+Output: 3
+Explanation: The substring "iii" contains 3 vowel letters.
+
+Example 2:
+
+Input: s = "aeiou", k = 2
+Output: 2
+Explanation: Any substring of length 2 contains 2 vowels.
+
+Example 3:
+
+Input: s = "leetcode", k = 3
+Output: 2
+Explanation: "lee", "eet" and "ode" contain 2 vowels.
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 105
+    s consists of lowercase English letters.
+    1 <= k <= s.length
+
+
 */
 
 /**
@@ -11,37 +42,30 @@ Vowel letters in English are (a, e, i, o, u).
  * @param {number} k
  * @return {number}
  */
+    
 var maxVowels = function(s, k) {
+
+    const vovels = new Set(['a', 'e', 'i', 'o','u']);
     
-    if(s.length === 0) return 0
-
-    if(k === 1) return s.search(/[aeiou]/) > -1 ? 1 : 0
-
-    let max  = 0, lo = 0, hi = Math.min(k, s.length) -1
-
-    const vowels = new Set(Array.from('aeiou'))
+    let i = 0, j = 0, count = 0, max = 0;
     
-    for(let i = 0; i <= hi; i++) {
-        if(vowels.has(s[i])) max++
-        if(max === k) return k
-    } 
+    while(j < s.length) {
+        
+        if(j - i >= k) {
+            count -= vovels.has(s[i++]) ? 1 : 0;
+        }
+        
+        count += vovels.has(s[j++]) ? 1 : 0;
 
-    let locMax = max
- 
-    while(lo + k < s.length) {
-        if(vowels.has(s[lo++])) {
-            locMax--
-        }
-        if(vowels.has(s[++hi])) {
-            locMax++
-            max = Math.max(max, locMax)
-            if(max === k) return k
-        }
+        max = Math.max(max, count);
     }
     
-   return max
+    return max;
 };
-"weallloveyou"
-7
 
-console.log(maxVowels("weallloveyou", 7))
+
+let  = s = "abciiidef", k = 3;
+s = "leetcode", k = 8;
+//s = "aeiou", k = 2;
+
+console.log(maxVowels(s,k));
