@@ -39,19 +39,43 @@ Follow up: Can you come up with an algorithm that runs in O(n log(n)) time compl
  * @param {number[]} nums
  * @return {number}
  */
- var lengthOfLIS = function(nums) {
+var lengthOfLIS = function(nums) {
 
-    const dp = new Array(nums.length).fill(1);
-
-    let max = 1;
-
-    for(let i = 1; i < dp.length; i++) {
-        for(let j = i - 1; j >= 0; j--) {
-            if(nums[j] < nums[i] && dp[j] >= dp[i]) {
-                dp[i] = dp[j] + 1;
-                max = Math.max(max, dp[i]);
+    const dp = [nums[0]];
+    
+    const f = num => {
+        
+        let lo = 0, hi = dp.length - 1;
+        
+        while(hi >= lo) {
+            
+            let mid = (hi + lo) >> 1;
+            
+            if(dp[mid] >= num) {
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
             }
         }
+        
+        return lo;
     }
-    return max;
+
+    let max = 1;
+    
+    for(let i = 1; i < nums.length; i++) {
+        
+        if(nums[i] > dp[dp.length - 1]) {
+            dp.push(nums[i]);
+        } else {
+            dp[f(nums[i])] = nums[i];
+        }
+    }
+
+    return dp.length;
 };
+
+
+let nums = [3,5,6,2,5,4,19,5,6,7,12]; //6
+
+console.log(lengthOfLIS(nums));
