@@ -47,39 +47,38 @@ Constraints:
  * @param {number[]} profit
  * @return {number}
  */
- var jobScheduling = function(startTime, endTime, profit) {
+var jobScheduling = function(startTime, endTime, profit) {
+
+    endTime = endTime.map((t, i) => [startTime[i], t, profit[i]]);
+
+    endTime.sort((a, b) => a[1] - b[1]);
     
-    const dp = new Array(startTime.length), order = new Array(startTime.length);
+    const search = (time, to) => {
 
-    for(let i = 0; i < startTime.length; i++) {
+    let lo = 0, hi = to - 1;
 
-        dp[i] = Infinity;
-        order[i] = i;
+    while(hi >= lo) {
+
+        const mid = (hi + lo) >> 1, end = endTime[mid][1];
+
+        if(end > time) {
+            hi = mid - 1;
+        } else {
+            lo = mid + 1;
+        }
     }
 
-    order.sort((a, b) => startTime[a] - startTime[b] || endTime[a] - endTime[b]);
+    return lo;
+  };
 
-    const f = from => {
+  const dp = [0];
 
-        if (from >= startTime.length) return 0;
+  for(let i = 0; i < endTime.length; i++) {
 
-        const pos = order[from];
+    const [start, end, prft] = endTime[i], lastPrevJob = search(start, i), prevProfit = dp[lastPrevJob];
 
-        const [start ,end , prof] = [startTime[pos], endTime[pos], profit[pos]];
+    dp.push( Math.max(prevProfit + prft, dp[i]));
+  }
 
-        if(isFinite(dp[from])) return dp[from];        
-
-        let maxNextProfit = 0, i = from + 1;
-
-        while(i < startTime.length && startTime[order[i]] < end) {
-            
-            maxNextProfit = Math.max(maxNextProfit, f(i++));
-        }
-
-        dp[from] = Math.max(maxNextProfit, prof + f(i));
-
-        return dp[from];
-    };
-
-    return f(0);
+  return dp[dp.length - 1];
 };
