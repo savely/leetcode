@@ -49,9 +49,9 @@ Constraints:
  */
 var jobScheduling = function(startTime, endTime, profit) {
 
-    endTime = endTime.map((t, i) => [startTime[i], t, profit[i]]);
+    const order = Array.from({length : profit.length}, (_, i) => i);
 
-    endTime.sort((a, b) => a[1] - b[1]);
+    order.sort((a, b) => endTime[a] - endTime[b]);
     
     const search = (time, to) => {
 
@@ -59,7 +59,7 @@ var jobScheduling = function(startTime, endTime, profit) {
 
     while(hi >= lo) {
 
-        const mid = (hi + lo) >> 1, end = endTime[mid][1];
+        const mid = (hi + lo) >> 1, end = endTime[ order[mid] ];
 
         if(end > time) {
             hi = mid - 1;
@@ -75,10 +75,16 @@ var jobScheduling = function(startTime, endTime, profit) {
 
   for(let i = 0; i < endTime.length; i++) {
 
-    const [start, end, prft] = endTime[i], lastPrevJob = search(start, i), prevProfit = dp[lastPrevJob];
+    const idx = order[i], start = startTime[idx], prft = profit[idx];
+    const lastPrevJob = search(start, i), prevProfit = dp[lastPrevJob];
 
     dp.push( Math.max(prevProfit + prft, dp[i]));
   }
 
   return dp[dp.length - 1];
 };
+
+let startTime = [1,2,3,3], endTime = [3,4,5,6], profit = [50,10,40,70];
+startTime = [1,2,3,4,6], endTime = [3,5,10,6,9], profit = [20,20,100,70,60];
+
+console.log(jobScheduling(startTime, endTime, profit));
