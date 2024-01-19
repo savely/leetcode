@@ -45,26 +45,25 @@ Constraints:
  * @param {number[][]} matrix
  * @return {number}
  */
- var minFallingPathSum = function(matrix) {
+var minFallingPathSum = function(matrix) {
     
-    if(matrix.length === 1) return Math.min(...matrix[0]);
+    const n = matrix.length;
     
-    const dp = [];
+    if(n === 1) return Math.min(...matrix[0]);
     
-    dp[0] = Array.from(matrix[0]);
-    dp[1] = new Array(matrix[0].length).fill(0);
+    let fst = [101 * n, ...matrix[0], 101 * n], snd = new Array(fst.length).fill(101 * n);
     
-    for(let i = 1; i < matrix.length; i++) {
+    for(let i = 1; i < n; i++) {
         
-        const [curr, prev] = i % 2 ? [1, 0] : [0, 1];
-        
-        for(let j = 0; j < dp[0].length; j++) {
-
-            const left = j > 0 ? dp[prev][j - 1] : Infinity, mid = dp[prev][j], right = j < dp[0].length - 1 ? dp[prev][j + 1] : Infinity;
+        for(let j = 1; j <=  n; j++) {
             
-            dp[curr][j] = matrix[i][j] + Math.min(left, mid, right);
+            const m = matrix[i][j - 1];
+            
+            snd[j] = Math.min(m + fst[j - 1], m + fst[j], m + fst[j + 1]);
         }
+        
+        [snd, fst] = [fst, snd];
     }
     
-    return Math.min(...dp[matrix.length % 2 ? 0 : 1]);
+    return Math.min(...fst);
 };
