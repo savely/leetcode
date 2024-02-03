@@ -48,7 +48,7 @@ var maximumSubarraySum = function(nums, k) {
 
     const  runningSum = [0, nums[0]], map = {};
 
-    map[nums[0]] = [0];
+    map[nums[0]] = 0;
 
     let max = -Infinity;
 
@@ -56,26 +56,21 @@ var maximumSubarraySum = function(nums, k) {
 
         runningSum.push(runningSum[runningSum.length - 1] + nums[i]);
 
-        let arr = map[nums[i] + k] || [];
-
-        for(const idx of arr) {
+        if(map[nums[i] + k] !== undefined) {
+            const idx = map[nums[i] + k];
             max = Math.max(max, runningSum[runningSum.length - 1] - runningSum[idx]);
         }
 
-        arr = map[nums[i] - k] || [];
-
-            for(const idx of arr) {
+        let nums = [-1,-2,-3,-4], k = 2;
+        
+        console.log(maximumSubarraySum(nums, k));
+        
+        if(map[nums[i] - k] !== undefined) {
+            const idx = map[nums[i] - k];
             max = Math.max(max, runningSum[runningSum.length - 1] - runningSum[idx]);
         }
-
-        map[ nums[i] ] = map[ nums[i] ] || [];
-
-        map[ nums[i] ].push(i);
+        map[ nums[i] ] = map[ nums[i] ] === undefined || runningSum[i] - runningSum[ map[ nums[i] ] ] < 0 ? i : map[ nums[i] ];
     }
     
     return isFinite(max) ? max : 0;
 };
-
-let nums = [-1,-2,-3,-4], k = 2;
-
-console.log(maximumSubarraySum(nums, k));
