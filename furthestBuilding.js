@@ -67,25 +67,21 @@ const { MinPriorityQueue }  = require('@datastructures-js/priority-queue');
 
         queue.enqueue(diff);
 
-        if(queue.size() <= ladders) {
-
-            continue;
-        }
+        if(ladders > 0 && queue.size() <= ladders) continue;
 
         const {element} = queue.dequeue();
 
-        if(bricks < element) return i - 1;
-
         bricks -= element;
 
-        queue.enqueue(diff);
+        if(bricks < 0) return i - 1;
+
     }
     
     return heights.length - 1;
 };
 
-let heights = [4,12,2,7,3,18,20,3,19], bricks = 10, ladders = 2;
-heights = [14,3,19,3], bricks = 17, ladders = 0;
-//heights = [4,2,7,6,9,14,12], bricks = 5, ladders = 1;
+let heights = [4,12,2,7,3,18,20,3,19], bricks = 10, ladders = 2; //7
+heights = [14,3,19,3], bricks = 17, ladders = 0; //3
+heights = [4,2,7,6,9,14,12], bricks = 5, ladders = 1;
 
 console.log(furthestBuilding(heights, bricks, ladders));
