@@ -41,33 +41,23 @@ Constraints:
  * @return {number}
  */
 var countSubarrays = function(nums, minK, maxK) {
+    
+    let lastMin = lastMax = lastBad = -1, count = 0;
 
-    let countMin = 0, countMax = 0 ,count = 0;
+    for(let i = 0; i < nums.length; i++) {
 
-    let i = 0, j = 0;
+        const num = nums[i];
 
-    while(i < nums.length) {
+        lastBad = (num > maxK || num < minK) ? i : lastBad;
 
-        if(j === nums.length || nums[j] < minK || nums[j] > maxK) {
+        lastMax = num === maxK ? i : lastMax;
 
-            while(i < j) {
-                countMin -= nums[i] === minK ? 1 : 0;
-                countMax -= nums[i] === maxK ? 1 : 0;
-                count += (countMax > 0 && countMin > 0) ? 1 : 0;
-                i++;
-            }
-            j++;
-            i = j;
-        }
-        countMin += nums[j] === minK ? 1 : 0;
-        countMax += nums[j] === maxK ? 1 : 0;
-        count += (countMax > 0 && countMin > 0) ? 1 : 0;
-        j++;
+        lastMin = (num === minK) ? i : lastMin;
+
+        const left = Math.min(lastMin, lastMax);
+
+        count += left > lastBad ?  left - lastBad : 0;
     }
+
     return count;
 };
-
-let nums = [1,3,5,2,7,5], minK = 1, maxK = 5;
-nums = [1,1,1,1], minK = 1, maxK = 1;
-
-console.log(countSubarrays(nums, minK, maxK));
