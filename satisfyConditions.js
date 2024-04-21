@@ -70,24 +70,24 @@ var minimumOperations = function(grid) {
         }
     }
 
+    let fst = 0, snd = 0;
+
     for(let i = 1; i < dp.length; i++) {
 
-        let fst = 0, snd = -1;
+        let nextFst = -1, nextSnd = -1;
 
-        for(let k = 1; k < 10; k++) {
+        for(let j = 0; j < 10; j++) {
+            dp[i][j] = grid.length - columns[i - 1][j] + (j === fst ?  dp[i - 1][snd] : dp[i - 1][fst]);
 
-            if(dp[i - 1][k] < dp[i - 1][fst]) {
-                snd = fst;
-                fst = k;
-            } else if(snd < 0 || dp[i - 1][k] < dp[i - 1][snd]) {
-                snd = k;
+            if(nextFst < 0 || dp[i][j] < dp[i][nextFst]) {
+                nextSnd = nextFst;
+                nextFst = j;
+            } else if(nextSnd < 0 || dp[i][j] < dp[i][nextSnd]) {
+                nextSnd = j;
             }
         }
 
-        for(let j = 0; j < 10; j++) {
-
-            dp[i][j] = grid.length - columns[i - 1][j] + (j === fst ?  dp[i - 1][snd] : dp[i - 1][fst]);
-        }
+        fst = nextFst, snd = nextSnd;
     }
 
     return Math.min(...dp[dp.length - 1]);
@@ -102,13 +102,13 @@ let grid = [[4,2,4,6,2,8,0,6],
             [2,0,1,5,0,2,9,9],
             [7,2,6,7,4,6,7,0]];
 
-grid = [[4,2,1,9,2,8,2,0],
+/*grid = [[4,2,1,9,2,8,2,0],
         [8,0,4,0,0,7,2,1],
         [7,9,9,8,4,5,7,7],
         [5,8,0,0,5,3,8,8],
         [8,0,1,9,4,0,1,2],
         [0,5,9,6,7,6,4,2],
         [2,8,7,5,6,5,9,6],
-        [4,4,2,8,7,7,0,0]];
+        [4,4,2,8,7,7,0,0]];*/
 
 console.log(minimumOperations(grid));
