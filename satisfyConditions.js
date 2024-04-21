@@ -60,6 +60,7 @@ Constraints:
 var minimumOperations = function(grid) {
 
     const columns = Array.from({length : grid[0].length}, () => new Array(10).fill(0));
+    
     const dp = Array.from({length : grid[0].length + 1}, () => new Array(10).fill(0));
 
     for(let i = 0; i < grid.length; i++) {
@@ -69,28 +70,27 @@ var minimumOperations = function(grid) {
         }
     }
 
-    let minCost = Infinity;
+    for(let i = 1; i < dp.length; i++) {
 
-    const f = (column, exclude, cost) => {
+        let fst = 0, snd = -1;
 
-        if(cost >= minCost) return;
+        for(let k = 1; k < 10; k++) {
 
-        if(column === grid[0].length) {
-            minCost = Math.min(minCost, cost);
-            return;
+            if(dp[i - 1][k] < dp[i - 1][fst]) {
+                snd = fst;
+                fst = k;
+            } else if(snd < 0 || dp[i - 1][k] < dp[i - 1][snd]) {
+                snd = k;
+            }
         }
 
-        for(let i = 0; i < 10; i++) {
+        for(let j = 0; j < 10; j++) {
 
-            if(i === exclude) continue;
-
-            f(column + 1, i, cost + grid.length - columns[column][i]);
+            dp[i][j] = grid.length - columns[i - 1][j] + (j === fst ?  dp[i - 1][snd] : dp[i - 1][fst]);
         }
-    };
+    }
 
-    f(0, -1, 0);
-
-    return minCost;
+    return Math.min(...dp[dp.length - 1]);
 };
 
 let grid = [[4,2,4,6,2,8,0,6],
