@@ -36,44 +36,41 @@ Constraints:
 var minFallingPathSum = function(matrix) { 
 
     if(matrix.length === 1) return matrix[0][0];
+
+    let minFst = 0, minSnd = 0, fstPos = -1;
     
-    const f = (arr) => {
+    for(let i = 0; i < matrix.length; i++) {
 
-        let min = Infinity, snd = Infinity, minPos = -1, sndPos = -1;
+        let nextFst = Infinity, nextSnd = Infinity, nextPos = -1;
 
-        for(let i = 0; i < arr.length; i++) {
+        for(let j = 0; j < matrix[0].length; j++) {
 
-            const el = arr[i];
+            const val = matrix[i][j] + (j === fstPos ? minSnd : minFst);
 
-            if(el < min) {
-                snd = min;
-                sndPos = minPos;
-                min = el;
-                minPos = i;
-            } else if(el < snd) {
-                snd = el;
-                sndPos = i;
+            if(nextFst >= val) {
+                nextSnd = nextFst;
+                nextFst = val;
+                nextPos = j;
+            } else if(nextSnd > val) {
+                nextSnd = val;
             }
         }
 
-        return [[min, minPos], [snd, sndPos]];
-    };
- 
-    let dp = Array.from(matrix[0]);
-    
-    for(let i = 1; i < matrix.length; i++) {
-
-        let [[min, minPos], [snd, sndPos]] = f(dp);
-
-        for(let j = 0; j < dp.length; j++) {
-            dp[j] = matrix[i][j] + (minPos === j ? snd : min);
-        }
+        minFst = nextFst;
+        minSnd = nextSnd;
+        fstPos = nextPos;
     }
     
-    return Math.min(...dp);
-    
+    return minFst;
 };
 
-let matrix = [[1,2,3,-19],[4,5,11,6],[7,-1,8,9],[-13,5,3,-1]];//-29
+let matrix = [[1,2,3,-19],
+              [4,5,11,6],
+              [7,-1,8,9],
+              [-13,5,3,-1]];//-29
+
+matrix = [[1,2,3],
+          [4,5,6],
+          [7,8,9]]; //13
 
 console.log(minFallingPathSum(matrix));
