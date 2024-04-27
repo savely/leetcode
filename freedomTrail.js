@@ -44,7 +44,7 @@ Constraints:
  * @param {string} key
  * @return {number}
  */
- var findRotateSteps = function(ring, key) {
+var findRotateSteps = function(ring, key) {
 
     if(ring.length === 1) return key.length;
 
@@ -59,43 +59,36 @@ Constraints:
 
     if(Object.keys(positions).length === 1) return key.length;
 
-    let dp = {};
+    const dp = Array.from({length: key.length}, () => new Array(ring.length).fill(Infinity));
 
     for(const pos of positions[key[0]]) {
-
-        const minDist = Math.min(pos, ring.length - pos);
-        dp[pos] = Math.min((dp[pos] || Infinity), minDist);
+        dp[0][pos] = Math.min(pos, ring.length - pos);
     }
 
     for(let i = 1; i < key.length; i++) {
 
-        if(key[i - 1] === key[i]) continue;
+        for(const pos of positions[key[i]]) {
 
-        const char = key[i], nextDp = {};
+            let min = Infinity;
 
-        for (const kd in dp) {
+            for(const prevPos of positions[key[i - 1]]) {
 
-            const prevPos = +kd;
-
-            const  prevDist = dp[prevPos];
-
-            for(const kp of positions[char]) {
-
-                const pos = +kp, dist = Math.abs(pos - prevPos);
-
-                const minDist = Math.min(dist, ring.length - dist);
-
-                nextDp[pos] = nextDp[pos] === undefined ? minDist + prevDist : Math.min(nextDp[pos], minDist + prevDist);  
+                const moveCost = Math.min(Math.abs(prevPos - pos), ring.length - prevPos + pos,  ring.length - pos + prevPos);
+                min = Math.min(min, moveCost + dp[i - 1][prevPos]);
             }
+
+            dp[i][pos] = min;
         }
-        dp = nextDp;
     }
 
-    let dist = Infinity;
-
-    for(const pos in dp) {
-        dist = Math.min(dist, dp[pos]);
-    }
-    
-    return dist + key.length;
+    return Math.min(...dp[key.length - 1]) + key.length;
 };
+
+
+let ring = "godding", key = "gd";
+ring = "godding", key = "godding";
+//ring ="pqwcx", key = "cpqwx"; //13
+//ring = "blbfjlahck", key = "bblcllbhlbjflllfblabalhfkflhhclbahhllbalbhbbbkkhcafblbcjljbcflhlkjcjacjkjackkkcbfbajjlblcakhkfajffbb"; //304
+//ring ="abcde", key = "ade"; //6
+
+console.log(findRotateSteps(ring, key));
