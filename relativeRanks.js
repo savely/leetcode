@@ -39,24 +39,27 @@ Constraints:
 
 var findRelativeRanks = function(score) {
     
-    const size = Math.max(...score);
+    let min = Infinity, max = -Infinity;
 
-    const range = new Array(size + 1).fill(-1);
+    for(const num  of score) {
+        min = num < min ? num : min;
+        max = num > max ? num : max;
+    }
+
+    const size = max - min, range = new Array(size + 1);
 
     for(let i = 0; i < score.length; i++) {
 
-        range[ score[i] ] = i;
+        range[ score[i] - min ] = i;
     }
-    console.dir(score);
-    console.dir(range);
 
-    const ans = new Array(score.length).fill("");
+    const ans = new Array(score.length);
 
     let place = 1;
 
     for(let i  = size; i >= 0; i--) {
 
-        if(range[i] < 0) continue;
+        if(range[i] === undefined) continue;
 
         if(place > 3) {
             ans[ range[i] ] = "" + place++;
@@ -77,7 +80,3 @@ var findRelativeRanks = function(score) {
 
 return ans;
 }
-
-let score = [10,3,8,9,4];
-socre = score = [5,4,3,2,1];
-console.dir(findRelativeRanks(score));
