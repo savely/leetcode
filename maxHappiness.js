@@ -46,6 +46,8 @@ Constraints:
 
 */
 
+const { PriorityQueue } = require('@datastructures-js/priority-queue');
+
 /**
  * @param {number[]} happiness
  * @param {number} k
@@ -53,17 +55,31 @@ Constraints:
  */
 var maximumHappinessSum = function(happiness, k) {
 
-    happiness.sort((a, b) => b - a);
+    const queue = new PriorityQueue({compare : (a, b) => a - b});
+
+    for(const val of happiness) {
+
+        if(queue.size() === k) {
+
+            if(queue.front() >= val) continue;
+
+            queue.dequeue();
+        }
+
+        queue.enqueue(val);
+    }
+
     let total = 0;
 
-    for(let i = 0; i < Math.min(happiness.length, k); i++) {
-
-        const curr = happiness[i] - i;
-
-        if(curr <= 0) return total;
-
-        total += curr;
+    while(queue.size()) {
+        total += Math.max(0, queue.dequeue() - queue.size());
     }
-    
+
     return total;
-};
+}
+
+happiness = [1,2,3], k = 2;
+happiness = [1,1,1,1], k = 2;
+happiness = [2,3,4,5], k = 1;
+
+console.log(maximumHappinessSum(happiness, k));
