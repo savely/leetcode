@@ -43,11 +43,6 @@ Constraints:
  * @param {number} k
  * @return {number}
  */
-/**
- * @param {number[]} energy
- * @param {number} k
- * @return {number}
- */
 var maximumEnergy = function(energy, k) {
     
     const dp = [];
