@@ -34,43 +34,57 @@ Constraints:
  * @param {number} groupSize
  * @return {boolean}
  */
- var isNStraightHand = function(hand, groupSize) {
+var isNStraightHand = function(hand, groupSize) {
 
     if(groupSize === 1) return true;
 
     if(hand.length % groupSize) return false;
 
     const freq = {};
+    let values = new Set();
 
     for(const n of hand) {
         freq[n] = (freq[n] || 0) + 1;
+        values.add(n);
     }
 
-    const keys = Object.keys(freq).map(n => +n);
+    values = [...values].sort((a,b) => a - b);
 
-    if(keys.length < groupSize) return false;
+    let i = 0, deleted = 0;
 
-    keys.sort((a, b) => a - b);
+    while(i <= values.length - groupSize) {
 
-    for(let i = 0; i <= keys.length - groupSize; i++) {
-        const key = keys[i];
+        let j = i, count = freq[values[i]], start = values[i], startIdx = i;
 
-        if(freq[key] === 0) {
-            if(i === keys.length - groupSize) return false;
-            continue;
+        if(j > values.length - groupSize) return false;
+
+        while(j < startIdx + groupSize) {
+
+            if(j > startIdx && values[j] !== values[j - 1] + 1) return false;
+
+            freq[values[j]] -= count;
+
+            deleted += count;
+
+            if(freq[values[j]] < 0) return false;
+
+            if(freq[values[j]] === 0) i++;
+
+            j++;
         }
-
-        for(let j = 1; j < groupSize; j++) {
-
-            if(freq[key + j] === undefined || freq[key + j] < freq[key]) return false;
-
-            freq[key + j] -= freq[key];
-
-            if(key + j + 1 < keys.length && freq[key + j] > freq[key + j+  1] && key + j > keys.length - groupSize) return false;
-        }
-
-        freq[key] = 0;
+        i += freq[values[i]] === 0 ? 1 : 0;
     }
 
-    return true;
+    return deleted === hand.length;
 };
+
+let hand = [1,2,3,6,2,3,4,7,8], groupSize = 3;//true
+hand = [1,2,2,3,4,5], groupSize = 3;//false
+//hand =[4,3,3,4,1,2,2,4],groupSize = 4; //false
+//hand =[0,0], groupSize = 2;
+//hand =[1,2,2,3,3,3,4,4,5], groupSize = 3; //true
+//hand =[8,10,12],groupSize = 3;
+
+console.log(isNStraightHand(hand, groupSize));
+
+
