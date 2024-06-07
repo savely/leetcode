@@ -41,31 +41,76 @@ Constraints:
  * @return {string}
  */
 var replaceWords = function(dictionary, sentence) {
+
+    const search = new TrieSearch();
   
-    const dict = new Set(dictionary) , res = [];
-    sentence = sentence.split(' ');
-    
-    for(let i = 0; i < sentence.length; i++) {
-        
-        const word = sentence[i];
-        
-        let found = false ;
-        
-        for(let j = 1; j <= Math.min(100, word.length - 1); j++) {
-            
-            const root = word.slice(0,j);
-            
-              if(dict.has(root)) {
-                  found = true;
-                  res.push(root);
-                  break;
-              }    
-        }
-        
-        if(!found) {
-            res.push(word);
-        }
+    for(const prefix of dictionary) {
+        search.add(prefix);
     }
-    
-    return res.join(' ');
+
+
+    let currSearch = search, res = '', word = '', skip = false;
+
+    for(let i = 0; i < sentence.length; i++) {
+
+        const ch = sentence[i];
+
+        if(ch === ' ') {
+            res += `${word}${i === sentence.length - 1 ? '' : ' '}`;
+            word = '';
+            currSearch = search;
+            skip = false;
+            continue;
+        }
+
+        if(skip) continue;
+
+        word += ch;
+
+        if(!currSearch) continue;
+
+        currSearch = currSearch.startsWithChar(ch);
+
+        skip = currSearch && currSearch.isEnd;
+    }
+
+    return res + word;
 };
+
+const TrieSearch = class{
+
+    #code;
+    #next = new Array(26);
+    isEnd = false;
+
+    constructor(code) {
+        this.#code = code  === undefined ? -1 : code;
+    }
+
+    add (word, from = 0) {
+
+        if(this.isEnd || from >= word.length) return;
+
+        const code = word.charCodeAt(from) - 'a'.charCodeAt();
+
+        this.#next[code] = this.#next[code] || new TrieSearch(code);
+
+        this.#next[code].add(word, from + 1);
+    
+        this.#next[code].isEnd ||= from === word.length - 1;
+
+    }
+
+    startsWithChar(ch) {
+        return this.#next[ch.charCodeAt(0) - 'a'.charCodeAt()];
+    }
+
+}
+
+let dictionary = ["cat","bat","rat"], sentence = "the cattle was rattled by the battery";
+
+dictionary = ["a","b","c"], sentence = "aadsfasf absbs bbab cadsfafs afde";
+
+dictionary = ["a", "aa", "aaa", "aaaa"], sentence = "a aa a aaaa aaa aaa aaa aaaaaa bbb baba ababa"; //"a a a a a a a a bbb baba a"
+
+console.log(replaceWords(dictionary, sentence));
