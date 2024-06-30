@@ -69,26 +69,18 @@ var maxNumEdgesToRemove = function(n, edges) {
             return [1, -arr[pa]]
         } 
 
-        arr[pa] += arr[pb];
-        arr[pb] = pa;
+        arr[pb] += arr[pa];
+        arr[pa] = pb;
         return [1, -arr[pb]];
     }
 
-    const aliceEdges = [], bobEdges = [];
+    const [alice, bob, both] = [1, 2, 3];
     
     let count = 0;
 
     for(const [type, u, v] of edges) {
 
-        if(type === 1) {
-            aliceEdges.push([u, v]);
-            continue;
-        }
-
-        if(type === 2) {
-            bobEdges.push([u, v]);
-            continue;
-        }
+        if(type !== both) continue;
 
         const[edge, connected] = union(u, v);
         count += edge;
@@ -98,7 +90,9 @@ var maxNumEdgesToRemove = function(n, edges) {
 
     let bobCopy = Array.from(arr), allReachable = false;
 
-    for(const [u, v] of aliceEdges) {
+    for(const [type, u, v] of edges) {
+
+        if(type !== alice) continue;
 
         const [edge, connected] = union(u, v);
 
@@ -114,7 +108,9 @@ var maxNumEdgesToRemove = function(n, edges) {
 
     arr = bobCopy;
 
-    for(const [u, v] of bobEdges) {
+    for(const [type, u, v] of edges) {
+
+        if(type !== bob) continue;
 
         const [edge, connected] = union(u, v);
 
@@ -127,7 +123,8 @@ var maxNumEdgesToRemove = function(n, edges) {
 };
 
 let n = 4, edges = [[3,1,2],[3,2,3],[1,1,3],[1,2,4],[1,1,2],[2,3,4]];
-n = 4, edges = [[3,1,2],[3,2,3],[1,1,4],[2,1,4]];
-n = 4, edges = [[3,2,3],[1,1,2],[2,3,4]];
+//n = 4, edges = [[3,1,2],[3,2,3],[1,1,4],[2,1,4]];
+//n = 4, edges = [[3,2,3],[1,1,2],[2,3,4]];
+
 
 console.log(maxNumEdgesToRemove(n, edges));
