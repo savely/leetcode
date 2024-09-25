@@ -39,6 +39,38 @@ Constraints:
 
 */
 
+class Trie {
+
+    constructor(code = '', isEnd = false) {
+
+        this.code = code;
+        this.isEnd = isEnd;
+        this.children = {};
+    }
+
+    add(word, i = 0) {
+
+        if(i >= word.length) return;
+
+        const char = word[i];
+        this.children[char] = this.children[char] || new Trie(char);
+        this.children[char].isEnd = this.children[char].isEnd || i === word.length - 1;
+
+        if(i < word.length - 1) this.children[char].add(word, i + 1);
+    }
+
+    dfs(word, i = 0) {
+
+        const next = this.children[word[i]];
+
+        if(next === undefined) return i;
+
+        return this.dfs.call(next, word, i + 1);
+    }
+
+};
+
+
 /**
  * @param {number[]} arr1
  * @param {number[]} arr2
@@ -46,35 +78,24 @@ Constraints:
  */
 var longestCommonPrefix = function(arr1, arr2) {
 
-    const set = new Set();
+    const trie = new Trie();
 
     for(const num of arr1) {
-
-        const str = '' + num;
-        let curr = '';
-
-        for(let i = 0; i < str.length; i++) {
-            curr += str[i];
-            set.add(curr);
-        }
+        trie.add('' + num);
     }
 
     let max = 0;
-    
-    for(const num of arr2) {
 
-        const str = '' + num;
-        let curr = '';
+    for( const num of arr2) {
 
-        for(let i = 0; i < str.length; i++) {
-            curr += str[i];
-
-            if(set.has(curr)) {
-                max = Math.max(max, curr.length);
-            }
-
-          }
+        max = Math.max(max, trie.dfs('' + num));
     }
 
     return max;
 };
+
+let  arr1 = [1,10,100], arr2 = [1000];
+arr1 = [1,2,3,33], arr2 = [3323];
+
+console.log(longestCommonPrefix(arr1, arr2));
+
