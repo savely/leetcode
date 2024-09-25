@@ -50,39 +50,61 @@ Constraints:
 
 */
 
+class Trie {
+
+    constructor(code = '', isEnd = false) {
+
+        this.code = code;
+        //this.isEnd = isEnd;
+        this.hits = 0;
+        this.children = {};
+    }
+
+    add(word, i = 0) {
+
+        if(i >= word.length) return;
+
+        const char = word[i];
+        this.children[char] = this.children[char] || new Trie(char);
+        this.children[char].hits++;
+        //this.children[char].isEnd = this.children[char].isEnd || i === word.length - 1;
+
+        if(i < word.length - 1) this.children[char].add(word, i + 1);
+    }
+
+    getScore(word, i = 0, hits = 0) {
+
+        const next = this.children[word[i]];
+
+        if(next === undefined) return hits;
+
+        return this.getScore.call(next, word, i + 1, hits += next.hits);
+    }
+};
+
+
 /**
  * @param {string[]} words
  * @return {number[]}
  */
 var sumPrefixScores = function(words) {
     
-    const map = {};
+    const trie = new Trie();
 
     for(const word of words) {
-
-        let prefix = '';
-
-        for(let i = 0; i < word.length; i++) {
-
-            prefix += word[i];
-            map[prefix] = (map[prefix] || 0) + 1;
-        }
+        trie.add(word);
     }
 
-    let scores = [];
+    const scores = [];
 
-    for(const word of words) { 
-
-        let prefix = '', score = 0;
-
-        for(let i = 0; i < word.length; i++) {
-
-            prefix += word[i];
-            score  += map[prefix];
-        }
-
-        scores.push(score);
+    for(const word of words) {
+        scores.push(trie.getScore(word));
     }
 
     return scores;
 };
+
+let words = ["abc","ab","bc","b"];
+words = ["abcd"];
+
+console.dir(sumPrefixScores(words));
