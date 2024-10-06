@@ -52,33 +52,24 @@ The words in sentence1 and sentence2 are separated by a single space.
         [sentence1, sentence2] = [sentence2, sentence1];
     }
 
-   let i = 0, prefix = 0;
+    words1 = sentence1.split(" "), words2 = sentence2.split(" ");
 
-   while(i < sentence2.length && sentence2[i] === sentence1[i]) {
-       if(sentence2[i] === " ")  prefix = i;   
+    let prefix = 0, i = 0;
 
-       if(i === sentence2.length - 1 && (i === sentence1.length - 1 || sentence1[i + 1] === " "))  {
-           prefix = i + 1;
-       }
-       i++;
-   };
-
-   if(prefix ===  sentence2.length) true;
-
-   i = sentence1.length - 1;
-
-   let diff = sentence1.length - sentence2.length, suffix = 0;
-
-   while(i >= 0 && sentence2[i - diff] === sentence1[i]) {
-
-    if(sentence1[i] === " ")  suffix = sentence2.length - (i - diff); 
-
-    if(i - diff === 0 && (i === 0 || sentence1[i - 1] === " "))  {
-        suffix = sentence2.length;
-        break;
+    while(i < words2.length && words1[i] === words2[i]) {
+        prefix++;
+        i++;
     }
-    i--;
-   };
 
-   return suffix === sentence2.length || suffix + prefix === sentence2.length;
+    const diff = words1.length - words2.length
+    let suffix = 0; 
+    i = words1.length - 1;
+
+    while (i >= 0 && (i - diff >= prefix) && words1[i] === words2[i - diff]) {
+        suffix++;
+        i--;
+    }
+
+    return prefix === words2.length || suffix === words2.length || prefix + suffix === words2.length;
 };
+
