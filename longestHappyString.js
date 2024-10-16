@@ -33,46 +33,49 @@ a + b + c > 0
 
 */
 
+const { PriorityQueue } = require('@datastructures-js/priority-queue');
+
 /**
  * @param {number} a
  * @param {number} b
  * @param {number} c
  * @return {string}
  */
- var longestDiverseString = function(a, b, c) {
+var longestDiverseString = function(a, b, c) {
      
-    if(a + b + c === 0) return "";     
+    const queue = new PriorityQueue({compare : ([count1, l1], [count2, l2]) => count2 - count1});
 
-    const f = ([k1, v1], [k2, v2]) => v1 - v2, arr = [["a", a], ["b", b], ["c", c]];
+    if(a > 0) queue.enqueue([a, 'a']);
+    if(b > 0) queue.enqueue([b, 'b']);
+    if(c > 0) queue.enqueue([c, 'c']);
 
     let ans = "";
 
-    while(true) {
+    while(queue.size()) {
 
-        arr.sort(f);
+        const [count1, letter1] = queue.dequeue();
 
-        const len = ans.length - 1, [a1, a2, a3] = arr;
+        if(ans.endsWith(letter1 + letter1)) {
 
-        const [k1, v1] = a1, [k2, v2] = a2, [k3, v3] = a3;
+            if(!queue.size()) return ans;
 
-        if(v1 === 0 && v2 === 0) {
-            return ans[len] === k3 ? (ans[len - 1] === k3 ? ans : ans + k3.repeat(Math.min(1, v3))) : ans + k3.repeat(Math.min(2, v3));
+            const [count2, letter2] = queue.dequeue();
+
+            ans += letter2;
+
+            if(count2 > 1) queue.enqueue([count2 - 1, letter2]);
         }
 
-        if(len < 1 || ans[len -  1] !== ans[len] ) {
-            ans += k3;
-            arr[2][1]--;
-            continue;
-        }
-        
-        for(let i = 0; i < 3; i++) {
-            if(arr[i][1] === 0 || arr[i][0] === ans[len]) continue;
+        ans += letter1;
 
-            ans += arr[i][0];
-            arr[i][1]--;
-            break;
-        }        
+        if(count1 > 1) queue.enqueue([count1 - 1, letter1]);
+  
     }
 
     return ans;
 };
+
+let [a, b, c] = [12,11,7];
+[a, b, c] = [67,3,34];
+
+console.log(longestDiverseString(a, b, c));
