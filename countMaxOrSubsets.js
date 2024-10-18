@@ -48,28 +48,24 @@ Constraints:
 */
 
 var countMaxOrSubsets = function(nums) {
-    
-    let maxOr = 0;
-    
-    for(const n of nums) maxOr |= n;
-    
-    const len = nums.length;
-    
-    const f = (i, mask) => {
-         
-        count = mask === maxOr ? 2 ** (len - i) : 0;
 
-        if(i === len - 1) return count;
-        
-        return f(i + 1, (mask | nums[i])) + f(i + 1, mask);
+    const maxOr = nums.reduce((acc, num) => acc | num);
 
+    let subsetCount = 0;
+
+    for(let i = 0; i <  2 ** nums.length; i++) {
+
+        let b = i, j = 0, or = 0;
+
+        while(b > 0) {
+
+            or |= b % 2 ? nums[j] : 0;
+            j++;
+            b >>= 1;
+        }
+
+        subsetCount += or === maxOr ? 1 : 0;
     }
     
-    return f(0,0);
+    return subsetCount;
 };
-
-let nums = [3,2,1,5];
-nums= [3,1];
-nums = [2,2,2];
-
-console.log(countMaxOrSubsets(nums));
