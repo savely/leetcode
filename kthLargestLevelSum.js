@@ -79,14 +79,12 @@ var kthLargestLevelSum = function(root, k) {
     }
 
     if(minQueue.size() < k) return -1;
-
-    while(minQueue.size > 1) minQueue.dequeue();
     
     return minQueue.front();
 };
 
 let root = [5,8,9,2,1,3,7,4,6], k = 2;
-root = [1,2,null,3], k = 1;
+//root = [1,2,null,3], k = 1;
 
 const tree = fromArray(root);
 
