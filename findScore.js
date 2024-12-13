@@ -43,35 +43,36 @@ Constraints:
 
 */
 
+const { PriorityQueue } = require('@datastructures-js/priority-queue');
+
 /**
  * @param {number[]} nums
  * @return {number}
  */
 var findScore = function(nums) {
-    
-    const order = new Array(nums.length).fill(0).map((_, i) => i);
-    
-    order.sort((a,b) => nums[a] - nums[b]);
-    
-    let score = 0;
-    
-    console.dir(order);
-    
-    for(const i of order) {
-        
-        if(!nums[i]) continue;
-        
-        score += nums[i];
-        
-        nums[i] = 0;
-        
-        if(i > 0) nums[i - 1] = 0;
-        if(i < nums.length - 1) nums[i + 1] = 0;
+
+    const queue = new PriorityQueue({compare : (a, b) => nums[a] - nums[b] || a - b});
+
+    for(let i = 0; i < nums.length; i++) {
+        queue.enqueue(i);
     }
-    
-    return score;
+
+    let total = 0;
+
+    while(queue.size()) {
+
+        while(queue.size() && nums[queue.front()] < 0) {
+            queue.dequeue();
+        }
+
+        const idx = queue.size() ? queue.dequeue() : -1;
+        if(idx > -1) {
+            total += nums[idx];
+            nums[idx] = -1;
+            if(idx > 0) nums[idx - 1] = -1;
+            if(idx < nums.length - 1) nums[idx + 1] = -1;
+        }
+    }
+
+    return total;
 };
-
-let nums = [2,1,3,4,5,2];
-
-console.log(findScore(nums));
