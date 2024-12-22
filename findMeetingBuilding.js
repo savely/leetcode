@@ -61,10 +61,10 @@ var leftmostBuildingQueries = function(heights, queries) {
 
         while(right > b) {
             
-            while(stack.length && heights[stack[0]] <= heights[right]) {
-                stack.shift();
+            while(stack.length && heights[stack[stack.length - 1]] <= heights[right]) {
+                stack.pop();
             }
-            stack.unshift(right);
+            stack.push(right);
             right--;
         }
 
@@ -76,27 +76,16 @@ var leftmostBuildingQueries = function(heights, queries) {
             const mid = Math.floor((hi + lo) / 2);
 
             if(heights[stack[mid]] > heights[a]) {
-                hi = mid - 1;
-            } else {
                 lo = mid + 1;
+            } else {
+                hi = mid - 1;
             }
         }
 
-        if(lo < stack.length) {
-            ans[i] = stack[lo];
+        if(hi >= 0) {
+            ans[i] = stack[hi];
         }
     }
 
     return ans;
 };
-
-let heights = [5,3,8,2,6,1,4,6], queries = [[0,7],[3,5],[5,2],[3,0],[1,6]]; // [7,6,-1,4,6]
-heights = [6,4,8,5,2,7], queries = [[0,1],[0,3],[2,4],[3,4],[2,2]];// [2,5,-1,5,2]
-heights = [419490285,670809269,172635649,984092316,629273126,
-            866003591,322831865,484023126,882118931];
-queries =[[2,8],[2,1],[5,3],[2,7],[5,1],[5,4],[2,1],[4,1]]; //[8,3,-1,7,5,5,3,5]
-
-heights = [1,2,1,2,1,2];
-queries = [[0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[1,0],[1,1],[1,2],[1,3],[1,4],[1,5],[2,0],[2,1],[2,2],[2,3],[2,4],[2,5],[3,0],[3,1],[3,2],[3,3],[3,4],[3,5],[4,0],[4,1],[4,2],[4,3],[4,4],[4,5],[5,0],[5,1],[5,2],[5,3],[5,4],[5,5]];
-//[0,1,3,3,5,5,1,1,-1,-1,-1,-1,3,-1,2,3,5,5,3,-1,3,3,-1,-1,5,-1,5,-1,4,5,5,-1,5,-1,5,5]
-console.log(leftmostBuildingQueries(heights, queries)); 
