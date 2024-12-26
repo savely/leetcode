@@ -48,22 +48,29 @@ Constraints:
  */
 var findTargetSumWays = function(nums, S) {
     
-    let ans = 0;
-
-    const dfs = (i, sum) => {
-
-        if(i === nums.length) return;
-
-        ans += i === nums.length - 1 && sum + nums[i] === S ? 1 : 0;
-        ans += i === nums.length - 1 && sum - nums[i] === S ? 1 : 0;
-
-        dfs(i + 1, sum + nums[i]);
-        dfs(i + 1, sum - nums[i]);
+    if(!nums.length) return 0;
+    
+    let dp = {};
+    
+    dp[nums[0]] = 1;
+    dp[-nums[0]] = 1;
+    
+    for(let i = 1; i < nums.length; i++) {
+        
+        const newDp = {}, el = nums[i];
+        
+        for(const sum in dp) {
+            
+            for(const nextSum of [+sum + el, +sum - el]) {
+                
+                newDp[nextSum] = (newDp[nextSum] || 0) + dp[sum];
+            } 
+        }
+        dp = newDp;
     }
-
-    dfs(0, 0);
-
-    return ans;
+    
+    const ans = dp[S] || 0;
+    
+     
+    return nums[0] === 0 ? 2 * ans : ans;
 };
-
-console.log(findTargetSumWays([1,1,1,1,1], 3)) // 5
