@@ -61,29 +61,22 @@ var numWays = function(words, target) {
     const a = 'a'.charCodeAt(), mod = 10 ** 9 + 7;
 
     for(const word of words) {
-     
         for(let i = 0; i < n; i++) {
             freq[i][word.charCodeAt(i) - a]++;
         }
     }
 
-    const dp = Array.from({length : target.length}, () => Array(n).fill(-1));
+    const dp = Array.from({length: target.length + 1}, () => Array(n + 1).fill(0));
+    dp[0][0] = 1;
 
-
-    const dfs = (i, j) => {
-
-        if(i === target.length) return 1;
-
-        if(j === n || n - j < target.length - i) return 0;
-
-        if(dp[i][j] > -1) return dp[i][j];
-
-        const charFreq = freq[j][target.charCodeAt(i) - a];
-
-        dp[i][j] = (dfs(i, j + 1) + charFreq * dfs(i + 1, j + 1)) % mod;
-
-        return dp[i][j];
+    for(let j = 0; j < n; j++) {
+        for(let i = 0; i <= target.length; i++) {
+            if(i > 0) {
+                dp[i][j + 1] = (dp[i][j + 1] + dp[i - 1][j] * freq[j][target.charCodeAt(i - 1) - a]) % mod;
+            }
+            dp[i][j + 1] = (dp[i][j + 1] + dp[i][j]) % mod;
+        }
     }
 
-    return dfs(0,0);
+    return dp[target.length][n];
 };
