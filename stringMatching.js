@@ -44,16 +44,62 @@ Constraints:
  * @return {string[]}
  */
 var stringMatching = function(words) {
-    
-    let str = words.join('|');
 
-    const res = [];
+    const computeLps = (str) => {
+
+        const lps = new Array(str.length).fill(0);
+
+        let len = 0, i = 1;
+
+        while(i < str.length) {
+
+            if(str[i] === str[len]) {
+                len++;
+                lps[i] = len;
+                i++;
+            } else {
+
+                if(len !== 0) {
+                    len = lps[len-1];
+
+                } else {
+                    lps[i] = 0;
+                    i++;
+                }
+            }
+        }
+        return lps;
+    }
+
+    const kmp = (text, pattern, from = 0) => {
+
+        const lps = computeLps(pattern);
+        let i = from, j = 0;
+
+        while(i < text.length) {
+            if(text[i] === pattern[j]) {
+                i++;
+                j++;
+            }
+
+            if(j === pattern.length) {
+                return i - pattern.length;
+            } else if(i < text.length && text[i] !== pattern[j]) {
+                if(j !== 0) {
+                    j = lps[j - 1];
+                } else {
+                    i++;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    const str = words.join('|'), res = [];
 
     for(const word of words) {
 
-        const fst = str.indexOf(word);
-
-        if(str.indexOf(word, fst + word.length) > -1) {
+        if(kmp(str, word, kmp(str, word) + word.length) !== -1) {
             res.push(word);
         }
     }
