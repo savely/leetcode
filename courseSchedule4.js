@@ -51,44 +51,27 @@ ui != vi
  * @param {number[][]} queries
  * @return {boolean[]}
  */
- var checkIfPrerequisite = function(numCourses, prerequisites, queries) {
+var checkIfPrerequisite = function(numCourses, prerequisites, queries) {
 
-  const reachable = new Array(numCourses).fill(0).map(_ => new Array(numCourses).fill(0));
-  
-  const adj = {};
-  
-  for(const [pr, crs] of prerequisites) {
+  const reachable = Array.from({length : numCourses}, () => new Array(numCourses).fill(false));
 
-    if(adj[pr] === undefined) {
-        adj[pr] = [];
+  for(const [u, v] of prerequisites) {
+    reachable[u][v] = true;
+  };
+
+  for(let k = 0; k < numCourses; k++) {
+    for(let i = 0; i < numCourses; i++) {
+      for(let j = 0; j < numCourses; j++) {
+        reachable[i][j] = reachable[i][j] || (reachable[i][k] && reachable[k][j]);
+      }
     }
-
-    adj[pr].push(crs);
   }
 
+  const ans = [];
 
-    const dfs = (course, parents, visited = new Set()) => {
+  for(const [u, v] of queries) {
+    ans.push(reachable[u][v]);
+  };
 
-        if(visited.has(course)) return;
-
-        visited.add(course);
-
-        for(const par of parents) {
-            reachable[par][course] = 1;
-        }
-
-        for(c of (adj[course] || [])) {
-
-            dfs(c, [...parents, course], visited);
-        }
-
-    };
-
-    for(const pr in adj) {
-        dfs(pr, []);
-    }
-
-  console.table(reachable);
-
-  return queries.map(([pr, crs]) => reachable[pr][crs] === 1);
+  return ans; 
 };
