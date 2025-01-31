@@ -46,9 +46,9 @@ Constraints:
  */
 var findMaxFish = function(grid) {
 
-    const m = grid.length, n = grid[0].length, disjoinSet = [];
+    const m = grid.length, n = grid[0].length, disjointSet = [];
 
-    const find = (i) =>  disjoinSet[i] < 0 ?  i : find(disjoinSet[i]);
+    const find = (i) =>  disjointSet[i] < 0 ?  i : find(disjointSet[i]);
 
     const union = (i, j) => {
 
@@ -56,12 +56,12 @@ var findMaxFish = function(grid) {
 
         if(rootI === rootJ) return;
 
-        if(disjoinSet[rootI] < disjoinSet[rootJ]) {
-            disjoinSet[rootI] += disjoinSet[rootJ];
-            disjoinSet[rootJ] = rootI;
+        if(disjointSet[rootI] < disjointSet[rootJ]) {
+            disjointSet[rootI] += disjointSet[rootJ];
+            disjointSet[rootJ] = rootI;
         } else {
-            disjoinSet[rootJ] += disjoinSet[rootI];
-            disjoinSet[rootI] = rootJ;
+            disjointSet[rootJ] += disjointSet[rootI];
+            disjointSet[rootI] = rootJ;
         }
     };
 
@@ -70,8 +70,8 @@ var findMaxFish = function(grid) {
 
             if(grid[i][j] === 0) continue;
 
-            disjoinSet.push(-1 * grid[i][j]);
-            grid[i][j] = -1 * disjoinSet.length;
+            disjointSet.push(-1 * grid[i][j]);
+            grid[i][j] = -1 * disjointSet.length;
         }
     }
 
@@ -91,5 +91,5 @@ var findMaxFish = function(grid) {
         }
     }
     
-    return -1 * Math.min(0, ...disjoinSet);
+    return -1 * Math.min(0, ...disjointSet);
 };
