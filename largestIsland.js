@@ -38,94 +38,81 @@ grid[i][j] is either 0 or 1.
  * @param {number[][]} grid
  * @return {number}
  */
- var largestIsland = function(grid) {
+var largestIsland = function(grid) {
 
-    const squares = {},  h = grid.length -1 , w = grid[0].length - 1, gridSquare = (h + 1) * (w + 1);
+    const n = grid.length, m = grid[0].length, disjointSet = [];
 
-    let currentIsland = -1;
+    const find = (i) => disjointSet[i] < 0 ? i : find(disjointSet[i]);
 
+    const union = (i, j) => {
 
-    for(let i = 0; i <= h; i++) {
+        const ri = find(i), rj = find(j);
 
-        for(let j = 0; j <= w; j++) {
+        if(ri === rj) return;
 
-            if(grid[i][j] !== 1) continue;
+        if(disjointSet[ri] < disjointSet[rj]) {
+            disjointSet[ri] += disjointSet[rj];
+            disjointSet[rj] = ri;
+        } else {
+            disjointSet[rj] += disjointSet[ri];
+            disjointSet[ri] = rj;
+        }
+    };
 
-            grid[i][j] = currentIsland;
+    const ordinal = (i, j) => -1 * (grid[i][j] + 1);
 
-            const queue = [[i,j]];
+    for(let i = 0; i < n; i++) {
+        for(let j = 0; j < m; j++) {
 
-            let square = 1;
+            if(grid[i][j] === 0) continue;
 
-            while(queue.length) {
-
-                let next = [];
-
-                while(queue.length) {    
-
-                    const [m, n] = queue.pop();
-
-                    for(const [x, y] of [[m+1,n],[m-1,n],[m,n+1],[m,n-1]]) {
-
-                        if(x < 0 || x > h) continue;
-                        if(y < 0 || y > w) continue; 
-                        if(grid[x][y] !== 1) continue;
-
-                        square++; 
-                        grid[x][y] = currentIsland;
-                        next.push([x,y]);
-                    }   
-                }
-                
-                queue.push(...next);
-            }
-
-            if(square ===  gridSquare) return square;
-
-            squares[currentIsland--] = square;
+            disjointSet.push(-1);
+            grid[i][j] = -1 * disjointSet.length;
         }
     }
 
-    let maxSquare = 0;
-    
-    for(let i = 0; i <= h; i++) {
-        for(let j = 0; j <= w; j++) {
+    for(let i = 0; i < n; i++) {
+        for(let j = 0; j < m; j++) {
+
+            if(grid[i][j] === 0) continue;
+
+            for(const [r, c] of [[i + 1, j], [i, j + 1], [i - 1, j], [i, j - 1]]) {
+
+                if(r < 0 || r >= n || c < 0 || c >= m || grid[r][c] === 0) continue;
+
+                union(ordinal(i,j), ordinal(r,c));
+            }
+        }
+    }
+
+
+    let maxIsland = -1 * Math.min(...disjointSet);
+
+    for(let i = 0; i < n; i++) {
+        for(let j = 0; j < m; j++) {
 
             if(grid[i][j] !== 0) continue;
 
-            const islands = {};
+            const set = new Set();
 
-            for(const [x, y] of [[i+1,j],[i-1,j],[i,j+1],[i,j-1]]) {
+            for(const [r, c] of [[i + 1, j], [i, j + 1], [i - 1, j], [i, j - 1]]) {
 
-                if(x < 0 || x > h) continue;
-                if(y < 0 || y > w) continue; 
-                if(grid[x][y] === 0) continue;
+                if(r < 0 || r >= n 
+                    || c < 0 || c >= m 
+                    || grid[r][c] === 0 ) continue;
 
-                islands[grid[x][y]] = grid[x][y];
-            }            
-
-            let currSquare = 1;
-
-            for(const island in islands) {
-
-                currSquare += squares[island];
+                set.add(find(ordinal(r,c)));
             }
 
-            maxSquare = Math.max(maxSquare, currSquare);
-        }            
+            let currIsland = 0;
+
+            for(const component of set) {
+                currIsland += -1 * disjointSet[component]
+            }
+
+            maxIsland = Math.max(maxIsland, currIsland + 1);
+        }
     }
 
-    return maxSquare;
+    return maxIsland;
 };
-
-
-let grid = [[1,0],
-            [0,1]];
-grid = [[1,1],[1,0]];
-grid = [[1,1],[1,1]];
-grid = [[1,1,0,1,0],
-        [1,1,0,1,0],
-        [1,1,0,0,0],
-        [0,0,0,0,0]];
-
-console.log(largestIsland(grid));
