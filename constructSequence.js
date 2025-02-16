@@ -40,54 +40,44 @@ Constraints:
  */
 var constructDistancedSequence = function(n) {
 
-    const len  = n * 2 - 1;
+    const len  = n * 2 - 1, seq = new Array(len).fill(0), numsCount = new Array(n + 1).fill(2);
 
-    let maxSeq = new Array(len).fill(0);
+    numsCount[1] = 1;
+    numsCount[0] = 0;
 
-    const cmp = (seq1, seq2) => {
+    const build = (pos) => {
 
-        for(let i = 0; i < len; i++) {
-
-            const diff = seq2[i] - seq1[i];
-
-            if(diff === 0) continue;
-
-            return diff;
-        }
-
-        return 0;
-    }
-
-    const build = (seq, numsCount) => {
-
-        if(seq.length === len) {
-            maxSeq = cmp(maxSeq, seq) > 0 ? seq : maxSeq;
-            return;
+        if(pos === len) {
+            return true;
         }
 
         for(let i = n; i >= 1; i--) {
 
             if(numsCount[i] === 0) continue;
 
-            if(numsCount[i] === 1 && i !== 1 && ( seq.length < i || seq[seq.length - i] !== i)) continue;
+            if(numsCount[i] === 1 
+                && i !== 1
+                && ( pos  - i < 0 || seq[pos - i] !== i)) continue;
 
-            const nextCount = [...numsCount];
-            nextCount[i]--;
-            build([...seq, i], nextCount);
+            numsCount[i]--;
+            seq[pos] = i;
+            if(build(pos + 1)) return true;
+            numsCount[i]++;
+            seq[pos] = 0;
         }
+
+        return false;
     }
 
-    const numsCount = new Array(n + 1).fill(2);
-    numsCount[1] = 1;
-    numsCount[0] = 0;
-
-    build([], numsCount);
+    build(0);
     
-    return maxSeq;
+    return seq;
 };
+
 
 let n = 3; // [3,1,2,3,2]
 n = 5; // [5,3,1,4,3,5,2,4,2]
 n = 9; // [9,7,5,3,1,8,6,4,2,9,7,5,3,8,6,4,1,2]
+n = 11;
 
 console.log(constructDistancedSequence(n));
