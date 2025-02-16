@@ -40,30 +40,34 @@ Constraints:
  */
 var constructDistancedSequence = function(n) {
 
-    const len  = n * 2 - 1, seq = new Array(len).fill(0), numsCount = new Array(n + 1).fill(2);
-
-    numsCount[1] = 1;
-    numsCount[0] = 0;
+    const seq = new Array(n * 2 - 1).fill(0), isPlaced = new Array(n + 1).fill(false);
+    isPlaced[0] = true;
 
     const build = (pos) => {
 
-        if(pos === len) {
+        if(pos === seq.length) {
             return true;
+        }
+
+        if(seq[pos] !== 0)  {
+            return build(pos + 1);
         }
 
         for(let i = n; i >= 1; i--) {
 
-            if(numsCount[i] === 0) continue;
+            if(isPlaced[i]) continue;
 
-            if(numsCount[i] === 1 
-                && i !== 1
-                && ( pos  - i < 0 || seq[pos - i] !== i)) continue;
+            if(i > 1 &&  seq[pos + i] !== 0) continue;
 
-            numsCount[i]--;
             seq[pos] = i;
+            if(i > 1) seq[pos + i] = i;
+            isPlaced[i] = true;
+
             if(build(pos + 1)) return true;
-            numsCount[i]++;
+
+            isPlaced[i] = false;
             seq[pos] = 0;
+            if(i > 1) seq[pos + i] = 0;
         }
 
         return false;
@@ -78,6 +82,7 @@ var constructDistancedSequence = function(n) {
 let n = 3; // [3,1,2,3,2]
 n = 5; // [5,3,1,4,3,5,2,4,2]
 n = 9; // [9,7,5,3,1,8,6,4,2,9,7,5,3,8,6,4,1,2]
-n = 11;
+//n = 2;
+//n = 4; //[4,2,3,2,4,3,1]
 
 console.log(constructDistancedSequence(n));
