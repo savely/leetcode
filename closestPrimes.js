@@ -42,37 +42,47 @@ Constraints:
  */
 var closestPrimes = function(left, right) {
 
-    const isPrime = (n) => {
+    const sieve = Array.from({length : right + 1}, (_, i) => i % 2 ? true : false);
 
-        for(let i = 2; i <= Math.sqrt(n); i++) {
-            if(n % i === 0) return false;
+    sieve[0] = sieve[1] = false;
+    sieve[2] = true;
+
+    for(let i = 3; i <= right; i+= 2) {
+        for(let j = 2; i * j <= right; j++) {
+            sieve[i * j] = false;
         }
-
-        return true;
     }
 
-    let last = -1, minDist = Infinity; 
-    const ans = [-1,-1];
+    let fst = -1, snd = -1, last = -1;
 
     for(let i = left; i <= right; i++) {
 
-        if(isPrime(i)) {
+        if(!sieve[i]) continue;
 
-            if(last > 0 && (i - last) < minDist) {
-                minDist = i - last;
-                ans[0] = last;
-                ans[1] = i;
-
-                if(minDist < 2 || (last > 2 && minDist < 3)) return ans;
-            }
-
-            last = i;
+        if(fst < 0) {
+            fst = i;
+            continue;
         }
+
+        if(snd < 0) {
+            snd = i;
+            last = i;
+            continue;
+        }
+
+        if(i - last < snd - fst) {
+            fst = last;
+            snd = i;
+        }
+
+        last = i;
     }
-    return ans;
+    
+    return snd < 0 ? [-1, -1] : [fst, snd];
 };
 
 let left = 411, right = 656;
 left = 1, right = 1000000;
+left = 19, right = 31; //[29, 31]
 
 console.log(closestPrimes(left, right));
