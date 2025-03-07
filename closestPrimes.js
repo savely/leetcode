@@ -47,9 +47,11 @@ var closestPrimes = function(left, right) {
     sieve[0] = sieve[1] = false;
     sieve[2] = true;
 
-    for(let i = 3; i <= right; i+= 2) {
-        for(let j = 2; i * j <= right; j++) {
-            sieve[i * j] = false;
+    for(let i = 3; i <= Math.sqrt(right); i+= 2) {
+        if (sieve[i]) {
+            for(let j = i * i; j <= right; j += i) {
+                sieve[j] = false;
+            }
         }
     }
 
