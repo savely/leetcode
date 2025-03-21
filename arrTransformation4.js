@@ -86,47 +86,42 @@ Constraints:
  * @return {number}
  */
 var minZeroArray = function(nums, queries) {
+    
+    const knapsack = (idx) => {
 
-    const resolved = [], sums = [];
-    let countResolved = 0;
+        if(nums[idx] === 0) return 0;   
 
-    for(let i = 0; i < nums.length; i++) {
-        resolved.push(nums[i] === 0 ? true : false);
-        countResolved += nums[i] === 0 ? 1 : 0;
-        sums.push(new Set([0]));
-    }
+        let sums = new Set([0]);
 
-    if(countResolved === nums.length) return 0;
+        for(let i = 0; i < queries.length; i++) {
+            const [l, r, val] = queries[i];
 
-    for(let i = 0; i < queries.length; i++) {
-        const [l, r, val] = queries[i];
+            if(r < idx || l > idx || val > nums[idx]) continue;
 
-        for(let j = l; j <= r; j++) {
+            for(const sum of [...sums]) {
+                if(sum + val === nums[idx]) return i + 1;
 
-            if(resolved[j] || val > nums[j]) continue;
-
-            const currSums = sums[j];
-
-            for(const n of [...currSums]) {
-
-                if(n + val === nums[j]) {
-                    resolved[j] = true;
-                    countResolved++;
-                    break;
-                }
-
-                if(n + val < nums[j]) {
-                    currSums.add(n + val);
-                }
+                if(sum + val < nums[idx]) sums.add(sum + val);
             }
         }
+        return -1;
+    };
 
-        if(countResolved === nums.length) return i + 1;
+    let minDepth = -1;
+
+    for(let i = 0; i < nums.length; i++) {
+        const depth = knapsack(i);
+
+        if(depth === -1) return -1;
+
+        minDepth = Math.max(minDepth, depth);
     }
 
-    return -1;
+    return minDepth;
 };
-
 let nums = [2,0,2], queries = [[0,2,1],[0,2,1],[1,1,3]]; // 2;
+nums = [4,3,2,1], queries = [[1,3,2],[0,2,1]]; // -1;
+nums = [1,2,3,2,1], queries = [[0,1,1],[1,2,1],[2,3,2],[3,4,1],[4,4,1]]; // 4;
+//nums = [1,2,3,2,6], queries = [[0,1,1],[0,2,1],[1,4,2],[4,4,4],[3,4,1],[4,4,5]]; // 4;
 
 console.log(minZeroArray(nums, queries));
