@@ -40,55 +40,49 @@ You can reach any intersection from any other intersection.
 */
 
 
-const { MinPriorityQueue } = require('@datastructures-js/priority-queue');
+const { PriorityQueue } = require('@datastructures-js/priority-queue');
 
 /**
  * @param {number} n
  * @param {number[][]} roads
  * @return {number}
  */
- var countPaths = function(n, roads) {
+var countPaths = function(n, roads) {
 
-    const adj = {}, distances = {}, target = n - 1;
+    const adj = Array.from({length : n}, () => []), distances = Array.from({length : n}, () => Infinity),ways = Array.from({length : n}, () => 0), target = n - 1;
+
+    distances[0] = 0;   
+    ways[0] = 1;
 
     for(const [from, to, dist] of roads) {
+        adj[from].push([to, dist]);
+        adj[to].push([from, dist]);
 
-        adj[from]  = (adj[from] || new MinPriorityQueue());
-        adj[to]  = (adj[to] || new MinPriorityQueue());
-
-        adj[from].enqueue(to, dist);
-        adj[to].enqueue(from, dist);
     }
+    const queue = new PriorityQueue({compare: (a, b) => a[1] - b[1]});
+    queue.enqueue([0, 0]);
 
-    let minDist = Infinity, count = 0;
+    while(!queue.isEmpty()) {
+        const [node, dist] = queue.dequeue();
 
-    const f = (node, dist) => {
+        if(dist > distances[node]) continue;
 
-        if(dist > minDist) return;
+        for(const [next, nextDist] of adj[node]) {
 
-        if(distances[node] !== undefined && distances[node] < dist) return;
-
-        distances[node] = dist;
-
-        if(node === target) {
-            if(dist < minDist) {
-                count = 0;
-                minDist = dist;
+            if(distances[next] > dist + nextDist) {
+                distances[next] = dist + nextDist;
+                ways[next] = ways[node];
+                queue.enqueue([next, distances[next]]);
             }
-            count++;
-            return;
-        }
-
-        while(adj[node].size()) {
-
-            const {element: child, priority : distance} = adj[node].dequeue();
-            f(child, dist + distance);
+            if(distances[next] === dist + nextDist) {
+                ways[next] = (ways[next] + ways[node]) % 1000000007;
+            }
         }
     }
-    
-    f(0, 0);
 
-    console.dir(distances);
-
-    return count;    
+    return ways[target];
 };
+
+let n = 7, roads = [[0,6,7],[0,1,2],[1,2,3],[1,3,3],[6,3,3],[3,5,1],[6,5,1],[2,5,1],[0,4,5],[4,6,2]];   // 4
+
+console.log(countPaths(n, roads));
