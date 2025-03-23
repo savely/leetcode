@@ -49,7 +49,10 @@ const { PriorityQueue } = require('@datastructures-js/priority-queue');
  */
 var countPaths = function(n, roads) {
 
-    const adj = Array.from({length : n}, () => []), distances = Array.from({length : n}, () => Infinity),ways = Array.from({length : n}, () => 0), target = n - 1;
+    const adj = Array.from({length : n}, () => []);
+    const distances = Array.from({length : n}, () => Infinity);
+    const ways = Array.from({length : n}, () => 0);
+    const target = n - 1;
 
     distances[0] = 0;   
     ways[0] = 1;
@@ -69,12 +72,12 @@ var countPaths = function(n, roads) {
 
         for(const [next, nextDist] of adj[node]) {
 
-            if(distances[next] > dist + nextDist) {
-                distances[next] = dist + nextDist;
+            const newDist = dist + nextDist;
+            if(distances[next] > newDist) {
+                distances[next] = newDist;
                 ways[next] = ways[node];
-                queue.enqueue([next, distances[next]]);
-            }
-            if(distances[next] === dist + nextDist) {
+                queue.enqueue([next, newDist]);
+            } else if(distances[next] === newDist) {
                 ways[next] = (ways[next] + ways[node]) % 1000000007;
             }
         }
