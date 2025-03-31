@@ -38,9 +38,6 @@ Constraints:
 
 */
 
-
-const { PriorityQueue } = require('@datastructures-js/priority-queue');
-
 /**
  * @param {number[]} weights
  * @param {number} k
@@ -48,33 +45,31 @@ const { PriorityQueue } = require('@datastructures-js/priority-queue');
  */
 var putMarbles = function (weights, k) {
 
-    const minQueue = new PriorityQueue({ compare: (a, b) => a - b });
-    const maxQueue = new PriorityQueue({ compare: (a, b) => b - a });
+    if (k === 1) return 0;
 
-
-    let minScore = 0; maxScore = 0;
+    const sums = [];
 
     for (let i = 0; i < weights.length - 1; i++) {
 
         const pair = weights[i] + weights[i + 1];
-
-        if (minQueue.size() < k - 1 || minQueue.front() > pair) {
-            minScore -= minQueue.size() < k - 1 ? 0 : minQueue.dequeue();
-            minQueue.enqueue(pair);
-            minScore += pair;
-        }
-
-        if (maxQueue.size() < k - 1 || maxQueue.front() < pair) {
-            maxScore -= maxQueue.size() < k - 1 ? 0 : maxQueue.dequeue();
-            maxQueue.enqueue(pair);
-            maxScore += pair;
-        }
+        sums.push(pair);
     }
+
+    sums.sort((a, b) => a - b);
+
+    let minScore = 0, maxScore = 0;
+
+    for (let i = 0; i < k - 1; i++) {
+        minScore += sums[i];
+    }
+    for (let i = sums.length - 1; i >= sums.length - k + 1; i--) {
+        maxScore += sums[i];
+    }   
 
     return maxScore - minScore;
 };
 
 weights = [1, 3, 5, 1], k = 2; //4
-weights = [1,3,5,1,7,11,2,3,4,9,22], k = 5 // 53
+//weights = [1,3,5,1,7,11,2,3,4,9,22], k = 5 // 53
 
 console.log(putMarbles(weights, k)); 
