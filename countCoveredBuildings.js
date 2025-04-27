@@ -62,25 +62,23 @@ Constraints:
 
 */
 
-var countCoveredBuildings = function(n, buildings) {
+    const xMin = new Uint32Array(n).fill(n), xMax = new Uint32Array(n).fill(0);
+    const yMin = new Uint32Array(n).fill(n), yMax = new Uint32Array(n).fill(0);
 
-    const xRanges = new Map(), yRanges = new Map();
+    for (const [x, y] of buildings) {
 
-    for(const [x, y] of buildings) {
-        const xRange = xRanges.get(y) || [n, 0];
-        xRanges.set(y, [Math.min(xRange[0], x), Math.max(xRange[1], x)]);
-
-        const yRange = yRanges.get(x) || [n, 0];
-        yRanges.set(x, [Math.min(yRange[0], y), Math.max(yRange[1], y)]);
+        xMin[y] = Math.min(xMin[y], x);
+        xMax[y] = Math.max(xMax[y], x);
+        yMin[x] = Math.min(yMin[x], y);
+        yMax[x] = Math.max(yMax[x], y);
     }
-    
-    let covered = 0;
 
-    for(const [x, y] of buildings) {
-        const [xMin, xMax] = xRanges.get(y), [yMin, yMax] = yRanges.get(x);
-        
-        covered += x > xMin && x < xMax && y > yMin && y < yMax ? 1 : 0;
+    let  covered = 0;
+
+    for
+        (const [x, y] of buildings) {
+
+        covered +=  (xMin[y] < x && xMax[y] > x && yMin[x] < y && yMax[x] > y) ? 1 : 0;
     }
 
     return covered;
-};
