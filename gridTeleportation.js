@@ -47,78 +47,66 @@ Constraints:
 
 */
 
+const { Deque } = require('@datastructures-js/deque');
+
 /**
  * @param {string[]} matrix
  * @return {number}
  */
 var minMoves = function(matrix) {
+
     const m = matrix.length, n = matrix[0].length;
-    const visited = Array.from({length: m}, () => Array(n).fill(false));
+    const visited = Array.from({length : m}, () => new Uint32Array(n));
     const portals = new Map();
 
-    // Store portal positions
-    for (let i = 0; i < m; i++) {
-        for (let j = 0; j < n; j++) {
-            const cell = matrix[i][j];
-            if (cell === '#') continue;
-            if (cell !== '.' && cell >= 'A' && cell <= 'Z') {
-                if (!portals.has(cell)) portals.set(cell, []);
-                portals.get(cell).push([i, j]);
+    for(let i = 0; i < m; i++) {
+        for(let j = 0; j < n; j++) {
+
+            if(matrix[i][j] === '.') continue;
+            
+            if(matrix[i][j] === '#') {
+                visited[i][j] = 1;
+                continue;
             }
+
+            const portal = matrix[i][j];
+
+            const arr = portals.get(portal) || [];
+            arr.push([i, j])
+            portals.set(portal, arr);
         }
     }
 
-    const usedPortal = new Set();
-    let queue = [[0, 0, 0]]; // [x, y, moves]
-    visited[0][0] = true;
+    let deque =  new Deque();
+     deque.pushBack([0,0,0]);
 
-    while (queue.length) {
+    while(deque.size()) {
 
-        const next = [];
+        const [x, y, move] = deque.popFront();
 
-        for(let i = 0; i < queue.length; i++) {
-
-            const [x, y, moves] = queue[i];
-
-            if (x === m - 1 && y === n - 1) return moves;
-
-            // Move in 4 directions
-            for (const [dx, dy] of [[1,0], [-1,0], [0,1], [0,-1]]) {
-                const nx = x + dx, ny = y + dy;
-                if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny] && matrix[nx][ny] !== '#') {
-                    visited[nx][ny] = true;
-                    next.push([nx, ny, moves + 1]);
-                }
-            }
-
-            // Teleportation
-            const cell = matrix[x][y];
-            if (cell !== '.' && cell >= 'A' && cell <= 'Z' && !usedPortal.has(cell)) {
-                for (const [px, py] of portals.get(cell)) {
-                    if (!visited[px][py]) {
-                        visited[px][py] = true;
-                        next.push([px, py, moves]);
-                    }
-                }
-                usedPortal.add(cell);
-            }
+        if(x === m - 1 && y === n - 1) {
+            return move;
         }
-        queue = next;
-    }
 
-  
+        if(visited[x][y]) continue;
+
+        visited[x][y] = 1;
+
+        for(const [dx,dy] of [[x+1,y],[x-1,y],[x,y+1],[x,y-1]]) {
+            if(dx < 0 || dx >= m) continue;
+            if(dy < 0 || dy >= n) continue;
+            if(visited[dx][dy]) continue;
+            deque.pushBack([dx,dy, move + 1]);
+        }
+
+        if(!portals.has(matrix[x][y])) continue;
+
+        for(const [dx, dy] of portals.get(matrix[x][y])) {
+            if(visited[dx][dy]) continue;
+            deque.pushFront([dx,dy,move]);
+        }
+        portals.delete(matrix[x][y]);
+    }
+    
     return -1;
 };
-
-let  matrix = [".#...",".#.#.",".#.#.","...#."];
-matrix = [".#...",
-          "..B#.",
-          ".#B#.",
-          "...#."];//9
-/*matrix = [".#B..",
-          "..B#.",
-          ".#B..",
-          ".B.#."];//6*/
-matrix = [".#..#.","CCEH.D","..D.FB"] //4
-
-console.log(minMoves(matrix));
