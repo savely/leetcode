@@ -47,68 +47,66 @@ Constraints:
 
 */
 
-const { PriorityQueue } = require('@datastructures-js/priority-queue');
-
 /**
  * @param {string[]} matrix
  * @return {number}
  */
 var minMoves = function(matrix) {
-
     const m = matrix.length, n = matrix[0].length;
-    const visited = Array.from({length : m}, () => new Uint32Array(n));
+    const visited = Array.from({length: m}, () => Array(n).fill(false));
     const portals = new Map();
 
-    for(let i = 0; i < m; i++) {
-        for(let j = 0; j < n; j++) {
+    // Store portal positions
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            const cell = matrix[i][j];
+            if (cell === '#') continue;
+            if (cell !== '.' && cell >= 'A' && cell <= 'Z') {
+                if (!portals.has(cell)) portals.set(cell, []);
+                portals.get(cell).push([i, j]);
+            }
+        }
+    }
 
-            if(matrix[i][j] === '.') continue;
-            
-            if(matrix[i][j] === '#') {
-                visited[i][j] = 1;
-                continue;
+    const usedPortal = new Set();
+    let queue = [[0, 0, 0]]; // [x, y, moves]
+    visited[0][0] = true;
+
+    while (queue.length) {
+
+        const next = [];
+
+        for(let i = 0; i < queue.length; i++) {
+
+            const [x, y, moves] = queue[i];
+
+            if (x === m - 1 && y === n - 1) return moves;
+
+            // Move in 4 directions
+            for (const [dx, dy] of [[1,0], [-1,0], [0,1], [0,-1]]) {
+                const nx = x + dx, ny = y + dy;
+                if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny] && matrix[nx][ny] !== '#') {
+                    visited[nx][ny] = true;
+                    next.push([nx, ny, moves + 1]);
+                }
             }
 
-            const portal = matrix[i][j];
-
-            const arr = portals.get(portal) || [];
-            arr.push([i, j])
-            portals.set(portal, arr);
+            // Teleportation
+            const cell = matrix[x][y];
+            if (cell !== '.' && cell >= 'A' && cell <= 'Z' && !usedPortal.has(cell)) {
+                for (const [px, py] of portals.get(cell)) {
+                    if (!visited[px][py]) {
+                        visited[px][py] = true;
+                        next.push([px, py, moves]);
+                    }
+                }
+                usedPortal.add(cell);
+            }
         }
+        queue = next;
     }
 
-    let queue =  new PriorityQueue({compare : ([x1,y1,m1], [x2,y2,m2]) => m1 - m2});
-     minMoves = Infinity;
-     queue.enqueue([0,0,0]);
-
-    while(queue.size()) {
-
-        const [x, y, move] = queue.dequeue();
-
-        if(x === m - 1 && y === n - 1) {
-            return move;
-        }
-
-        if(visited[x][y]) continue;
-
-        visited[x][y] = 1;
-
-        for(const [dx,dy] of [[x+1,y],[x-1,y],[x,y+1],[x,y-1]]) {
-            if(dx < 0 || dx >= m) continue;
-            if(dy < 0 || dy >= n) continue;
-            if(visited[dx][dy]) continue;
-            queue.enqueue([dx,dy, move + 1]);
-        }
-
-        if(!portals.has(matrix[x][y])) continue;
-
-        for(const [dx, dy] of portals.get(matrix[x][y])) {
-            if(visited[dx][dy]) continue;
-            queue.enqueue([dx,dy,move]);
-        }
-        portals.delete(matrix[x][y]);
-    }
-    
+  
     return -1;
 };
 
