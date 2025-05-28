@@ -69,27 +69,22 @@ var resultsArray = function(queries, k) {
 
         const dist = Math.abs(x) + Math.abs(y);
 
-        if(k - 1 > queue.size()) {
-            queue.enqueue(dist);
-            ans.push(-1);
-            continue;
+        if(queue.size() < k || dist < queue.front()) {
+          queue.enqueue(dist);
         }
 
-        if(queue.size() === k && dist >= queue.front()) {
-            ans.push(queue.front());
-            continue;
+        if(queue.size() > k) {
+            queue.dequeue();
         }
 
-        queue.dequeue();
-        queue.enqueue(dist);
-
-        ans.push(queue.front());
+        ans.push(queue.size() < k ? -1 : queue.front());
     }
     
     return ans;
 };
 
 let queries = [[1,2],[3,4],[2,3],[-3,0]], k = 2;
-//queries = [[5,5],[4,4],[3,3]], k = 1;
+queries = [[5,5],[4,4],[3,3]], k = 1;
+//queries = [[7,7],[-9,4]], k = 2;
 
 console.log(resultsArray(queries, k));

@@ -48,41 +48,20 @@ var longestSubarray = function(nums) {
     
     const maxEl = Math.max(...nums);
 
-    let i = 0, minRightIdx = -1, maxLength = 1;
+    let curr = 0, max = 0;
 
-    while(i < nums.length) {
+    for(const num of nums) {
 
-        if(nums[i] < maxEl) {
-            i++;
-            continue;
-        }
+        curr = num === maxEl ? curr + 1 : 0;
 
-        let left = i, curr = maxEl;
-
-        while(left - 1 > minRightIdx) {
-            curr &= nums[left - 1];
-            if(curr < maxEl) break;
-            left--;
-        }
-
-        let right = i;
-        curr = maxEl;
-
-        while(right + 1 < nums.length) {
-            curr &= nums[right + 1];
-            if(curr < maxEl) break;
-            right++;
-        }
-
-        maxLength = Math.max(maxLength, right - left + 1);
-        minRightIdx = right;
-        i = minRightIdx + 1;
+        max = Math.max(max, curr);
     }
 
-    return maxLength;
+    return max;
 };
 
 let  nums = [7,8,1,2,3,3,2,2];
 //nums = [1,2,3,4];
+nums = [7,7,7,1,2,3,7,7,7,7,7,7,7,3,2,2];
 
 console.log(longestSubarray(nums));

@@ -44,14 +44,14 @@ var trapRainWater = function(heightMap) {
 
         let leftMax = heightMap[i][0];
 
-        for(let j = 1; j <  n; j++) {
+        for(let j = 0; j <= n; j++) {
             heights[i][j] = leftMax;
             leftMax = Math.max(leftMax, heightMap[i][j]);
         }
 
         let rightMax = heightMap[i][n];
 
-        for(let j = n - 1; j >= 1; j--) {
+        for(let j = n; j >= 0; j--) {
             heights[i][j] = Math.min(heights[i][j], rightMax);
             rightMax = Math.max(rightMax, heightMap[i][j]);
         }
@@ -62,14 +62,14 @@ var trapRainWater = function(heightMap) {
 
         let topMax = heightMap[0][j];
 
-        for(i = 1; i < heights.length - 1; i++) {
+        for(let i = 0; i < heights.length; i++) {
             heights[i][j] = Math.min(heights[i][j], topMax);
             topMax = Math.max(topMax, heightMap[i][j]);
         }
 
         let bottomMax = heightMap[heightMap.length - 1][j];
 
-        for(i = heights.length - 1; i >= 1; i--) {
+        for(let i = heights.length - 1; i >= 0; i--) {
             heights[i][j] = Math.min(heights[i][j], bottomMax);
             bottomMax  = Math.max(bottomMax, heightMap[i][j]);
         }

@@ -39,128 +39,43 @@ Constraints:
 0 <= limit <= 109
 */
 
+const { PriorityQueue }  = require('@datastructures-js/priority-queue');
+
 /**
  * @param {number[]} nums
  * @param {number} limit
  * @return {number}
  */
  var longestSubarray = function(nums, limit) {
+
+    const minQueue =  new PriorityQueue({ compare : (i1, i2) => nums[i1] - nums[i2]});
+    const maxQueue =  new PriorityQueue({ compare : (i1, i2) => nums[i2] - nums[i1]});
+
+    let i = 0, j = 0, maxLen = 0;
     
-    const mset = new Mset([nums[0]]);
-    let  start = 0, end = 0, maxLen = 0;
-    
-    while(start < nums.length) {
+    while(j < nums.length) {
 
-        const min = mset.min(), max = mset.max();
-        
-       if(end < nums.length && max - min <= limit) {
-           maxLen  = Math.max(maxLen, end - start + 1);
-           end++;
-           if(end < nums.length) mset.add(nums[end]);
-           continue;
-        } else {
-            mset.remove(nums[start++]);
+        minQueue.enqueue(j);
+        maxQueue.enqueue(j);
+
+        while(nums[maxQueue.front()] - nums[minQueue.front()] > limit) {
+            i++;
+            while(maxQueue.front() < i) maxQueue.dequeue();
+            while(minQueue.front() < i) minQueue.dequeue();        
         }
-    }
-  return maxLen;   
-};
 
-
-const Mset = function(arr = []) {
-      
-    this._arr = [];
-    this._map = {};
-
-    for(let i = 0; i < arr.length; i++) {
-
-        const el = arr[i];   
-
-        if(this._map[el] === undefined) {
-            this._map[el] = 0;
-            this._arr.push(el);
-        }
-        this._map[el]++;
+        maxLen = Math.max(maxLen, j - i + 1);
+        j++;
     }
 
-    this._arr.sort((a,b) => a - b);
+    return maxLen;
 };
 
-Mset.prototype.max = function() {
-    return this._arr[this._arr.length - 1];
-};
+let nums = [8,2,4,7], limit = 4;
+nums = [10,1,2,4,7,2], limit = 5;
+nums = [4,2,2,2,4,4,2,2], limit = 0;
+nums = [71,45,88,69,63,99,69,31,9,93,6,11,18,22,22,69,28,35,98,43,
+        77,65,33,48,44,44,15,38,31,78,100,92,63,18,75,71,99,14,42,
+        6,53,10,49,19,17,44,15,79,76,49,10,74,71,29,73,11], limit = 74;
 
-Mset.prototype.min = function() {
-    return this._arr[0];
-}
-
-Mset.prototype.remove = function(n) {
-
-    if(this._map[n] === undefined) return false;
-
-    this._map[n]--;
-
-    if(this._map[n] > 0) return true;
-
-    delete this._map[n];
-
-    let idx = this._arr.indexOf(n);
-
-    this._arr.splice(idx, 1);
-
-   return true;
-}
-
-Mset.prototype.add = function(n) {
-
-    if(this._map[n] !== undefined) {
-        this._map[n]++;
-        return true;
-    }
-
-    this._map[n] = 1;
-
-
-    if(this._arr.length === 0) {
-        this._arr.push(n);
-        return 0;   
-    }    
-
-    let lo = 0, top = this._arr.length - 1, hi = top;
-
-    while(hi > lo) {
-
-        const mid = Math.trunc((hi + lo) /2), el = this._arr[mid];
-
-        if(el > n) {
-
-            if(mid === 0) {
-                this._arr.unshift(n);
-                return 0;
-            }
-
-            if(this._arr[mid - 1] < n) {
-                this._arr.splice(mid, 0, n);
-                return mid;
-            }
-            hi = mid - 1;
-        } else {
-
-            if(mid === top) {
-                this._arr.push(n);
-                return top + 1;
-            }
-
-            if(this._arr[mid + 1] > n) {
-                this._arr.splice(mid + 1, 0, n);
-                return mid + 1;
-            }
-            lo = mid + 1;
-        }
-    }
-
-    const el = this._arr[lo], idx = el < n ? lo + 1 : lo;
-
-    this._arr.splice(idx, 0, n);
-
-    return idx;
-};
+console.log(longestSubarray(nums, limit));
