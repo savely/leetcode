@@ -77,13 +77,12 @@ var minimumOperations = function(root) {
 
             if(queue[i].left) {
                 next.push(queue[i].left);
-                nextVals.push(queue[i].left.val);
             }
 
             if(queue[i].right) {
                next.push(queue[i].right);
-               nextVals.push(queue[i].right.val);
             }
+
         }
 
         ops += countSwaps(nextVals);
@@ -91,10 +90,6 @@ var minimumOperations = function(root) {
     }
     return ops;
 };
-
-const countSwaps = (arr) => {
-
-}
 
 let root = [1,4,3,7,6,8,5,null,null,null,null,9,null,10];   
 root = [1,3,2,7,6,5,4];

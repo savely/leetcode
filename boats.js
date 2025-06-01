@@ -14,27 +14,24 @@ Return the minimum number of boats to carry every given person.  (It is guarante
  * @return {number}
  */
 var numRescueBoats = function(people, limit) {
-
-    people = people.sort((a,b) =>  b - a)
     
-    let boats = 0, i = 0, j = people.length - 1
-    
-    while(i < j) {
-       const wMax = people[i++], wMin = people[j]
+    people.sort((a,b) => a - b);
 
-       if(wMin + wMax <= limit) {
-           j--
-       }
-       boats++ 
+    let left = 0, right = people.length - 1, boats = 0;
+
+    while(right > left) {
+
+        right -= people[right] + people[left] <= limit ? 1 : 0;
+        left++;
+        boats++;
     }
-    
-    if(i === j) boats++
-    
-    
-    return boats
+
+    return boats + (right === people.length - 1 ? 1 : 0);
 };
 
-let arr = [3,5,3,4]
-arr = [3,2,2,1]
+let people = [3,5,3,4];
+people = [3,2,2,1];
+people = [5,1,4,2], limit = 6; //2
+people = [3,5,3,4], limit = 5;//4
 
-console.log(numRescueBoats(arr, 5))
+console.log(numRescueBoats(people, limit));

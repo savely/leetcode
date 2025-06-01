@@ -1,5 +1,6 @@
 node_modules/
 .vscode/
+.whatTheHell/
 package-lock.json
 tsconfig.json
 yarn.lock

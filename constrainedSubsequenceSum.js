@@ -33,7 +33,7 @@ Constraints:
     -104 <= nums[i] <= 104
 
 */
-const { PriorityQueue } = require('@datastructures-js/priority-queue');
+const { Deque } = require('@datastructures-js/deque');
 
 /**
  * @param {number[]} nums

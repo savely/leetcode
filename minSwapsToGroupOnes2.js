@@ -51,33 +51,35 @@ var minSwaps = function(nums) {
         count += num;
     }
 
-    const total = count;
-
     if(count === nums.length) return 0;
 
-    for(let i = 0; i < total; i++) {
-        count -= nums[i] === 0 ? 1 : 0;
+    const total = count;
+
+    count = 0;
+
+    let i = 0, j = 0, minSwaps = Infinity; 
+
+    while(i < nums.length) {
+
+        count += nums[j];
+
+        if(count === total) {
+            let dist = j >= i ? j - i  + 1 : (nums.length - i + j);
+            minSwaps = Math.min(minSwaps, dist - total);
+        }
+
+        while(count > total) {
+            count -= nums[i++];
+        }
+
+        j = (j + 1) % (nums.length);
     }
 
-    let min = total - count, start = 0, end  = total;
-
-    nums.push(...nums);
-
-    while(end < nums.length) {
-
-        count += nums[end++];
-        count -= nums[start++];
-
-        min = Math.min(min, total - count);
-
-        if(min === 0) return 0;
-    }
-
-    return min;
+    return minSwaps;
 };
 
 nums = [0,1,0,1,1,0,0];
 nums = [0,1,1,1,0,0,1,1,0];
-nums = [1,1,0,0,1];
+//nums = [1,1,0,0,1];
 
 console.log(minSwaps(nums));

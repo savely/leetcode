@@ -54,49 +54,41 @@ Constraints:
  * @param {string} word
  * @return {number}
  */
- var countVowelSubstrings = function(word) {
+var countVowelSubstrings = function(word) {
+    
+    const map = {'a' : 0, 'e' : 0, 'i' : 0, 'o' : 0,'u' : 0}; 
 
-    const f = (i, j) => {
+    let vowels = 0, substrings = 0, i = 0, j = 0, counter = {...map};
 
-        if(j - i < 5) return 0;
+    while(j < word.length) {
 
-        let counter = {'a' : 0, 'e' : 0, 'i' : 0, 'o' : 0, 'u' : 0};
-        let start = i, end = i, vowelCount = 0, count = 0;
+        if(map[ word[j] ] === undefined) {
 
-        while(end <= j) {
-
-            const char = word[end];
-
-            if(counter[char] === 0) vowelCount++;
-
-            counter[char]++;
-
-            if(vowelCount < 5) {
-                end++;
-                continue;
+            while(vowels === 5) {
+                counter[ word[i] ]--;
+                vowels -= counter[ word[i] ] ? 0 : 1;
+                substrings++;
+                i++;
             }
-
-            while(vowelCount === 5) {
-
-                const stChar = word[start];
-                counter[stChar]--;
-
-                if(counter[stChar] === 0) {
-                    vowelCount--;
-                    break;
-                } 
-                start++;
-            }
-
-            count += 1 + (start - i) + (j - end) + (start - i) * (j - end);
-            end++;
+            counter = {...map};
+            j++;
+            i = j;
+            continue;
         }
 
-        return count;
-    };
+        vowels += counter[word[j]] ? 0 : 1;
+        substrings += vowels === 5 ? 1 : 0;
+        counter[word[j]] = (counter[word[j]] || 0) + 1;
+        j++;
+    }
 
-    return f(0, word.length -1);
+    while(vowels === 5) {
+        counter[ word[i] ]--;
+        vowels -= counter[ word[i] ] ? 0 : 1;
+        substrings++;
+    }
 
+    return substrings;
 };
 
 let word = "aeiouu";
@@ -105,5 +97,6 @@ word = "uaieuoua";
 //word = "aoeaieauuaaeaiii"; //18
 //word = "aoieuuaa"//6;
 //word = "uuiaoeaieauuaaiaaieaiii" //75
+word = "cuaieuouac";
 
 console.log(countVowelSubstrings(word));
