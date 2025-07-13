@@ -55,10 +55,25 @@ Constraints:
  */
 var minCost = function(n, edges, k) {
 
-    const ds = Array.from({length: n}, () => -1);
+    const ds = Int32Array.from({length: n}, () => -1);
 
     const find = (a) => ds[a] < 0 ? a : find(ds[a]);
     
+    const union = (a, b) => {
+
+        const pa = find(a), pb = find(b);
+
+        if(pa === pb) return;
+
+        if(ds[pa] <= ds[pb]) {
+            ds[pa] += ds[pb];
+            ds[pb] = pa;
+        } else {
+            ds[pb] += ds[pa];
+            ds[pa] = pb;
+        }
+
+    };
 
     edges.sort((a, b) => a[2] - b[2]);
 
@@ -70,15 +85,7 @@ var minCost = function(n, edges, k) {
 
         if(pu === pv) continue;
 
-        if(pu < pv) {
-            ds[pu] += ds[pv];
-            ds[pv] = pu;
-        }
-        else {
-            ds[pv] += ds[pu];
-            ds[pu] = pv;
-        }
-
+        union(pu, pv);
         components--;
 
         if(components === k) return w;
