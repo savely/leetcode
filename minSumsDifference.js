@@ -48,7 +48,6 @@ Constraints:
 */
 
 const { PriorityQueue } = require("@datastructures-js/priority-queue");
-const { max, min } = require("lodash");
 
 /**
  * @param {number[]} nums
@@ -97,7 +96,3 @@ var minimumDifference = function(nums) {
     }
     return minDiff;
 };
-
-//let nums = [3,1,2]; // -1
-nums = [7,9,5,8,1,3]; //1
-console.log(minimumDifference(nums));
