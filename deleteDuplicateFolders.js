@@ -61,61 +61,57 @@ Constraints:
 
 */
 
-/**
- * @param {string[][]} paths
- * @return {string[][]}
- */
+
 var deleteDuplicateFolder = function(paths) {
     
 };
 
-var Trie = function() {
-    this._hash = new Map();
-    this._symbol = '';
-    this._isEnd  = false;
-};
-
-/**
- * Inserts a word into the trie. 
- * @param {Array} arr
- * @param {number} pos
- * @return {void}
- */
-Trie.prototype.insert = function(arr, pos = 0) {
-    
-    if(pos >= arr.len) return;
-
-    
-    if(!this._hash.has(arr[pos])) {
-       const  newLeaf = new Trie();
-       newLeaf._symbol = arr[pos];
-       this._hash.set(arr[pos], newLeaf)
+class Trie {
+    constructor() {
+        this._hash = new Map();
+        this._symbol = '';
+        this._isEnd = false;
     }
-    const leaf = this._hash.get(arr[pos]);
 
-    if(pos === arr.length - 1) {
-        leaf._isEnd = true;
-        return;
+    /**
+     * Inserts a word into the trie. 
+     * @param {Array} arr
+     * @param {number} pos
+     * @return {void}
+     */
+    insert(arr, pos = 0) {
+        if (pos >= arr.length) return;
+
+        if (!this._hash.has(arr[pos])) {
+            const newLeaf = new Trie();
+            newLeaf._symbol = arr[pos];
+            this._hash.set(arr[pos], newLeaf);
+        }
+        const leaf = this._hash.get(arr[pos]);
+
+        if (pos === arr.length - 1) {
+            leaf._isEnd = true;
+            return;
+        }
+
+        leaf.insert(arr, pos + 1);
     }
-    
-    leaf.insert(arr, pos + 1);
-};
 
-/**
- * Returns if the word is in the trie. 
- * @param {Array} arr
- * @param {number} pos
- * @return {boolean}
- */
-Trie.prototype.search = function(arr, pos = 0) {
-    
-    if(pos >= arr.length) return false;
-    
-    if(!this._hash.has(arr[pos])) return false;
+    /**
+     * Returns if the word is in the trie. 
+     * @param {Array} arr
+     * @param {number} pos
+     * @return {boolean}
+     */
+    search(arr, pos = 0) {
+        if (pos >= arr.length) return false;
 
-    const leaf = this._hash.get(arr[pos]);
+        if (!this._hash.has(arr[pos])) return false;
 
-    if(pos === arr.length - 1) return leaf._isEnd;
+        const leaf = this._hash.get(arr[pos]);
 
-    return leaf.search(arr, pos + 1);
+        if (pos === arr.length - 1) return leaf._isEnd;
+
+        return leaf.search(arr, pos + 1);
+    }
 };
