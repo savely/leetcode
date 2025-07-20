@@ -63,7 +63,59 @@ Constraints:
 
 
 var deleteDuplicateFolder = function(paths) {
-    
+    const trie = new Trie();
+
+    for (const path of paths) {
+        trie.insert(path);
+    }
+
+    // Map to count serialized subtrees
+    const serialMap = new Map();
+    // Set to mark nodes to delete
+    const toDelete = new Set();
+
+    // Serialize subtrees and count
+    function serialize(node) {
+        if (node._hash.size === 0) return '';
+        let children = [];
+        for (const [key, child] of Array.from(node._hash.entries()).sort()) {
+            children.push(key + '(' + serialize(child) + ')');
+        }
+        const serial = children.join('');
+        if (serial) {
+            if (!serialMap.has(serial)) serialMap.set(serial, []);
+            serialMap.get(serial).push(node);
+        }
+        return serial;
+    }
+
+    serialize(trie);
+
+    // Mark duplicates for deletion
+    for (const [serial, nodes] of serialMap.entries()) {
+        if (nodes.length > 1) {
+            for (const node of nodes) {
+                toDelete.add(node);
+            }
+        }
+    }
+
+    // Collect remaining paths
+    const result = [];
+    function collect(node, path) {
+        if (node !== trie && toDelete.has(node)) return;
+        if (node._isEnd && node !== trie) {
+            result.push([...path]);
+        }
+        for (const [key, child] of node._hash.entries()) {
+            path.push(key);
+            collect(child, path);
+            path.pop();
+        }
+    }
+
+    collect(trie, []);
+    return result;
 };
 
 class Trie {
@@ -115,3 +167,8 @@ class Trie {
         return leaf.search(arr, pos + 1);
     }
 };
+
+let paths = [["a"],["c"],["d"],["a","b"],["c","b"],["d","a"]]; // Output: [["d"],["d","a"]];
+paths = [["a"],["c"],["a","b"],["c","b"],["a","b","x"],["a","b","x","y"],["w"],["w","y"]] //Output: [["c"],["c","b"],["a"],["a","b"]];
+
+console.log(deleteDuplicateFolder(paths)); 
