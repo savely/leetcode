@@ -79,35 +79,34 @@ Constraints:
  * @return {number}
  */
 var earliestFinishTime = function(landStartTime, landDuration, waterStartTime, waterDuration) {
+    
     let minTotalTime = Infinity;
 
-    // Try all land ride first, then water ride
+    let minLandEndTime = Infinity;
+    let minWaterEndTime = Infinity; 
+
     for (let i = 0; i < landStartTime.length; i++) {
-        for (let j = 0; j < waterStartTime.length; j++) {
-            // Finish land ride
-            let landFinish = landStartTime[i] + landDuration[i];
-            // Start water ride after land ride finishes or when it opens
-            let waterStart = Math.max(landFinish, waterStartTime[j]);
-            let totalFinish = waterStart + waterDuration[j];
-            minTotalTime = Math.min(minTotalTime, totalFinish);
-        }
+        minLandEndTime = Math.min(minLandEndTime, landStartTime[i] + landDuration[i]);
     }
 
-    // Try all water ride first, then land ride
     for (let j = 0; j < waterStartTime.length; j++) {
-        for (let i = 0; i < landStartTime.length; i++) {
-            // Finish water ride
-            let waterFinish = waterStartTime[j] + waterDuration[j];
-            // Start land ride after water ride finishes or when it opens
-            let landStart = Math.max(waterFinish, landStartTime[i]);
-            let totalFinish = landStart + landDuration[i];
-            minTotalTime = Math.min(minTotalTime, totalFinish);
-        }
+        minWaterEndTime = Math.min(minWaterEndTime, waterStartTime[j] + waterDuration[j]);
     }
 
+    for (let i = 0; i < landStartTime.length; i++) {
+
+        minRideStartTime = Math.max(landStartTime[i], minWaterEndTime);
+        minTotalTime = Math.min(minTotalTime, minRideStartTime + landDuration[i]);
+    }
+
+    for (let j = 0; j < waterStartTime.length; j++) {
+
+        minRideStartTime = Math.max(waterStartTime[j], minLandEndTime);
+        minTotalTime = Math.min(minTotalTime, minRideStartTime + waterDuration[j]);
+    }
     return minTotalTime;
 };
 
 let landStartTime = [2,8], landDuration = [4,1], waterStartTime = [6], waterDuration = [3]; // 9
-//landStartTime = [5], landDuration = [3], waterStartTime = [1], waterDuration = [10]; // 14   
+landStartTime = [5], landDuration = [3], waterStartTime = [1], waterDuration = [10]; // 14   
 console.log(earliestFinishTime(landStartTime, landDuration, waterStartTime, waterDuration));
