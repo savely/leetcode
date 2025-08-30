@@ -147,15 +147,14 @@ var score = function(cards, x) {
         } else if(isLeft) {
             leftFreq[card.charCodeAt(1) - A]++;
         } else if(isRight) {
-            rightFreq[card.charCodeAt(0) - A]++;;
+            rightFreq[card.charCodeAt(0) - A]++;
         }
     }
 
     const [pointsLeft, unmatchedLeft] = reduceFreq(leftFreq), [pointsRight, unmatchedRight] = reduceFreq(rightFreq);
     
-    let points = 0, matched = Math.min(both, unmatchedLeft);
-    points = pointsLeft + matched;
-    both -= matched;
+    let  points = pointsLeft +  Math.min(both, unmatchedLeft);
+    both -=  Math.min(both, unmatchedLeft);
     points += pointsRight + Math.min(both, unmatchedRight);
 
     return points;
