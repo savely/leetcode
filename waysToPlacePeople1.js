@@ -57,29 +57,37 @@ Constraints:
 
 */
 
+/**
+ * @param {number[][]} points
+ * @return {number}
+ */
 var numberOfPairs = function(points) {
+    let count = 0;
     
-    const n = points.length, xOrder = Array.from({length : n}, (_, i) => i);
-    const yOrder = Array.from({length : n}, (_, i) => i);
-
-    xOrder.sort((a, b) => points[a][0] - points[b][0]);
-    yOrder.sort((a, b) => points[b][1] - points[a][1]);
-
-    let i = 0, j = 0, count = 0;
-
-    while(i < n && j < n) {
-
-        const [minX, maxY] = points[yOrder[i]];
-
-        while(j < n && (points[xOrder[j]][0] < minX ||points[xOrder[j]][1] > maxY || yOrder[i] === xOrder[j])) {
-            j++;
+    for (let i = 0; i < points.length; i++) {
+        for (let j = 0; j < points.length; j++) {
+            if (i === j) continue;
+            
+            const [x1, y1] = points[i];
+            const [x2, y2] = points[j];
+            
+            if (x1 <= x2 && y1 >= y2) {
+                let valid = true;
+                
+                for (let k = 0; k < points.length; k++) {
+                    if (k === i || k === j) continue;
+                    const [x3, y3] = points[k];
+                    if (x3 >= x1 && x3 <= x2 && y3 <= y1 && y3 >= y2) {
+                        valid = false;
+                        break;
+                    }
+                }
+                
+                if (valid) count++;
+            }
         }
-        count += j < n ? 1 : 0;
-        i++;
     }
-
+    
     return count;
 };
-
-let points = [[3,1],[1,3],[1,1]]; // 2
-console.log(numberOfPairs(points));
+let points = points = [[3,1],[1,3],[1,1]];
