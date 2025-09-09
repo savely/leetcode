@@ -54,9 +54,7 @@ var peopleAwareOfSecret = function(n, delay, forget) {
     for (let i = 2; i <= n; i++) {
         // people who learned secret on previous days can share today
         for (let j = Math.max(0, i - forget + 1); j <= i - delay; j++) {
-            if (j > 0) {
-                dp[i] = (dp[i] + dp[j]) % MOD;
-            }
+            dp[i] = (dp[i] + dp[j]) % MOD;
         }
     }
 
