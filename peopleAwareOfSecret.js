@@ -47,22 +47,29 @@ Constraints:
  * @return {number}
  */
 var peopleAwareOfSecret = function(n, delay, forget) {
-    
-    const dp = new Uint32Array(n + 1), mod = (10 ** 9) + 7;
-    dp[0] = 1;
+    const MOD = 1e9 + 7;
+    let dp = new Array(n + 1).fill(0);
+    dp[1] = 1;  // first person knows secret on day 1
 
-    for(let i = 1; i <= n; i++) {
-        dp[i] = (dp[i] + dp[i - 1]) % mod;
-        dp[i] -= dp[i - forget] || 0;
-        dp[i + delay] = (dp[i + delay] + dp[i]) % mod;
+    for (let i = 2; i <= n; i++) {
+        // people who learned secret on previous days can share today
+        for (let j = Math.max(0, i - forget + 1); j <= i - delay; j++) {
+            if (j > 0) {
+                dp[i] = (dp[i] + dp[j]) % MOD;
+            }
+        }
     }
 
-    console.dir(dp);
+    // sum up people who haven't forgotten secret yet
+    let result = 0;
+    for (let i = Math.max(1, n - forget + 1); i <= n; i++) {
+        result = (result + dp[i]) % MOD;
+    }
 
-    return dp[n];
+    return result;
 };
 
 let n = 6, delay = 2, forget = 4; //5
-//n = 4, delay = 1, forget = 3; //6
+n = 4, delay = 1, forget = 3; //6
 
 console.log(peopleAwareOfSecret(n, delay, forget)); 
