@@ -63,7 +63,9 @@ var minimumTeachings = function(n, languages, friendships) {
 
     let totalUsersToTeach = Infinity;
 
-    for(let lang = 1; lang <= n; lang++) {
+    const uniqueLangs = new Set(languages.flat());
+
+    for(const lang of uniqueLangs) {
 
         const learned = Array(languages.length).fill(false);
 
@@ -84,6 +86,3 @@ var minimumTeachings = function(n, languages, friendships) {
 
     return totalUsersToTeach;
 };
-
-let n = 3, languages = [[2],[1,3],[1,2],[3]], friendships = [[1,4],[1,2],[3,4],[2,3]] //2
-console.log(minimumTeachings(n, languages, friendships));
