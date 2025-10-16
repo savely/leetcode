@@ -49,20 +49,17 @@ Constraints:
  */
 var findSmallestInteger = function(nums, value) {
     
-    const mods = new Map(), k = value;
+    const mods = new Uint32Array(nums.length), k = value;
 
     for(const num of nums) {
-        const mod = ((num % k) + k) % k;
-        mods.set(mod, (mods.get(mod) || 0) + 1);
+        mods[((num % k) + k) % k]++;
     }
-
-    console.dir(mods);
 
     for(let i = 0; i < nums.length; i++) {
 
-        if(!mods.get(i % k) > 0) return i;
+        if(!mods[i % k]) return i;
 
-        mods.set(i % k, mods.get(i % k) - 1);
+        mods[i % k]--;
     }
 
     return nums.length;
