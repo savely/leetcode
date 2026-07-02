@@ -57,6 +57,7 @@ Constraints:
     grid[i][j] is either 0 or 1.
 
 */
+const { Deque } = require('@datastructures-js/deque');
 
 /**
  * @param {number[][]} grid
@@ -66,30 +67,33 @@ Constraints:
 var findSafeWalk = function(grid, health) {
     
     const m = grid.length, n = grid[0].length;
-    const minCost = Array.from({length: m}, () => Array.from({length : n}, () => health + 1));
+    const minCost = Array.from({length: m}, () => new Uint32Array(n).fill(health + 1));
     minCost[0][0] = grid[0][0];
 
-    let queue = [[0,0]];
+    let queue = new Deque();
+    queue.pushBack([0, 0]);
 
-    while(queue.length) {
-        const next = []
-        for(const [x, y] of queue) {
-            cellCost = minCost[x][y];
+    while(queue.size()) {
 
-            for(const [dx, dy] of [[x+1,y],[x-1,y],[x,y+1],[x,y-1]]) {
+        [x, y] = queue.popFront();
+        cellCost = minCost[x][y];
 
-                    if(dx < 0 || dx === m) continue
-                    if(dy < 0 || dy === n) continue
+        for(const [dx, dy] of [[x+1,y],[x-1,y],[x,y+1],[x,y-1]]) {
 
-                    moveCost = cellCost + grid[dx][dy];
-                    if(moveCost >= health) continue;
-                    if(minCost[dx][dy] <= moveCost) continue;
-                    if(dx === m - 1 && dy === n - 1) return true;
-                    minCost[dx][dy] = moveCost;
-                    next.push([dx, dy])
+                if(dx < 0 || dx === m) continue
+                if(dy < 0 || dy === n) continue
+
+                moveCost = cellCost + grid[dx][dy];
+                if(moveCost >= health) continue;
+                if(minCost[dx][dy] <= moveCost) continue;
+                if(dx === m - 1 && dy === n - 1) return true;
+                minCost[dx][dy] = moveCost;
+                if (grid[dx][dy] === 0) {
+                    queue.pushFront([dx, dy]); // 0-cost moves go to the front
+                } else {
+            queue.pushBack([dx, dy]);  // 1-cost moves go to the back
             }
         }
-        queue = next;
     }
     return false;
 };
